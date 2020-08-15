@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+  <name>[O21] WikiRim (Continued)</name>
+  <packageId>Mlie.WikiRim</packageId>
+  <author>Neronix17</author>
+  <url>https://github.com/emipa606/WikiRim</url>
+  <supportedVersions>
+    <li>1.0</li>
+    <li>1.1</li>
+    <li>1.2</li>
+  </supportedVersions>
+  <modDependencies />
+  <loadAfter />
+  <description>Update of Neronix17s mod
+https://steamcommunity.com/sharedfiles/filedetails/?id=1834856478
+
+[img]https://i.imgur.com/GYswkZ7.png[/img]
+
+Support-chat:
+https://invite.gg/mlie
+
+Non-steam version:
+https://github.com/emipa606/WikiRim
+	
+--- Original Description ---
+A comprehensive help database, this is a fork of the mod HelpTab, updated to 1.0 with added changes I personally wanted to see.
+
+Simple
+All the information about everything compiled in a neat catalog of things, explore what your world offers, with detail! Everything is connected, navigate at your heart's content.
+
+Resourceful
+Do you want to know how to build something? What you need to research to obtain it? No more digging inside xml to learn what needs to be done. Just search it and discover!
+
+Shortcuts
+Do you know the research name? Find it with the search by text toolbox and research right from the Help tab.
+
+Flexible
+Supports every thing any mod adds. The perfect companion for navigating those complex mods.
+
+Conflicts/Bugs/Suggestions
+You lot never bothered following instructions for this before so might as well replace it with a statement pointing out AGAIN that this isn't supported anymore, no more updates, dead, finito, perished.
+
+Credits:
+1.0/1.1 Update by Neronix17
+A17 Update by NotFood
+A16 Update by Skyarkhangel
+Original mod by Fluffy</description>
+</ModMetaData>
