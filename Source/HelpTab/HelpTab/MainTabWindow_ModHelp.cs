@@ -337,8 +337,15 @@ namespace HelpTab
             GUI.EndGroup();
         }
 
+        // Maximum count of displayed entries.
+        // It added to improve perfomance at large search result.
+        private const int MaxEntryCount = 200;
+
+        private int entryCounter = 0;
+
         void DrawSelectionArea(Rect rect)
         {
+            entryCounter = 0;
             Widgets.DrawMenuSection(rect);
 
             _filterUpdate();
@@ -394,6 +401,8 @@ namespace HelpTab
                                 foreach (HelpDef hd in hc.HelpDefs.Where(hd => hd.ShouldDraw))
                                 {
                                     DrawHelpEntry(ref cur, 1, viewRect, hd);
+                                    if (entryCounter >= MaxEntryCount)
+                                        break;
                                 }
                             }
                         }
@@ -430,6 +439,7 @@ namespace HelpTab
         /// <returns></returns>
         public bool DrawEntry(ref Vector2 cur, int nestLevel, Rect view, string label, State state, bool selected = false)
         {
+            this.entryCounter++;
             cur.x = nestLevel * EntryIndent;
             float iconOffset = ArrowImageSize.x + 2 * WindowMargin;
             float width = view.width - cur.x - iconOffset - WindowMargin;
