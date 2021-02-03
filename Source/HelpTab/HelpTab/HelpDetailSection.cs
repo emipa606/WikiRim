@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
@@ -110,7 +109,7 @@ namespace HelpTab
             // Draw section header, if any
             if (!Label.NullOrEmpty())
             {
-                Rect labelRect = new Rect(cur.x, cur.y, width, 20f);
+                var labelRect = new Rect(cur.x, cur.y, width, 20f);
                 Widgets.Label(labelRect, Label);
                 cur.y += 20f - MainTabWindow_ModHelp.LineHeigthOffset;
             }
@@ -157,10 +156,10 @@ namespace HelpTab
             width -= 2 * _columnMargin;
 
             // build lists of all strings in this section
-            List<string> prefixes = new List<string>();
-            List<string> suffixes = new List<string>();
-            List<string> descs = new List<string>();
-            List<Def> defs = new List<Def>();
+            var prefixes = new List<string>();
+            var suffixes = new List<string>();
+            var descs = new List<string>();
+            var defs = new List<Def>();
 
             if (StringDescs != null)
             {
@@ -180,7 +179,7 @@ namespace HelpTab
             Vector3 requestedWidths = Vector3.zero;
 
             // make sure wrapping is off so we get a true idea of the length
-            bool WW = Text.WordWrap;
+            var WW = Text.WordWrap;
             Text.WordWrap = false;
             if (!prefixes.NullOrEmpty())
             {
@@ -213,7 +212,7 @@ namespace HelpTab
                 // if size overflow is < 30% of largest column width, scale that down.
                 if (requestedWidths.Sum() - width < .3f * requestedWidths.Max())
                 {
-                    for (int i = 0; i < 3; i++)
+                    for (var i = 0; i < 3; i++)
                     {
                         if (requestedWidths[i] == requestedWidths.Max())
                         {
@@ -225,8 +224,8 @@ namespace HelpTab
                 else // scale everything down, with a minimum width of 15% per column
                 {
                     Vector3 shrinkableWidth = requestedWidths.Subtract(width * .15f);
-                    float scalingFactor = width / shrinkableWidth.Sum();
-                    for (int i = 0; i < 3; i++)
+                    var scalingFactor = width / shrinkableWidth.Sum();
+                    for (var i = 0; i < 3; i++)
                     {
                         requestedWidths[i] -= shrinkableWidth[i] * scalingFactor;
                     }

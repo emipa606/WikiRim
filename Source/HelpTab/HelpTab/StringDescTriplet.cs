@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UnityEngine;
@@ -27,7 +26,7 @@ namespace HelpTab
 
         public override string ToString()
         {
-            StringBuilder s = new StringBuilder();
+            var s = new StringBuilder();
             if (Prefix != "")
             {
                 s.Append(Prefix + " ");
@@ -44,7 +43,7 @@ namespace HelpTab
         {
             if (!_heightSet)
             {
-                List<float> heights = new List<float>();
+                var heights = new List<float>();
                 if (!Prefix.NullOrEmpty())
                 {
                     heights.Add(Text.CalcHeight(Prefix, colWidths.x));
@@ -60,17 +59,17 @@ namespace HelpTab
 
             if (!Prefix.NullOrEmpty())
             {
-                Rect prefixRect = new Rect(cur.x, cur.y, colWidths.x, _height);
+                var prefixRect = new Rect(cur.x, cur.y, colWidths.x, _height);
                 Widgets.Label(prefixRect, Prefix);
             }
 
             if (!Suffix.NullOrEmpty())
             {
-                Rect suffixRect = new Rect(cur.x + colWidths.x + colWidths.y + 2 * HelpDetailSection._columnMargin, cur.y, colWidths.z, _height);
+                var suffixRect = new Rect(cur.x + colWidths.x + colWidths.y + (2 * HelpDetailSection._columnMargin), cur.y, colWidths.z, _height);
                 Widgets.Label(suffixRect, Suffix);
             }
 
-            Rect labelRect =
+            var labelRect =
                 new Rect(cur.x + colWidths.x + (Prefix.NullOrEmpty() ? 0f : HelpDetailSection._columnMargin),
                           cur.y,
                           colWidths.y,

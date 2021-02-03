@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-
-using UnityEditor;
-using RimWorld;
 using Verse;
 
 namespace HelpTab
@@ -30,13 +26,7 @@ namespace HelpTab
 
         #region Query State
 
-        public List<HelpDef> HelpDefs
-        {
-            get
-            {
-                return _cachedHelpDefs;
-            }
-        }
+        public List<HelpDef> HelpDefs => _cachedHelpDefs;
 
         public bool ShouldDraw { get; set; }
 
@@ -77,10 +67,10 @@ namespace HelpTab
         public void Recache()
         {
             _cachedHelpDefs.Clear();
-            foreach (var def in (
+            foreach (var def in 
                 from t in DefDatabase<HelpDef>.AllDefs
                 where t.category == this
-                select t))
+                select t)
             {
                 _cachedHelpDefs.Add(def);
             }

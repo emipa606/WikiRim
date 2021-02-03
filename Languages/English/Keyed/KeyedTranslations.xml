@@ -3,5 +3,5 @@
   <BuildingHelpDatabase>Building Help Database</BuildingHelpDatabase>
   <NoHelpDefs>No help found</NoHelpDefs>
   <JumpToTopic>Click to jump to topic</JumpToTopic>
-
+  <MaxAmountOfHits>Limit reached (200)</MaxAmountOfHits>
 </LanguageData>

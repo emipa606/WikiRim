@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using UnityEngine;
+﻿using UnityEngine;
 using Verse;
-using RimWorld;
 
 namespace HelpTab
 {
@@ -21,8 +16,8 @@ namespace HelpTab
 
         public static void DrawFittedIn(this Texture2D tex, Rect rect)
         {
-            float rectProportion = (float)rect.width / (float)rect.height;
-            float texProportion = (float)tex.width / (float)tex.height;
+            var rectProportion = (float)rect.width / (float)rect.height;
+            var texProportion = tex.width / (float)tex.height;
 
             if (texProportion > rectProportion)
             {

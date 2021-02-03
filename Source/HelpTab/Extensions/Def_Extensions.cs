@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using RimWorld;
 using UnityEngine;
 using Verse;
@@ -13,8 +11,8 @@ namespace HelpTab
         /// <summary>
         /// hold a cached list of icons per def
         /// </summary>
-        private static Dictionary<Def, Texture2D> _cachedDefIcons = new Dictionary<Def, Texture2D>();
-        private static Dictionary<Def, Color> _cachedIconColors = new Dictionary<Def, Color>();
+        private static readonly Dictionary<Def, Texture2D> _cachedDefIcons = new Dictionary<Def, Texture2D>();
+        private static readonly Dictionary<Def, Color> _cachedIconColors = new Dictionary<Def, Color>();
 
         /// <summary>
         /// Get the label, capitalized and given appropriate styling ( bold if def has a helpdef, italic if def has no helpdef but does have description. )
@@ -56,13 +54,10 @@ namespace HelpTab
             }
 
             // otherwise try to determine icon
-            var bdef = def as BuildableDef;
             var tdef = def as ThingDef;
-            var pdef = def as PawnKindDef;
-            var rdef = def as RecipeDef;
 
             // get product color for recipes
-            if (rdef != null)
+            if (def is RecipeDef rdef)
             {
                 if (!rdef.products.NullOrEmpty())
                 {
@@ -72,13 +67,13 @@ namespace HelpTab
             }
 
             // get color from final lifestage for pawns
-            if (pdef != null)
+            if (def is PawnKindDef pdef)
             {
                 _cachedIconColors.Add(def, pdef.lifeStages.Last().bodyGraphicData.color);
                 return _cachedIconColors[def];
             }
 
-            if (bdef == null)
+            if (!(def is BuildableDef bdef))
             {
                 // if we reach this point, def.IconTexture() would return null. Just store and return white to make sure we don't get weird errors down the line.
                 _cachedIconColors.Add(def, Color.white);
@@ -105,7 +100,7 @@ namespace HelpTab
             // stuff used?
             if (
                 (tdef != null) &&
-                (tdef.MadeFromStuff)
+                tdef.MadeFromStuff
             )
             {
                 ThingDef stuff = GenStuff.DefaultStuffFor(tdef);
@@ -131,15 +126,9 @@ namespace HelpTab
                 return _cachedDefIcons[def];
             }
 
-            // otherwise try to determine icon
-            var bdef = def as BuildableDef;
-            var tdef = def as ThingDef;
-            var pdef = def as PawnKindDef;
-            var rdef = def as RecipeDef;
-
             // recipes will be passed icon of first product, if defined.
             if (
-                (rdef != null) &&
+                (def is RecipeDef rdef) &&
                 (!rdef.products.NullOrEmpty())
             )
             {
@@ -148,7 +137,7 @@ namespace HelpTab
             }
 
             // animals need special treatment ( this will still only work for animals, pawns are a whole different can o' worms ).
-            if (pdef != null)
+            if (def is PawnKindDef pdef)
             {
                 try
                 {
@@ -161,7 +150,7 @@ namespace HelpTab
             }
 
             // if not buildable it probably doesn't have an icon.
-            if (bdef == null)
+            if (!(def is BuildableDef bdef))
             {
                 _cachedDefIcons.Add(def, null);
                 return null;
@@ -169,7 +158,7 @@ namespace HelpTab
 
             // if def built != def listed.
             if (
-                (tdef != null)
+                def is ThingDef tdef
             )
             {
 				if (tdef.entityDefToBuild != null) {
@@ -191,7 +180,7 @@ namespace HelpTab
 		{
 			var WW = Text.WordWrap;
 			Text.WordWrap = false;
-			float width = Text.CalcSize (def.LabelStyled ()).x + (def.IconTexture () == null ? 0 : 20);
+			var width = Text.CalcSize (def.LabelStyled ()).x + (def.IconTexture () == null ? 0 : 20);
 			Text.WordWrap = WW;
 			return width;
 		}
@@ -199,7 +188,7 @@ namespace HelpTab
 		/// <summary>
 		/// hold a cached list of def -> helpdef links
 		/// </summary>
-		private static Dictionary<Def, HelpDef> _cachedDefHelpDefLinks = new Dictionary<Def, HelpDef> ();
+		private static readonly Dictionary<Def, HelpDef> _cachedDefHelpDefLinks = new Dictionary<Def, HelpDef> ();
 
 		/// <summary>
 		/// Get the helpdef associated with the current def, or null if none exists.

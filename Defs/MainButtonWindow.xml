@@ -9,6 +9,7 @@
     <windowSize>(700,500)</windowSize>
     <listWidth>200</listWidth>
     <pauseGame>false</pauseGame>
+    <minimized>True</minimized>
     <iconPath>UI/Buttons/MainButtons/IconWikiRim</iconPath>
   </MainButtonDef>
 </Defs>

@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-
-using RimWorld;
 using Verse;
 using UnityEngine;
 
@@ -25,10 +21,10 @@ namespace HelpTab
             }
 
             // Get list of things referencing
-            var thingsOn = DefDatabase<ThingDef>.AllDefsListForReading.Where(t => (
+            var thingsOn = DefDatabase<ThingDef>.AllDefsListForReading.Where(t => 
                (t.recipes != null) &&
-               (t.recipes.Contains(recipeDef))
-           )).ToList();
+               t.recipes.Contains(recipeDef)
+           ).ToList();
 
             if (thingsOn == null)
             {
@@ -40,7 +36,7 @@ namespace HelpTab
             }
 
             // Now check for an absolute requirement
-            return (thingsOn.All(t => t.HasResearchRequirement()));
+            return thingsOn.All(t => t.HasResearchRequirement());
         }
 
         #endregion
@@ -59,10 +55,10 @@ namespace HelpTab
 
             // Get list of things recipe is used on
             var thingsOn = new List<ThingDef>();
-            var recipeThings = DefDatabase<ThingDef>.AllDefsListForReading.Where(t => (
+            var recipeThings = DefDatabase<ThingDef>.AllDefsListForReading.Where(t => 
              (t.recipes != null) &&
-             (t.recipes.Contains(recipeDef))
-         )).ToList();
+             t.recipes.Contains(recipeDef)
+         ).ToList();
 
             if (!recipeThings.NullOrEmpty())
             {
@@ -78,7 +74,7 @@ namespace HelpTab
             // Make sure they all have hard requirements
             if (
                 (!thingsOn.NullOrEmpty()) &&
-                (thingsOn.All(t => t.HasResearchRequirement()))
+                thingsOn.All(t => t.HasResearchRequirement())
             )
             {
                 foreach (var t in thingsOn)
@@ -129,12 +125,12 @@ namespace HelpTab
 		public static bool TryFindBestRecipeIngredientsInSet_NoMix(this RecipeDef recipeDef, List<Thing> availableThings, List<ThingCount> chosen)
         {
             chosen.Clear();
-            List<IngredientCount> ingredientsOrdered = new List<IngredientCount>();
-            HashSet<Thing> assignedThings = new HashSet<Thing>();
-            DefCountList availableCounts = new DefCountList();
+            var ingredientsOrdered = new List<IngredientCount>();
+            var assignedThings = new HashSet<Thing>();
+            var availableCounts = new DefCountList();
             availableCounts.GenerateFrom(availableThings);
 
-            for (int ingredientIndex = 0; ingredientIndex < recipeDef.ingredients.Count; ++ingredientIndex)
+            for (var ingredientIndex = 0; ingredientIndex < recipeDef.ingredients.Count; ++ingredientIndex)
             {
                 IngredientCount ingredientCount = recipeDef.ingredients[ingredientIndex];
                 if (ingredientCount.filter.AllowedDefCount == 1)
@@ -142,7 +138,7 @@ namespace HelpTab
                     ingredientsOrdered.Add(ingredientCount);
                 }
             }
-            for (int ingredientIndex = 0; ingredientIndex < recipeDef.ingredients.Count; ++ingredientIndex)
+            for (var ingredientIndex = 0; ingredientIndex < recipeDef.ingredients.Count; ++ingredientIndex)
             {
                 IngredientCount ingredientCount = recipeDef.ingredients[ingredientIndex];
                 if (!ingredientsOrdered.Contains(ingredientCount))
@@ -151,33 +147,33 @@ namespace HelpTab
                 }
             }
 
-            for (int orderedIndex = 0; orderedIndex < ingredientsOrdered.Count; ++orderedIndex)
+            for (var orderedIndex = 0; orderedIndex < ingredientsOrdered.Count; ++orderedIndex)
             {
                 IngredientCount ingredientCount = recipeDef.ingredients[orderedIndex];
-                bool hasAllRequired = false;
-                for (int countsIndex = 0; countsIndex < availableCounts.Count; ++countsIndex)
+                var hasAllRequired = false;
+                for (var countsIndex = 0; countsIndex < availableCounts.Count; ++countsIndex)
                 {
-                    float countRequiredFor = (float)ingredientCount.CountRequiredOfFor(availableCounts.GetDef(countsIndex), recipeDef);
+                    var countRequiredFor = (float)ingredientCount.CountRequiredOfFor(availableCounts.GetDef(countsIndex), recipeDef);
                     if (
-                        ((double)countRequiredFor <= (double)availableCounts.GetCount(countsIndex)) &&
-                        (ingredientCount.filter.Allows(availableCounts.GetDef(countsIndex)))
+                        (countRequiredFor <= (double)availableCounts.GetCount(countsIndex)) &&
+                        ingredientCount.filter.Allows(availableCounts.GetDef(countsIndex))
                     )
                     {
-                        for (int thingsIndex = 0; thingsIndex < availableThings.Count; ++thingsIndex)
+                        for (var thingsIndex = 0; thingsIndex < availableThings.Count; ++thingsIndex)
                         {
                             if (
                                 (availableThings[thingsIndex].def == availableCounts.GetDef(countsIndex)) &&
                                 (!assignedThings.Contains(availableThings[thingsIndex]))
                             )
                             {
-                                int countToAdd = Mathf.Min(Mathf.FloorToInt(countRequiredFor), availableThings[thingsIndex].stackCount);
+                                var countToAdd = Mathf.Min(Mathf.FloorToInt(countRequiredFor), availableThings[thingsIndex].stackCount);
                                 ThingCountUtility.AddToList(chosen, availableThings[thingsIndex], countToAdd);
-                                countRequiredFor -= (float)countToAdd;
+                                countRequiredFor -= countToAdd;
                                 assignedThings.Add(availableThings[thingsIndex]);
-                                if ((double)countRequiredFor < 1.0 / 1000.0)
+                                if (countRequiredFor < 1.0 / 1000.0)
                                 {
                                     hasAllRequired = true;
-                                    float val = availableCounts.GetCount(countsIndex) - ingredientCount.GetBaseCount();
+                                    var val = availableCounts.GetCount(countsIndex) - ingredientCount.GetBaseCount();
                                     availableCounts.SetCount(countsIndex, val);
                                     break;
                                 }
@@ -200,26 +196,26 @@ namespace HelpTab
         public static bool TryFindBestRecipeIngredientsInSet_AllowMix(this RecipeDef recipeDef, List<Thing> availableThings, List<ThingCount> chosen)
         {
             chosen.Clear();
-            for (int ingredientIndex = 0; ingredientIndex < recipeDef.ingredients.Count; ++ingredientIndex)
+            for (var ingredientIndex = 0; ingredientIndex < recipeDef.ingredients.Count; ++ingredientIndex)
             {
                 IngredientCount ingredientCount = recipeDef.ingredients[ingredientIndex];
-                float baseCount = ingredientCount.GetBaseCount();
-                for (int thingIndex = 0; thingIndex < availableThings.Count; ++thingIndex)
+                var baseCount = ingredientCount.GetBaseCount();
+                for (var thingIndex = 0; thingIndex < availableThings.Count; ++thingIndex)
                 {
                     Thing thing = availableThings[thingIndex];
                     if (ingredientCount.filter.Allows(thing))
                     {
-                        float ingredientValue = recipeDef.IngredientValueGetter.ValuePerUnitOf(thing.def);
-                        int countToAdd = Mathf.Min(Mathf.CeilToInt(baseCount / ingredientValue), thing.stackCount);
+                        var ingredientValue = recipeDef.IngredientValueGetter.ValuePerUnitOf(thing.def);
+                        var countToAdd = Mathf.Min(Mathf.CeilToInt(baseCount / ingredientValue), thing.stackCount);
                         ThingCountUtility.AddToList(chosen, thing, countToAdd);
-                        baseCount -= (float)countToAdd * ingredientValue;
-                        if ((double)baseCount <= 9.99999974737875E-05)
+                        baseCount -= countToAdd * ingredientValue;
+                        if (baseCount <= 9.99999974737875E-05)
                         {
                             break;
                         }
                     }
                 }
-                if ((double)baseCount > 9.99999974737875E-05)
+                if (baseCount > 9.99999974737875E-05)
                 {
                     return false;
                 }
@@ -233,22 +229,16 @@ namespace HelpTab
 
         private class DefCountList
         {
-            private List<ThingDef> defs;
-            private List<float> counts;
+            private readonly List<ThingDef> defs;
+            private readonly List<float> counts;
 
-            public int Count
-            {
-                get
-                {
-                    return defs.Count;
-                }
-            }
+            public int Count => defs.Count;
 
             public float this[ThingDef def]
             {
                 get
                 {
-                    int index = defs.IndexOf(def);
+                    var index = defs.IndexOf(def);
                     if (index < 0)
                     {
                         return 0.0f;
@@ -257,7 +247,7 @@ namespace HelpTab
                 }
                 set
                 {
-                    int index = defs.IndexOf(def);
+                    var index = defs.IndexOf(def);
                     if (index < 0)
                     {
                         defs.Add(def);
@@ -300,6 +290,7 @@ namespace HelpTab
                 {
                     return;
                 }
+                Log.Message($"Removing {defs[index].defName} as it is invalid");
                 counts.RemoveAt(index);
                 defs.RemoveAt(index);
             }
@@ -313,9 +304,9 @@ namespace HelpTab
             public void GenerateFrom(List<Thing> things)
             {
                 Clear();
-                for (int index = 0; index < things.Count; ++index)
+                for (var index = 0; index < things.Count; ++index)
                 {
-                    this[things[index].def] += (float)things[index].stackCount;
+                    this[things[index].def] += things[index].stackCount;
                 }
             }
 

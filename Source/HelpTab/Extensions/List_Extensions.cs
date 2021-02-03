@@ -1,9 +1,4 @@
-﻿using System;
-using System.CodeDom;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using UnityEngine;
+﻿using System.Collections.Generic;
 
 namespace HelpTab
 {
@@ -14,7 +9,7 @@ namespace HelpTab
         {
             if (
                 (list == null) ||
-                (list.Contains(item))
+                list.Contains(item)
             )
             {
                 return;

@@ -1,18 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-
-using RimWorld;
 using Verse;
 
 namespace HelpTab
 {
-	[StaticConstructorOnStartup]
+    [StaticConstructorOnStartup]
 	public static class ResearchProjectDef_Extensions
 	{
 		#region Static Data
 
-		private static Dictionary<ushort, List<Pair<Def, string>>> _unlocksCache;
+		private static readonly Dictionary<ushort, List<Pair<Def, string>>> _unlocksCache;
 
 		static ResearchProjectDef_Extensions ()
 		{
@@ -25,11 +22,11 @@ _unlocksCache = new Dictionary<ushort, List<Pair<Def, string>>> ();
 
 		public static List<ResearchProjectDef> ExclusiveDescendants (this ResearchProjectDef research)
 		{
-			List<ResearchProjectDef> descendants = new List<ResearchProjectDef> ();
+			var descendants = new List<ResearchProjectDef> ();
 
 			// recursively go through all children
 			// populate initial queue
-			Queue<ResearchProjectDef> queue = new Queue<ResearchProjectDef> (DefDatabase<ResearchProjectDef>.AllDefsListForReading.Where (res => res.prerequisites.Contains (research)));
+			var queue = new Queue<ResearchProjectDef> (DefDatabase<ResearchProjectDef>.AllDefsListForReading.Where (res => res.prerequisites.Contains (research)));
 
 			// for each item in queue, determine if there's something unlocking it
 			// if not, add to the list, and queue up children.
@@ -49,11 +46,11 @@ _unlocksCache = new Dictionary<ushort, List<Pair<Def, string>>> ();
 
 		public static List<ResearchProjectDef> GetPrerequisitesRecursive (this ResearchProjectDef research)
 		{
-			List<ResearchProjectDef> result = new List<ResearchProjectDef> ();
+			var result = new List<ResearchProjectDef> ();
 			if (research.prerequisites.NullOrEmpty ()) {
 				return result;
 			}
-			Stack<ResearchProjectDef> stack = new Stack<ResearchProjectDef> (research.prerequisites.Where (parent => parent != research));
+			var stack = new Stack<ResearchProjectDef> (research.prerequisites.Where (parent => parent != research));
 
 			while (stack.Count > 0) {
 				var parent = stack.Pop ();
@@ -62,8 +59,10 @@ _unlocksCache = new Dictionary<ushort, List<Pair<Def, string>>> ();
 				if (!parent.prerequisites.NullOrEmpty ()) {
 					foreach (var grandparent in parent.prerequisites) {
 						if (grandparent != parent)
-							stack.Push (grandparent);
-					}
+                        {
+                            stack.Push (grandparent);
+                        }
+                    }
 				}
 			}
 
@@ -76,10 +75,10 @@ _unlocksCache = new Dictionary<ushort, List<Pair<Def, string>>> ();
 				return _unlocksCache [research.shortHash];
 			}
 
-			List<Pair<Def, string>> unlocks = new List<Pair<Def, string>> ();
+			var unlocks = new List<Pair<Def, string>> ();
 
 			// dumps recipes/plants unlocked, because of the peculiar way CCL helpdefs are done.
-			List<ThingDef> dump = new List<ThingDef> ();
+			var dump = new List<ThingDef> ();
 
 			unlocks.AddRange (research.GetThingsUnlocked ()
 									  .Where (d => d.IconTexture () != null)
@@ -90,7 +89,7 @@ _unlocksCache = new Dictionary<ushort, List<Pair<Def, string>>> ();
 			unlocks.AddRange (research.GetRecipesUnlocked (ref dump)
 									  .Where (d => d.IconTexture () != null)
 									  .Select (d => new Pair<Def, string> (d, "AllowsCraftingX".Translate (d.LabelCap))));
-			string sowTags = string.Join (" and ", research.GetSowTagsUnlocked (ref dump).ToArray ());
+			var sowTags = string.Join (" and ", research.GetSowTagsUnlocked (ref dump).ToArray ());
 			unlocks.AddRange (dump.Where (d => d.IconTexture () != null)
 								  .Select (d => new Pair<Def, string> (d, "AllowsSowingXinY".Translate (d.LabelCap, sowTags))));
 
@@ -138,9 +137,9 @@ _unlocksCache = new Dictionary<ushort, List<Pair<Def, string>>> ();
 			}
 
 			// Add all recipes using this research projects
-			var researchRecipes = DefDatabase<RecipeDef>.AllDefsListForReading.Where (d => (
-				(d.researchPrerequisite == researchProjectDef)
-			)).ToList ();
+			var researchRecipes = DefDatabase<RecipeDef>.AllDefsListForReading.Where (d => 
+				d.researchPrerequisite == researchProjectDef
+			).ToList ();
 
 			if (!researchRecipes.NullOrEmpty ()) {
 				recipes.AddRangeUnique (researchRecipes);
@@ -152,10 +151,10 @@ _unlocksCache = new Dictionary<ushort, List<Pair<Def, string>>> ();
 					if (!r.recipeUsers.NullOrEmpty ()) {
 						thingDefs.AddRangeUnique (r.recipeUsers);
 					}
-					var recipeThings = DefDatabase<ThingDef>.AllDefsListForReading.Where (d => (
+					var recipeThings = DefDatabase<ThingDef>.AllDefsListForReading.Where (d => 
 						(!d.recipes.NullOrEmpty ()) &&
-						(d.recipes.Contains (r))
-					)).ToList ();
+						d.recipes.Contains (r)
+					).ToList ();
 					if (!recipeThings.NullOrEmpty ()) {
 						thingDefs.AddRangeUnique (recipeThings);
 					}
@@ -173,11 +172,11 @@ _unlocksCache = new Dictionary<ushort, List<Pair<Def, string>>> ();
 			}
 
 			// Add all plants using this research project
-			var researchPlants = DefDatabase<ThingDef>.AllDefsListForReading.Where (d => (
+			var researchPlants = DefDatabase<ThingDef>.AllDefsListForReading.Where (d => 
 				(d.plant != null) &&
 				(!d.plant.sowResearchPrerequisites.NullOrEmpty ()) &&
-				(d.plant.sowResearchPrerequisites.Contains (researchProjectDef))
-			)).ToList ();
+				d.plant.sowResearchPrerequisites.Contains (researchProjectDef)
+			).ToList ();
 
 			if (!researchPlants.NullOrEmpty ()) {
 				foreach (var plant in researchPlants) {
@@ -196,7 +195,7 @@ _unlocksCache = new Dictionary<ushort, List<Pair<Def, string>>> ();
 			var researchDefs = new List<Def> ();
 
 			if (researchProjectDef.prerequisites != null) {
-				researchDefs.AddRangeUnique (researchProjectDef.prerequisites.ConvertAll<Def> (def => (Def)def));
+				researchDefs.AddRangeUnique (researchProjectDef.prerequisites.ConvertAll<Def> (def => def));
 			}
 
 			// Return the list of research required
@@ -210,8 +209,8 @@ _unlocksCache = new Dictionary<ushort, List<Pair<Def, string>>> ();
 			//Log.Message( "Normal" );
 			researchDefs.AddRangeUnique (DefDatabase<ResearchProjectDef>.AllDefsListForReading.Where (rd =>
 																										(!rd.prerequisites.NullOrEmpty ()) &&
-																										(rd.prerequisites.Contains (researchProjectDef))
-																									).ToList ().ConvertAll<Def> (def => (Def)def));
+																										rd.prerequisites.Contains (researchProjectDef)
+																									).ToList ().ConvertAll<Def> (def => def));
 			return researchDefs;
 		}
 

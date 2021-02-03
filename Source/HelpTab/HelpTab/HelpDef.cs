@@ -45,7 +45,7 @@ namespace HelpTab
         {
             get
             {
-                StringBuilder s = new StringBuilder();
+                var s = new StringBuilder();
                 s.AppendLine(description);
                 foreach (HelpDetailSection section in HelpDetailSections)
                 {
@@ -68,7 +68,7 @@ namespace HelpTab
 
         public bool MatchesFilter(string filter)
         {
-            return filter == "" || LabelCap != null && LabelCap.ToString().IndexOf (filter, StringComparison.OrdinalIgnoreCase) >= 0;
+            return filter == "" || (LabelCap != null && LabelCap.ToString().IndexOf (filter, StringComparison.OrdinalIgnoreCase) >= 0);
         }
 
         #endregion

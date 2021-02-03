@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-using System.Text;
 
 using RimWorld;
 using Verse;
@@ -107,9 +104,9 @@ namespace HelpTab
         {
             // Get list of things
             var thingDefs =
-                DefDatabase<ThingDef>.AllDefsListForReading.Where(t => (
-                 (t.thingClass == typeof(Apparel))
-             )).ToList();
+                DefDatabase<ThingDef>.AllDefsListForReading.Where(t => 
+                 t.thingClass == typeof(Apparel)
+             ).ToList();
 
             if (thingDefs.NullOrEmpty())
             {
@@ -287,9 +284,9 @@ namespace HelpTab
         {
             // Get list of terrainDefs without designation category that occurs as a byproduct of mining (rocky),
             // or is listed in biomes (natural terrain). This excludes terrains that are not normally visible (e.g. Underwall).
-            string[] rockySuffixes = new[] { "_Rough", "_Smooth", "_RoughHewn" };
+            var rockySuffixes = new[] { "_Rough", "_Smooth", "_RoughHewn" };
 
-            List<TerrainDef> terrainDefs =
+            var terrainDefs =
                 DefDatabase<TerrainDef>.AllDefsListForReading
                                        .Where(
                                             // not buildable
@@ -347,7 +344,7 @@ namespace HelpTab
         static void ResolvePawnkinds()
         {
             // animals
-            List<PawnKindDef> pawnkinds =
+            var pawnkinds =
                 DefDatabase<PawnKindDef>.AllDefsListForReading.Where(t => t.race.race.Animal).ToList();
             HelpCategoryDef category = HelpCategoryForKey(Animals, ResourceBank.String.AutoHelpSubCategoryAnimals,
                                                ResourceBank.String.AutoHelpCategoryFloraAndFauna);
@@ -366,7 +363,7 @@ namespace HelpTab
             //ResolveDefList(pawnkinds, category);
 
             // humanoids - new version based on race.
-            List<ThingDef> races = new List<ThingDef>();
+            var races = new List<ThingDef>();
             foreach(ThingDef def in DefDatabase<ThingDef>.AllDefs)
             {
                 bool? flag;
@@ -377,9 +374,9 @@ namespace HelpTab
                 else
                 {
                     RaceProperties race = def.race;
-                    flag = ((race != null) ? new bool?(race.Humanlike) : null);
+                    flag = (race != null) ? new bool?(race.Humanlike) : null;
                 }
-                bool flag2 = flag ?? false;
+                var flag2 = flag ?? false;
                 if (flag2 && !races.Contains(def))
                 {
                     races.Add(def);
@@ -429,10 +426,10 @@ namespace HelpTab
                     foreach (var recipeDef in recipeDefs)
                     {
                         // Find an existing entry
-                        var helpDef = helpDefs.Find(h => (
+                        var helpDef = helpDefs.Find(h => 
                            (h.keyDef == recipeDef) &&
                            (h.secondaryKeyDef == thingDef)
-                       ));
+                       );
 
                         if (helpDef == null)
                         {
@@ -480,7 +477,7 @@ namespace HelpTab
         static void ResolveDefList<T>(IEnumerable<T> defs, HelpCategoryDef category) where T : Def
         {
             // Get help database
-            HashSet<Def> processedDefs =
+            var processedDefs =
                 new HashSet<Def>(DefDatabase<HelpDef>.AllDefsListForReading.Select(h => h.keyDef));
 
             // Scan through defs and auto-generate help
@@ -513,11 +510,13 @@ namespace HelpTab
             if (helpCategoryDef == null)
             {
                 // Create new designation help category
-                helpCategoryDef = new HelpCategoryDef();
-                helpCategoryDef.defName = key;
-                helpCategoryDef.keyDef = key;
-                helpCategoryDef.label = label;
-                helpCategoryDef.ModName = modname;
+                helpCategoryDef = new HelpCategoryDef
+                {
+                    defName = key,
+                    keyDef = key,
+                    label = label,
+                    ModName = modname
+                };
 
                 DefDatabase<HelpCategoryDef>.Add(helpCategoryDef);
             }
@@ -558,25 +557,27 @@ namespace HelpTab
         static HelpDef HelpForBuildable(BuildableDef buildableDef, HelpCategoryDef category)
         {
             // we need the thingdef in several places
-            ThingDef thingDef = buildableDef as ThingDef;
+            var thingDef = buildableDef as ThingDef;
 
             // set up empty helpdef
-            var helpDef = new HelpDef();
-            helpDef.defName = buildableDef.defName + "_BuildableDef_Help";
-            helpDef.keyDef = buildableDef;
-            helpDef.label = buildableDef.label;
-            helpDef.category = category;
-            helpDef.description = buildableDef.description;
+            var helpDef = new HelpDef
+            {
+                defName = buildableDef.defName + "_BuildableDef_Help",
+                keyDef = buildableDef,
+                label = buildableDef.label,
+                category = category,
+                description = buildableDef.description
+            };
 
-            List<HelpDetailSection> statParts = new List<HelpDetailSection>();
-            List<HelpDetailSection> linkParts = new List<HelpDetailSection>();
+            var statParts = new List<HelpDetailSection>();
+            var linkParts = new List<HelpDetailSection>();
 
             #region Base Stats
 
             if (!buildableDef.statBases.NullOrEmpty())
             {
                 // Look at base stats
-                HelpDetailSection baseStats = new HelpDetailSection(
+                var baseStats = new HelpDetailSection(
                     null,
                     buildableDef.statBases.Select(sb => sb.stat).ToList().ConvertAll(def => (Def)def),
                     null,
@@ -593,9 +594,9 @@ namespace HelpTab
             var researchDefs = buildableDef.GetResearchRequirements();
             if (!researchDefs.NullOrEmpty())
             {
-                HelpDetailSection reqResearch = new HelpDetailSection(
+                var reqResearch = new HelpDetailSection(
                         ResourceBank.String.AutoHelpListResearchRequired,
-                        researchDefs.ConvertAll(def => (Def)def));
+                        researchDefs.ConvertAll(def => def));
                 linkParts.Add(reqResearch);
             }
             #endregion
@@ -604,7 +605,7 @@ namespace HelpTab
             // specific thingdef costs (terrainDefs are buildable with costlist, but do not have stuff cost (oddly)).
             if (!buildableDef.costList.NullOrEmpty())
             {
-                HelpDetailSection costs = new HelpDetailSection(
+                var costs = new HelpDetailSection(
                     ResourceBank.String.AutoHelpCost,
                     buildableDef.costList.Select(tc => tc.thingDef).ToList().ConvertAll(def => (Def)def),
                     buildableDef.costList.Select(tc => tc.count.ToString()).ToArray());
@@ -620,7 +621,7 @@ namespace HelpTab
 
                 if (!thingDef.equippedStatOffsets.NullOrEmpty())
                 {
-                    HelpDetailSection equippedOffsets = new HelpDetailSection(
+                    var equippedOffsets = new HelpDetailSection(
                     ResourceBank.String.AutoHelpListStatOffsets,
                     thingDef.equippedStatOffsets.Select(so => so.stat).ToList().ConvertAll(def => (Def)def),
                     null,
@@ -651,7 +652,7 @@ namespace HelpTab
                 List<RecipeDef> recipeDefs = buildableDef.GetRecipeDefs();
                 if (!recipeDefs.NullOrEmpty())
                 {
-                    HelpDetailSection recipes = new HelpDetailSection(
+                    var recipes = new HelpDetailSection(
                         ResourceBank.String.AutoHelpListRecipes,
                         recipeDefs.ConvertAll(def => (Def)def));
                     linkParts.Add(recipes);
@@ -663,7 +664,7 @@ namespace HelpTab
 
                     if (!tableDefs.NullOrEmpty())
                     {
-                        HelpDetailSection tables = new HelpDetailSection(
+                        var tables = new HelpDetailSection(
                         ResourceBank.String.AutoHelpListRecipesOnThingsUnlocked, tableDefs);
                         linkParts.Add(tables);
                     }
@@ -675,22 +676,26 @@ namespace HelpTab
                 if (thingDef.IsIngestible)
                 {
                     // only show Joy if it's non-zero
-                    List<Def> needDefs = new List<Def>();
-                    needDefs.Add(NeedDefOf.Food);
+                    var needDefs = new List<Def>
+                    {
+                        NeedDefOf.Food
+                    };
                     if (Math.Abs(thingDef.ingestible.joy) > 1e-3)
                     {
                         needDefs.Add(NeedDefOf.Joy);
                     }
 
-                    List<string> suffixes = new List<string>();
-                    suffixes.Add(thingDef.ingestible.CachedNutrition.ToString("0.###"));
+                    var suffixes = new List<string>
+                    {
+                        thingDef.ingestible.CachedNutrition.ToString("0.###")
+                    };
                     if (Math.Abs(thingDef.ingestible.joy) > 1e-3)
                     {
                         suffixes.Add(thingDef.ingestible.joy.ToString("0.###"));
                     }
 
                     // show different label for plants to show we're talking about the actual plant, not the grown veggie/fruit/etc.
-                    string statLabel = ResourceBank.String.AutoHelpListNutrition;
+                    var statLabel = ResourceBank.String.AutoHelpListNutrition;
                     if (thingDef.plant != null)
                     {
                         statLabel = ResourceBank.String.AutoHelpListNutritionPlant;
@@ -705,8 +710,8 @@ namespace HelpTab
                 #region Body Part Stats
 
                 if ((!thingDef.thingCategories.NullOrEmpty()) &&
-                    (thingDef.thingCategories.Contains(ThingCategoryDefOf.BodyParts)) &&
-                    (thingDef.IsImplant()))
+                    thingDef.thingCategories.Contains(ThingCategoryDefOf.BodyParts) &&
+                    thingDef.IsImplant())
                 {
                     var hediffDef = thingDef.GetImplantHediffDef();
 
@@ -721,12 +726,12 @@ namespace HelpTab
 
                     #region Capacities
                     if ((!hediffDef.stages.NullOrEmpty()) &&
-                        (hediffDef.stages.Exists(stage => (
-                          (!stage.capMods.NullOrEmpty())
-                      )))
+                        hediffDef.stages.Exists(stage => 
+                          !stage.capMods.NullOrEmpty()
+                      )
                     )
                     {
-                        HelpDetailSection capacityMods = new HelpDetailSection(
+                        var capacityMods = new HelpDetailSection(
                             ResourceBank.String.AutoHelpListCapacityModifiers,
                             hediffDef.stages.Where(s => !s.capMods.NullOrEmpty())
                                             .SelectMany(s => s.capMods)
@@ -809,7 +814,7 @@ namespace HelpTab
                 recipeDefs = thingDef.AllRecipes;
                 if (!recipeDefs.NullOrEmpty())
                 {
-                    HelpDetailSection recipes = new HelpDetailSection(
+                    var recipes = new HelpDetailSection(
                         ResourceBank.String.AutoHelpListRecipes,
                         recipeDefs.ConvertAll(def => (Def)def));
                     linkParts.Add(recipes);
@@ -822,12 +827,12 @@ namespace HelpTab
                     (!researchDefs.NullOrEmpty())
                 )
                 {
-                    HelpDetailSection unlockRecipes = new HelpDetailSection(
+                    var unlockRecipes = new HelpDetailSection(
                         ResourceBank.String.AutoHelpListRecipesUnlocked,
-                        recipeDefs.ConvertAll<Def>(def => (Def)def));
-                    HelpDetailSection researchBy = new HelpDetailSection(
+                        recipeDefs.ConvertAll<Def>(def => def));
+                    var researchBy = new HelpDetailSection(
                         ResourceBank.String.AutoHelpListResearchBy,
-                        researchDefs.ConvertAll<Def>(def => (Def)def));
+                        researchDefs.ConvertAll<Def>(def => def));
                     linkParts.Add(unlockRecipes);
                     linkParts.Add(researchBy);
                 }
@@ -889,7 +894,7 @@ namespace HelpTab
 
                 if (!powerSectionList.NullOrEmpty())
                 {
-                    HelpDetailSection powerSection = new HelpDetailSection(
+                    var powerSection = new HelpDetailSection(
                         ResourceBank.String.AutoHelpPower,
                         null,
                         powerSectionList);
@@ -911,24 +916,26 @@ namespace HelpTab
 					}).ToList();
                     if (!effectsBuildings.NullOrEmpty())
                     {
-                        List<DefStringTriplet> facilityDefs = new List<DefStringTriplet>();
-                        List<StringDescTriplet> facilityStrings = new List<StringDescTriplet>();
-                        facilityStrings.Add(new StringDescTriplet(ResourceBank.String.AutoHelpMaximumAffected, null, facilityProperties.maxSimultaneous.ToString()));
+                        var facilityDefs = new List<DefStringTriplet>();
+                        var facilityStrings = new List<StringDescTriplet>
+                        {
+                            new StringDescTriplet(ResourceBank.String.AutoHelpMaximumAffected, null, facilityProperties.maxSimultaneous.ToString())
+                        };
 
-						// Look at stats modifiers if there is any
-						if (!facilityProperties.statOffsets.NullOrEmpty ()) {
+                        // Look at stats modifiers if there is any
+                        if (!facilityProperties.statOffsets.NullOrEmpty ()) {
 							foreach (var stat in facilityProperties.statOffsets) {
 								facilityDefs.Add (new DefStringTriplet (stat.stat, null, ": " + stat.stat.ValueToString (stat.value, stat.stat.toStringNumberSense)));
 							}
 						}
 
-                        HelpDetailSection facilityDetailSection = new HelpDetailSection(
+                        var facilityDetailSection = new HelpDetailSection(
                             ResourceBank.String.AutoHelpFacilityStats,
                             facilityDefs, facilityStrings);
 
-                        HelpDetailSection facilitiesAffected = new HelpDetailSection(
+                        var facilitiesAffected = new HelpDetailSection(
                             ResourceBank.String.AutoHelpListFacilitiesAffected,
-                            effectsBuildings.ConvertAll<Def>(def => (Def)def));
+                            effectsBuildings.ConvertAll<Def>(def => def));
 
                         statParts.Add(facilityDetailSection);
                         linkParts.Add(facilitiesAffected);
@@ -949,11 +956,12 @@ namespace HelpTab
                         // Get job driver stats
                         if (joyGiverDef.jobDef != null)
                         {
-                            List<DefStringTriplet> defs = new List<DefStringTriplet>();
-                            List<StringDescTriplet> strings = new List<StringDescTriplet>();
-
-                            strings.Add(new StringDescTriplet(joyGiverDef.jobDef.reportString));
-                            strings.Add(new StringDescTriplet(joyGiverDef.jobDef.joyMaxParticipants.ToString(), ResourceBank.String.AutoHelpMaximumParticipants));
+                            var defs = new List<DefStringTriplet>();
+                            var strings = new List<StringDescTriplet>
+                            {
+                                new StringDescTriplet(joyGiverDef.jobDef.reportString),
+                                new StringDescTriplet(joyGiverDef.jobDef.joyMaxParticipants.ToString(), ResourceBank.String.AutoHelpMaximumParticipants)
+                            };
                             defs.Add(new DefStringTriplet(joyGiverDef.jobDef.joyKind, ResourceBank.String.AutoHelpJoyKind));
                             if (joyGiverDef.jobDef.joySkill != null)
                             {
@@ -984,10 +992,12 @@ namespace HelpTab
             }
 
             #endregion
+            #region Terrain Specific
+
+            #endregion
 
             #region Terrain Specific
-            TerrainDef terrainDef = buildableDef as TerrainDef;
-            if (terrainDef != null)
+            if (buildableDef is TerrainDef terrainDef)
             {
                 HelpPartsForTerrain(terrainDef, ref statParts, ref linkParts);
             }
@@ -1002,9 +1012,11 @@ namespace HelpTab
 
         static HelpDef HelpForRecipe(ThingDef thingDef, RecipeDef recipeDef, HelpCategoryDef category)
         {
-            var helpDef = new HelpDef();
-            helpDef.keyDef = recipeDef;
-            helpDef.secondaryKeyDef = thingDef;
+            var helpDef = new HelpDef
+            {
+                keyDef = recipeDef,
+                secondaryKeyDef = thingDef
+            };
             helpDef.defName = helpDef.keyDef + "_RecipeDef_Help";
             helpDef.label = recipeDef.label;
             helpDef.category = category;
@@ -1013,7 +1025,7 @@ namespace HelpTab
             #region Base Stats
 
             helpDef.HelpDetailSections.Add(new HelpDetailSection(null,
-                new[] { recipeDef.WorkAmountTotal((ThingDef)null).ToStringWorkAmount() },
+                new[] { recipeDef.WorkAmountTotal(null).ToStringWorkAmount() },
                 new[] { ResourceBank.String.WorkAmount + " : " },
                 null));
 
@@ -1038,7 +1050,7 @@ namespace HelpTab
             if (!recipeDef.ingredients.NullOrEmpty())
             {
                 // TODO: find the actual thingDefs of ingredients so we can use defs instead of strings.
-                HelpDetailSection ingredients = new HelpDetailSection(
+                var ingredients = new HelpDetailSection(
                     ResourceBank.String.Ingredients,
                     recipeDef.ingredients.Select(ic => recipeDef.IngredientValueGetter.BillRequirementsDescription(recipeDef, ic)).ToArray(), null, null);
 
@@ -1052,7 +1064,7 @@ namespace HelpTab
             // List of products
             if (!recipeDef.products.NullOrEmpty())
             {
-                HelpDetailSection products = new HelpDetailSection(
+                var products = new HelpDetailSection(
                     ResourceBank.String.AutoHelpListRecipeProducts,
                     recipeDef.products.Select(tc => tc.thingDef).ToList().ConvertAll(def => (Def)def),
                     recipeDef.products.Select(tc => tc.count.ToString()).ToArray());
@@ -1068,9 +1080,9 @@ namespace HelpTab
             var thingDefs = recipeDef.GetRecipeUsers();
             if (!thingDefs.NullOrEmpty())
             {
-                HelpDetailSection billgivers = new HelpDetailSection(
+                var billgivers = new HelpDetailSection(
                     ResourceBank.String.AutoHelpListRecipesOnThings,
-                    thingDefs.ConvertAll<Def>(def => (Def)def));
+                    thingDefs.ConvertAll<Def>(def => def));
 
                 helpDef.HelpDetailSections.Add(billgivers);
             }
@@ -1079,7 +1091,7 @@ namespace HelpTab
             var researchDefs = recipeDef.GetResearchRequirements();
             if (!researchDefs.NullOrEmpty())
             {
-                HelpDetailSection requiredResearch = new HelpDetailSection(
+                var requiredResearch = new HelpDetailSection(
                     ResourceBank.String.AutoHelpListResearchRequired,
                     researchDefs);
 
@@ -1090,17 +1102,17 @@ namespace HelpTab
             thingDefs = recipeDef.GetThingsUnlocked(ref researchDefs);
             if (!thingDefs.NullOrEmpty())
             {
-                HelpDetailSection recipesOnThingsUnlocked = new HelpDetailSection(
+                var recipesOnThingsUnlocked = new HelpDetailSection(
                     ResourceBank.String.AutoHelpListRecipesOnThingsUnlocked,
-                    thingDefs.ConvertAll<Def>(def => (Def)def));
+                    thingDefs.ConvertAll<Def>(def => def));
 
                 helpDef.HelpDetailSections.Add(recipesOnThingsUnlocked);
 
                 if (!researchDefs.NullOrEmpty())
                 {
-                    HelpDetailSection researchBy = new HelpDetailSection(
+                    var researchBy = new HelpDetailSection(
                         ResourceBank.String.AutoHelpListResearchBy,
-                        researchDefs.ConvertAll<Def>(def => (Def)def));
+                        researchDefs.ConvertAll<Def>(def => def));
 
                     helpDef.HelpDetailSections.Add(researchBy);
                 }
@@ -1112,15 +1124,17 @@ namespace HelpTab
 
         static HelpDef HelpForResearch(ResearchProjectDef researchProjectDef, HelpCategoryDef category)
         {
-            var helpDef = new HelpDef();
-            helpDef.defName = researchProjectDef.defName + "_ResearchProjectDef_Help";
-            helpDef.keyDef = researchProjectDef;
-            helpDef.label = researchProjectDef.label;
-            helpDef.category = category;
-            helpDef.description = researchProjectDef.description;
+            var helpDef = new HelpDef
+            {
+                defName = researchProjectDef.defName + "_ResearchProjectDef_Help",
+                keyDef = researchProjectDef,
+                label = researchProjectDef.label,
+                category = category,
+                description = researchProjectDef.description
+            };
 
             #region Base Stats
-            HelpDetailSection totalCost = new HelpDetailSection(null,
+            var totalCost = new HelpDetailSection(null,
                                                                 new[] { researchProjectDef.baseCost.ToString() },
                                                                 new[] { ResourceBank.String.AutoHelpTotalCost },
                                                                 null);
@@ -1134,9 +1148,9 @@ namespace HelpTab
             var researchDefs = researchProjectDef.GetResearchRequirements();
             if (!researchDefs.NullOrEmpty())
             {
-                HelpDetailSection researchRequirements = new HelpDetailSection(
+                var researchRequirements = new HelpDetailSection(
                     ResourceBank.String.AutoHelpListResearchRequired,
-                    researchDefs.ConvertAll<Def>(def => (Def)def));
+                    researchDefs.ConvertAll<Def>(def => def));
 
                 helpDef.HelpDetailSections.Add(researchRequirements);
             }
@@ -1146,26 +1160,26 @@ namespace HelpTab
             researchDefs = researchProjectDef.GetResearchUnlocked();
             if (!researchDefs.NullOrEmpty())
             {
-                HelpDetailSection reseachUnlocked = new HelpDetailSection(
+                var reseachUnlocked = new HelpDetailSection(
                     ResourceBank.String.AutoHelpListResearchLeadsTo,
-                    researchDefs.ConvertAll<Def>(def => (Def)def));
+                    researchDefs.ConvertAll<Def>(def => def));
 
                 helpDef.HelpDetailSections.Add(reseachUnlocked);
             }
 
             // Add buildables unlocked (items, buildings and terrain)
-            List<Def> buildableDefs = new List<Def>();
+            var buildableDefs = new List<Def>();
 
             // items and buildings
-            buildableDefs.AddRange(researchProjectDef.GetThingsUnlocked().ConvertAll<Def>(def => (Def)def));
+            buildableDefs.AddRange(researchProjectDef.GetThingsUnlocked().ConvertAll<Def>(def => def));
 
             // terrain
-            buildableDefs.AddRange(researchProjectDef.GetTerrainUnlocked().ConvertAll<Def>(def => (Def)def));
+            buildableDefs.AddRange(researchProjectDef.GetTerrainUnlocked().ConvertAll<Def>(def => def));
 
             // create help section
             if (!buildableDefs.NullOrEmpty())
             {
-                HelpDetailSection thingsUnlocked = new HelpDetailSection(
+                var thingsUnlocked = new HelpDetailSection(
                     ResourceBank.String.AutoHelpListThingsUnlocked,
                     buildableDefs);
 
@@ -1185,15 +1199,15 @@ namespace HelpTab
                 (!thingDefs.NullOrEmpty())
             )
             {
-                HelpDetailSection recipesUnlocked = new HelpDetailSection(
+                var recipesUnlocked = new HelpDetailSection(
                     ResourceBank.String.AutoHelpListRecipesUnlocked,
-                    recipeDefs.ConvertAll<Def>(def => (Def)def));
+                    recipeDefs.ConvertAll<Def>(def => def));
 
                 helpDef.HelpDetailSections.Add(recipesUnlocked);
 
-                HelpDetailSection recipesOnThingsUnlocked = new HelpDetailSection(
+                var recipesOnThingsUnlocked = new HelpDetailSection(
                     ResourceBank.String.AutoHelpListRecipesOnThingsUnlocked,
-                    thingDefs.ConvertAll<Def>(def => (Def)def));
+                    thingDefs.ConvertAll<Def>(def => def));
 
                 helpDef.HelpDetailSections.Add(recipesOnThingsUnlocked);
             }
@@ -1205,13 +1219,13 @@ namespace HelpTab
                 (!thingDefs.NullOrEmpty())
             )
             {
-                HelpDetailSection plantsUnlocked = new HelpDetailSection(
+                var plantsUnlocked = new HelpDetailSection(
                     ResourceBank.String.AutoHelpListPlantsUnlocked,
-                    thingDefs.ConvertAll<Def>(def => (Def)def));
+                    thingDefs.ConvertAll<Def>(def => def));
 
                 helpDef.HelpDetailSections.Add(plantsUnlocked);
 
-                HelpDetailSection plantsIn = new HelpDetailSection(
+                var plantsIn = new HelpDetailSection(
                     ResourceBank.String.AutoHelpListPlantsIn,
                     sowTags.ToArray(), null, null);
 
@@ -1225,8 +1239,10 @@ namespace HelpTab
 
         static HelpDef HelpForBiome(BiomeDef biomeDef, HelpCategoryDef category)
         {
-            var helpDef = new HelpDef();
-            helpDef.keyDef = biomeDef;
+            var helpDef = new HelpDef
+            {
+                keyDef = biomeDef
+            };
             helpDef.defName = helpDef.keyDef + "_RecipeDef_Help";
             helpDef.label = biomeDef.label;
             helpDef.category = category;
@@ -1329,22 +1345,24 @@ namespace HelpTab
             ThingDef raceDef = kindDef.race;
 
             // set up empty helpdef
-            var helpDef = new HelpDef();
-            helpDef.defName = kindDef.defName + "_PawnKindDef_Help";
-            helpDef.keyDef = kindDef;
-            helpDef.label = kindDef.label;
-            helpDef.category = category;
-            helpDef.description = kindDef.description;
+            var helpDef = new HelpDef
+            {
+                defName = kindDef.defName + "_PawnKindDef_Help",
+                keyDef = kindDef,
+                label = kindDef.label,
+                category = category,
+                description = kindDef.description
+            };
 
-            List<HelpDetailSection> statParts = new List<HelpDetailSection>();
-            List<HelpDetailSection> linkParts = new List<HelpDetailSection>();
+            var statParts = new List<HelpDetailSection>();
+            var linkParts = new List<HelpDetailSection>();
 
             #region Base Stats
 
             if (!raceDef.statBases.NullOrEmpty())
             {
                 // Look at base stats
-                HelpDetailSection baseStats = new HelpDetailSection(
+                var baseStats = new HelpDetailSection(
                     null,
                     raceDef.statBases.Select(sb => sb.stat).ToList().ConvertAll(def => (Def)def),
                     null,
@@ -1367,22 +1385,24 @@ namespace HelpTab
         static HelpDef HelpForHumanoid(ThingDef def, HelpCategoryDef category)
         {
             // set up empty helpdef
-            var helpDef = new HelpDef();
-            helpDef.defName = def.defName + "_PawnKindDef_Help";
-            helpDef.keyDef = def;
-            helpDef.label = def.label;
-            helpDef.category = category;
-            helpDef.description = def.description;
+            var helpDef = new HelpDef
+            {
+                defName = def.defName + "_PawnKindDef_Help",
+                keyDef = def,
+                label = def.label,
+                category = category,
+                description = def.description
+            };
 
-            List<HelpDetailSection> statParts = new List<HelpDetailSection>();
-            List<HelpDetailSection> linkParts = new List<HelpDetailSection>();
+            var statParts = new List<HelpDetailSection>();
+            var linkParts = new List<HelpDetailSection>();
 
             #region Base Stats
 
             if (!def.statBases.NullOrEmpty())
             {
                 // Look at base stats
-                HelpDetailSection baseStats = new HelpDetailSection(
+                var baseStats = new HelpDetailSection(
                     null,
                     def.statBases.Select(sb => sb.stat).ToList().ConvertAll(thing => (Def)thing),
                     null,
@@ -1485,13 +1505,13 @@ namespace HelpTab
         static void HelpPartsForAnimal(PawnKindDef kindDef, ref List<HelpDetailSection> statParts, ref List<HelpDetailSection> linkParts)
         {
             RaceProperties race = kindDef.race.race;
-            float maxSize = race.lifeStageAges.Select(lsa => lsa.def.bodySizeFactor * race.baseBodySize).Max();
+            var maxSize = race.lifeStageAges.Select(lsa => lsa.def.bodySizeFactor * race.baseBodySize).Max();
 
             // set up vars
-            List<Def> defs = new List<Def>();
-            List<string> stringDescs = new List<string>();
-            List<string> prefixes = new List<string>();
-            List<String> suffixes = new List<string>();
+            var defs = new List<Def>();
+            var stringDescs = new List<string>();
+            var prefixes = new List<string>();
+            var suffixes = new List<string>();
 
             #region Health, diet and intelligence
 
@@ -1501,7 +1521,7 @@ namespace HelpTab
                     ( race.baseHealthScale * race.lifeStageAges.Last().def.healthScaleFactor ).ToStringPercent(),
                     race.lifeExpectancy.ToStringApproxAge(),
                     race.ResolvedDietCategory.ToStringHuman(),
-                    (race.trainability?.ToString() ?? "Sentient")
+                    race.trainability?.ToString() ?? "Sentient"
                 },
                 new[]
                 {
@@ -1518,7 +1538,7 @@ namespace HelpTab
 
             if (race.Animal)
             {
-                List<DefStringTriplet> DST = new List<DefStringTriplet>();
+                var DST = new List<DefStringTriplet>();
 
                 foreach (TrainableDef def in DefDatabase<TrainableDef>.AllDefsListForReading)
                 {
@@ -1561,8 +1581,8 @@ namespace HelpTab
 
             #region Lifestages
 
-            List<float> ages = race.lifeStageAges.Select(age => age.minAge).ToList();
-            for (int i = 0; i < race.lifeStageAges.Count; i++)
+            var ages = race.lifeStageAges.Select(age => age.minAge).ToList();
+            for (var i = 0; i < race.lifeStageAges.Count; i++)
             {
                 defs.Add(race.lifeStageAges[i].def);
                 // final lifestage
@@ -1616,11 +1636,13 @@ namespace HelpTab
                                     stringDescs.ToArray(), null, null));
                 stringDescs.Clear();
             }
-            else if ((race.hasGenders) && (race.lifeStageAges.Any(lsa => lsa.def.reproductive)))
+            else if (race.hasGenders && race.lifeStageAges.Any(lsa => lsa.def.reproductive))
             {
                 // mammals
-                List<StringDescTriplet> SDT = new List<StringDescTriplet>();
-                SDT.Add(new StringDescTriplet((race.gestationPeriodDays * GenDate.TicksPerDay / GenDate.TicksPerYear).ToStringApproxAge(), ResourceBank.String.AutoHelpGestationPeriod));
+                var SDT = new List<StringDescTriplet>
+                {
+                    new StringDescTriplet((race.gestationPeriodDays * GenDate.TicksPerDay / GenDate.TicksPerYear).ToStringApproxAge(), ResourceBank.String.AutoHelpGestationPeriod)
+                };
 
                 if ((race.litterSizeCurve != null) && (race.litterSizeCurve.PointsCount >= 3))
                 {
@@ -1681,12 +1703,12 @@ namespace HelpTab
             {
                 // fleshy pawns ( meat + leather )
                 defs.Add(race.meatDef);
-                prefixes.Add("~" + maxSize * StatDefOf.MeatAmount.defaultBaseValue);
+                prefixes.Add("~" + (maxSize * StatDefOf.MeatAmount.defaultBaseValue));
 
                 if (race.leatherDef != null)
                 {
                     defs.Add(race.leatherDef);
-                    prefixes.Add("~" + maxSize * kindDef.race.statBases.Find(sb => sb.stat == StatDefOf.LeatherAmount).value);
+                    prefixes.Add("~" + (maxSize * kindDef.race.statBases.Find(sb => sb.stat == StatDefOf.LeatherAmount).value));
                 }
 
                 statParts.Add(new HelpDetailSection(
@@ -1695,7 +1717,7 @@ namespace HelpTab
                     prefixes.ToArray()));
             }
             else if (
-                (race.IsMechanoid) &&
+                race.IsMechanoid &&
                 (!kindDef.race.butcherProducts.NullOrEmpty())
             )
             {
@@ -1715,8 +1737,7 @@ namespace HelpTab
             // Need to handle subclasses (such as CompMilkableRenameable)
             if (kindDef.race.HasComp(typeof(CompMilkable)))
             {
-                var milkComp = kindDef.race.comps.Find(c => ((c.compClass == typeof(CompMilkable)) || (c.compClass.IsSubclassOf(typeof(CompMilkable))))) as CompProperties_Milkable;
-                if (milkComp != null)
+                if (kindDef.race.comps.Find(c => (c.compClass == typeof(CompMilkable)) || c.compClass.IsSubclassOf(typeof(CompMilkable))) is CompProperties_Milkable milkComp)
                 {
                     defs.Add(milkComp.milkDef);
                     prefixes.Add(milkComp.milkAmount.ToString());
@@ -1740,8 +1761,7 @@ namespace HelpTab
             // Need to handle subclasses (such as CompShearableRenameable)
             if (kindDef.race.HasComp(typeof(CompShearable)))
             {
-                var shearComp = kindDef.race.comps.Find(c => ((c.compClass == typeof(CompShearable)) || (c.compClass.IsSubclassOf(typeof(CompShearable))))) as CompProperties_Shearable;
-                if (shearComp != null)
+                if (kindDef.race.comps.Find(c => (c.compClass == typeof(CompShearable)) || c.compClass.IsSubclassOf(typeof(CompShearable))) is CompProperties_Shearable shearComp)
                 {
                     defs.Add(shearComp.woolDef);
                     prefixes.Add(shearComp.woolAmount.ToString());
@@ -1765,13 +1785,13 @@ namespace HelpTab
         static void HelpPartsForHumanoid(ThingDef raceDef, ref List<HelpDetailSection> statParts, ref List<HelpDetailSection> linkParts)
         {
             RaceProperties race = raceDef.race;
-            float maxSize = race.lifeStageAges.Select(lsa => lsa.def.bodySizeFactor * race.baseBodySize).Max();
+            var maxSize = race.lifeStageAges.Select(lsa => lsa.def.bodySizeFactor * race.baseBodySize).Max();
 
             // set up vars
-            List<Def> defs = new List<Def>();
-            List<string> stringDescs = new List<string>();
-            List<string> prefixes = new List<string>();
-            List<String> suffixes = new List<string>();
+            var defs = new List<Def>();
+            var stringDescs = new List<string>();
+            var prefixes = new List<string>();
+            var suffixes = new List<string>();
 
             #region Health, diet and intelligence
             
@@ -1797,8 +1817,8 @@ namespace HelpTab
 
             #region Lifestages
 
-            List<float> ages = race.lifeStageAges.Select(age => age.minAge).ToList();
-            for (int i = 0; i < race.lifeStageAges.Count; i++)
+            var ages = race.lifeStageAges.Select(age => age.minAge).ToList();
+            for (var i = 0; i < race.lifeStageAges.Count; i++)
             {
                 defs.Add(race.lifeStageAges[i].def);
                 // final lifestage
@@ -1853,11 +1873,13 @@ namespace HelpTab
                                     stringDescs.ToArray(), null, null));
                 stringDescs.Clear();
             }
-            else if ((race.hasGenders) && (race.lifeStageAges.Any(lsa => lsa.def.reproductive)))
+            else if (race.hasGenders && race.lifeStageAges.Any(lsa => lsa.def.reproductive))
             {
                 // mammals
-                List<StringDescTriplet> SDT = new List<StringDescTriplet>();
-                SDT.Add(new StringDescTriplet((race.gestationPeriodDays * GenDate.TicksPerDay / GenDate.TicksPerYear).ToStringApproxAge(), ResourceBank.String.AutoHelpGestationPeriod));
+                var SDT = new List<StringDescTriplet>
+                {
+                    new StringDescTriplet((race.gestationPeriodDays * GenDate.TicksPerDay / GenDate.TicksPerYear).ToStringApproxAge(), ResourceBank.String.AutoHelpGestationPeriod)
+                };
 
                 if ((race.litterSizeCurve != null) && (race.litterSizeCurve.PointsCount >= 3))
                 {
@@ -1896,12 +1918,12 @@ namespace HelpTab
             {
                 // fleshy pawns ( meat + leather )
                 defs.Add(race.meatDef);
-                prefixes.Add("~" + maxSize * StatDefOf.MeatAmount.defaultBaseValue);
+                prefixes.Add("~" + (maxSize * StatDefOf.MeatAmount.defaultBaseValue));
 
                 if (race.leatherDef != null)
                 {
                     defs.Add(race.leatherDef);
-                    prefixes.Add("~" + maxSize * raceDef.statBases.Find(sb => sb.stat == StatDefOf.LeatherAmount).value);
+                    prefixes.Add("~" + (maxSize * raceDef.statBases.Find(sb => sb.stat == StatDefOf.LeatherAmount).value));
                 }
 
                 statParts.Add(new HelpDetailSection(ResourceBank.String.AutoHelpListButcher, defs, prefixes.ToArray()));

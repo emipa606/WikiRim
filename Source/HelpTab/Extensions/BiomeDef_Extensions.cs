@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using RimWorld;
 using Verse;
 
@@ -13,7 +11,7 @@ namespace HelpTab
         // TODO: This is a nasty method, please get rid of it. Reason: Poor performance.
         public static List<TerrainDef> AllTerrainDefs(this BiomeDef biome)
         {
-            List<TerrainDef> ret = new List<TerrainDef>();
+            var ret = new List<TerrainDef>();
 
             // map terrain
             if (!biome.terrainsByFertility.NullOrEmpty())

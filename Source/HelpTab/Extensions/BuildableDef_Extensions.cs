@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 using Verse;
 
@@ -18,7 +16,7 @@ namespace HelpTab
             // Can't entirely rely on this one check as it's state may change mid-game
             if (
                 (buildableDef.researchPrerequisites != null) &&
-                (buildableDef.researchPrerequisites.Any(def => def != null))
+                buildableDef.researchPrerequisites.Any(def => def != null)
             )
             {
                 // Easiest check, do it first
@@ -39,7 +37,7 @@ namespace HelpTab
 
             if (buildableDef.researchPrerequisites != null)
             {
-                researchDefs.AddRangeUnique (buildableDef.researchPrerequisites.ConvertAll<Def> (def => (Def)def));
+                researchDefs.AddRangeUnique (buildableDef.researchPrerequisites.ConvertAll<Def> (def => def));
             }
 
             // Return the list of research required
@@ -50,7 +48,7 @@ namespace HelpTab
         {
             return
                 DefDatabase<RecipeDef>.AllDefsListForReading.Where(
-                    r => r.products.Any(tc => tc.thingDef == buildableDef as ThingDef)).ToList();
+                    r => r.products.Any(tc => tc.thingDef == (buildableDef as ThingDef))).ToList();
         }
 
         #endregion

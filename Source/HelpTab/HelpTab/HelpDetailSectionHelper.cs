@@ -33,10 +33,10 @@ namespace HelpTab
             }
 
             // prepare list of unique indices, filter out duplicates.
-            List<Def> seen = new List<Def>();
-            List<int> unique = new List<int>();
+            var seen = new List<Def>();
+            var unique = new List<int>();
 
-            for (int i = 0; i < defs.Count; i++)
+            for (var i = 0; i < defs.Count; i++)
             {
                 if (seen.Count(def => def == defs[i]) == 0)
                 {
@@ -45,8 +45,8 @@ namespace HelpTab
                 }
             }
 
-            List<DefStringTriplet> ret = new List<DefStringTriplet>();
-            foreach (int i in unique)
+            var ret = new List<DefStringTriplet>();
+            foreach (var i in unique)
             {
                 ret.Add(new DefStringTriplet(defs[i], hasPrefix ? prefixes[i] : null, hasSuffix ? suffixes[i] : null));
             }
@@ -60,8 +60,8 @@ namespace HelpTab
 
         public static void DrawText(ref Vector2 cur, float width, string text)
         {
-            float height = Text.CalcHeight(text, width);
-            Rect rect = new Rect(cur.x, cur.y, width, height);
+            var height = Text.CalcHeight(text, width);
+            var rect = new Rect(cur.x, cur.y, width, height);
             Widgets.Label(rect, text);
             cur.y += height - 6f; // offset to make lineheights fit better
         }
@@ -94,8 +94,8 @@ namespace HelpTab
                 hasSuffix = true;
             }
 
-            List<StringDescTriplet> ret = new List<StringDescTriplet>();
-            for (int i = 0; i < stringDescs.Length; i++)
+            var ret = new List<StringDescTriplet>();
+            for (var i = 0; i < stringDescs.Length; i++)
             {
                 ret.Add(new StringDescTriplet(stringDescs[i], hasPrefix ? prefixes[i] : null, hasSuffix ? suffixes[i] : null));
             }

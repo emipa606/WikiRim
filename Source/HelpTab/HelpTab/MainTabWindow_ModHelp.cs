@@ -28,8 +28,8 @@ namespace HelpTab
         protected Rect DisplayRect;
         protected static Vector2 ArrowImageSize = new Vector2(10f, 10f);
 
-        protected Vector2 SelectionScrollPos = default(Vector2);
-        protected Vector2 DisplayScrollPos = default(Vector2);
+        protected Vector2 SelectionScrollPos = default;
+        protected Vector2 DisplayScrollPos = default;
 
         public const float MinWidth = 800f;
         public const float MinHeight = 600f;
@@ -43,13 +43,7 @@ namespace HelpTab
         private bool _filtered;
         private bool _jump;
 
-        private MainButton_HelpMenuDef TabDef
-        {
-            get
-            {
-                return def as MainButton_HelpMenuDef;
-            }
-        }
+        private MainButton_HelpMenuDef TabDef => def as MainButton_HelpMenuDef;
 
         #endregion
 
@@ -70,18 +64,17 @@ namespace HelpTab
 
         #region Positioning overrides
 
-        public override MainTabWindowAnchor Anchor {
-            get {
-                return MainTabWindowAnchor.Right;
-            }
-        }
+        public override MainTabWindowAnchor Anchor => MainTabWindowAnchor.Right;
 
-        public override Vector2 RequestedTabSize {
-            get {
-                if (TabDef != null) {
-                    return new Vector2 (TabDef.windowSize.x > MinWidth ? TabDef.windowSize.x : MinWidth, TabDef.windowSize.y > MinHeight ? TabDef.windowSize.y : MinHeight);
+        public override Vector2 RequestedTabSize
+        {
+            get
+            {
+                if (TabDef != null)
+                {
+                    return new Vector2(TabDef.windowSize.x > MinWidth ? TabDef.windowSize.x : MinWidth, TabDef.windowSize.y > MinHeight ? TabDef.windowSize.y : MinHeight);
                 }
-                return new Vector2 (MinWidth, MinHeight);
+                return new Vector2(MinWidth, MinHeight);
             }
         }
 
@@ -102,13 +95,7 @@ namespace HelpTab
                 ModName = modName;
             }
 
-            public List<HelpCategoryDef> HelpCategories
-            {
-                get
-                {
-                    return _helpCategories.OrderBy(a => a.label).ToList();
-                }
-            }
+            public List<HelpCategoryDef> HelpCategories => _helpCategories.OrderBy(a => a.label).ToList();
 
             public bool ShouldDraw
             {
@@ -118,27 +105,27 @@ namespace HelpTab
 
             public bool MatchesFilter(string filter)
             {
-                return (
+                return 
                     (filter == "") ||
-                    (ModName.ToUpper().Contains(filter.ToUpper()))
-                );
+                    ModName.ToUpper().Contains(filter.ToUpper())
+                ;
             }
 
             public bool ThisOrAnyChildMatchesFilter(string filter)
             {
-                return (
-                    (MatchesFilter(filter)) ||
-                    (HelpCategories.Any(hc => hc.ThisOrAnyChildMatchesFilter(filter)))
-                );
+                return 
+                    MatchesFilter(filter) ||
+                    HelpCategories.Any(hc => hc.ThisOrAnyChildMatchesFilter(filter))
+                ;
             }
 
             public void Filter(string filter)
             {
                 ShouldDraw = ThisOrAnyChildMatchesFilter(filter);
-                Expanded = (
+                Expanded = 
                     (filter != "") &&
-                    (ThisOrAnyChildMatchesFilter(filter))
-                );
+                    ThisOrAnyChildMatchesFilter(filter)
+                ;
 
                 foreach (HelpCategoryDef hc in HelpCategories)
                 {
@@ -199,7 +186,7 @@ namespace HelpTab
 
         #region Filter
 
-        private void _filterUpdate()
+        private void FilterUpdate()
         {
             // filter after a short delay.
             // Log.Message(_filterString + " | " + _lastFilterTick + " | " + _filtered);
@@ -245,7 +232,7 @@ namespace HelpTab
 
             GUI.BeginGroup(rect);
 
-            float selectionWidth = TabDef != null ? (TabDef.listWidth >= MinListWidth ? TabDef.listWidth : MinListWidth) : MinListWidth;
+            var selectionWidth = TabDef != null ? (TabDef.listWidth >= MinListWidth ? TabDef.listWidth : MinListWidth) : MinListWidth;
             SelectionRect = new Rect(0f, 0f, selectionWidth, rect.height);
             DisplayRect = new Rect(
                 SelectionRect.width + WindowMargin, 0f,
@@ -269,47 +256,57 @@ namespace HelpTab
 
             Text.Font = GameFont.Medium;
             Text.WordWrap = false;
-            float titleWidth = Text.CalcSize(SelectedHelpDef.LabelCap).x;
+            var titleWidth = Text.CalcSize(SelectedHelpDef.LabelCap).x;
             var titleRect = new Rect(rect.xMin + WindowMargin, rect.yMin + WindowMargin, titleWidth, 60f);
 
-			if (SelectedHelpDef.keyDef is ResearchProjectDef) {
-				var research = SelectedHelpDef.keyDef as ResearchProjectDef;
-				var researchRect = new Rect (rect.xMin + WindowMargin, rect.yMin + WindowMargin + 5f, 90f, 50f);
+            if (SelectedHelpDef.keyDef is ResearchProjectDef)
+            {
+                var research = SelectedHelpDef.keyDef as ResearchProjectDef;
+                var researchRect = new Rect(rect.xMin + WindowMargin, rect.yMin + WindowMargin + 5f, 90f, 50f);
 
-				Text.Font = GameFont.Small;
-				Text.Anchor = TextAnchor.MiddleCenter;
+                Text.Font = GameFont.Small;
+                Text.Anchor = TextAnchor.MiddleCenter;
 
-				if (research.IsFinished) {
-					Widgets.DrawMenuSection (researchRect);
-					Widgets.Label (researchRect, ResourceBank.String.Finished);
-				} else if (research == Find.ResearchManager.currentProj) {
-					Widgets.DrawMenuSection (researchRect);
-					Widgets.Label (researchRect, ResourceBank.String.InProgress);
-				} else if (!research.CanStartNow) {
-					Widgets.DrawMenuSection (researchRect);
-					Widgets.Label (researchRect, ResourceBank.String.Locked);
-				} else if (Widgets.ButtonText (researchRect, ResourceBank.String.Research, true, false, true)) {
-					SoundDef.Named ("ResearchStart").PlayOneShotOnCamera (null);
-					Find.ResearchManager.currentProj = research;
-					TutorSystem.Notify_Event ("StartResearchProject");
-				}
+                if (research.IsFinished)
+                {
+                    Widgets.DrawMenuSection(researchRect);
+                    Widgets.Label(researchRect, ResourceBank.String.Finished);
+                }
+                else if (research == Find.ResearchManager.currentProj)
+                {
+                    Widgets.DrawMenuSection(researchRect);
+                    Widgets.Label(researchRect, ResourceBank.String.InProgress);
+                }
+                else if (!research.CanStartNow)
+                {
+                    Widgets.DrawMenuSection(researchRect);
+                    Widgets.Label(researchRect, ResourceBank.String.Locked);
+                }
+                else if (Widgets.ButtonText(researchRect, ResourceBank.String.Research, true, false, true))
+                {
+                    SoundDef.Named("ResearchStart").PlayOneShotOnCamera(null);
+                    Find.ResearchManager.currentProj = research;
+                    TutorSystem.Notify_Event("StartResearchProject");
+                }
 
-				titleRect.x += 100f;
-			} else if (
-				(SelectedHelpDef.keyDef != null) &&
-				(SelectedHelpDef.keyDef.IconTexture () != null)
-			) {
-				var iconRect = new Rect (titleRect.xMin + WindowMargin, rect.yMin + WindowMargin, 60f - 2 * WindowMargin, 60f - 2 * WindowMargin);
-				titleRect.x += 60f;
-				SelectedHelpDef.keyDef.DrawColouredIcon (iconRect);
-			}
+                titleRect.x += 100f;
+            }
+            else if (
+              (SelectedHelpDef.keyDef != null) &&
+              (SelectedHelpDef.keyDef.IconTexture() != null)
+          )
+            {
+                var iconRect = new Rect(titleRect.xMin + WindowMargin, rect.yMin + WindowMargin, 60f - (2 * WindowMargin), 60f - (2 * WindowMargin));
+                titleRect.x += 60f;
+                SelectedHelpDef.keyDef.DrawColouredIcon(iconRect);
+            }
 
-			Text.Font = GameFont.Medium;
-			Text.Anchor = TextAnchor.MiddleCenter;
-			Widgets.Label (titleRect, SelectedHelpDef.LabelCap);
-			Text.Font = GameFont.Small;
-			Text.Anchor = TextAnchor.UpperLeft;
-			Text.WordWrap = true;
+            Text.Font = GameFont.Medium;
+            Text.Anchor = TextAnchor.MiddleCenter;
+            Widgets.Label(titleRect, SelectedHelpDef.LabelCap);
+            Text.Font = GameFont.Small;
+            Text.Anchor = TextAnchor.UpperLeft;
+            Text.WordWrap = true;
 
             Rect outRect = rect.ContractedBy(WindowMargin);
             outRect.yMin += 60f;
@@ -348,9 +345,9 @@ namespace HelpTab
             entryCounter = 0;
             Widgets.DrawMenuSection(rect);
 
-            _filterUpdate();
-            Rect filterRect = new Rect(rect.xMin + WindowMargin, rect.yMin + WindowMargin, rect.width - 3 * WindowMargin - 30f, 30f);
-            Rect clearRect = new Rect(filterRect.xMax + WindowMargin + 3f, rect.yMin + WindowMargin + 3f, 24f, 24f);
+            FilterUpdate();
+            var filterRect = new Rect(rect.xMin + WindowMargin, rect.yMin + WindowMargin, rect.width - (3 * WindowMargin) - 30f, 30f);
+            var clearRect = new Rect(filterRect.xMax + WindowMargin + 3f, rect.yMin + WindowMargin + 3f, 24f, 24f);
             _filterString = Widgets.TextField(filterRect, _filterString);
             if (_filterString != "")
             {
@@ -365,7 +362,7 @@ namespace HelpTab
             outRect.yMin += 40f;
             outRect.xMax -= 2f; // some spacing around the scrollbar
 
-            float viewWidth = SelectionHeight > outRect.height ? outRect.width - 16f : outRect.width;
+            var viewWidth = SelectionHeight > outRect.height ? outRect.width - 16f : outRect.width;
             var viewRect = new Rect(0f, 0f, viewWidth, SelectionHeight);
 
             GUI.BeginGroup(outRect);
@@ -390,22 +387,41 @@ namespace HelpTab
                     DrawModEntry(ref cur, 0, viewRect, mc);
 
                     cur.x += EntryIndent;
-                    if (mc.Expanded)
+                    if (!mc.Expanded)
                     {
-                        foreach (HelpCategoryDef hc in mc.HelpCategories.Where(hc => hc.ShouldDraw))
-                        {
-                            DrawCatEntry(ref cur, 1, viewRect, hc);
+                        continue;
+                    }
+                    foreach (HelpCategoryDef hc in mc.HelpCategories.Where(hc => hc.ShouldDraw))
+                    {
+                        DrawCatEntry(ref cur, 1, viewRect, hc);
 
-                            if (hc.Expanded)
-                            {
-                                foreach (HelpDef hd in hc.HelpDefs.Where(hd => hd.ShouldDraw))
-                                {
-                                    DrawHelpEntry(ref cur, 1, viewRect, hd);
-                                    if (entryCounter >= MaxEntryCount)
-                                        break;
-                                }
-                            }
+                        if (!hc.Expanded)
+                        {
+                            continue;
                         }
+                        foreach (HelpDef hd in hc.HelpDefs.Where(hd => hd.ShouldDraw))
+                        {
+                            if (entryCounter >= MaxEntryCount)
+                            {
+                                var lastItem = new HelpDef
+                                {
+                                    defName = hd.defName,
+                                    label = "MaxAmountOfHits".Translate(),
+                                    category = hd.category
+                                };
+                                DrawHelpEntry(ref cur, 1, viewRect, lastItem);
+                                break;
+                            }
+                            DrawHelpEntry(ref cur, 1, viewRect, hd);
+                        }
+                        if (entryCounter >= MaxEntryCount)
+                        {
+                            break;
+                        }
+                    }
+                    if (entryCounter >= MaxEntryCount)
+                    {
+                        break;
                     }
                 }
 
@@ -441,25 +457,25 @@ namespace HelpTab
         {
             this.entryCounter++;
             cur.x = nestLevel * EntryIndent;
-            float iconOffset = ArrowImageSize.x + 2 * WindowMargin;
-            float width = view.width - cur.x - iconOffset - WindowMargin;
-            float height = EntryHeight;
+            var iconOffset = ArrowImageSize.x + (2 * WindowMargin);
+            var width = view.width - cur.x - iconOffset - WindowMargin;
+            var height = EntryHeight;
 
             if (Text.CalcHeight(label, width) > EntryHeight)
             {
                 Text.Font = GameFont.Tiny;
-                float height2 = Text.CalcHeight(label, width);
+                var height2 = Text.CalcHeight(label, width);
                 height = Mathf.Max(height, height2);
             }
 
             if (state != State.Leaf)
             {
-                Rect iconRect = new Rect(cur.x + WindowMargin, cur.y + height / 2 - ArrowImageSize.y / 2, ArrowImageSize.x, ArrowImageSize.y);
+                var iconRect = new Rect(cur.x + WindowMargin, cur.y + (height / 2) - (ArrowImageSize.y / 2), ArrowImageSize.x, ArrowImageSize.y);
                 GUI.DrawTexture(iconRect, state == State.Expanded ? ResourceBank.Icon.HelpMenuArrowDown : ResourceBank.Icon.HelpMenuArrowRight);
             }
 
             Text.Anchor = TextAnchor.MiddleLeft;
-            Rect labelRect = new Rect(cur.x + iconOffset, cur.y, width, height);
+            var labelRect = new Rect(cur.x + iconOffset, cur.y, width, height);
             Widgets.Label(labelRect, label);
             Text.Anchor = TextAnchor.UpperLeft;
             Text.Font = GameFont.Small;
@@ -503,7 +519,7 @@ namespace HelpTab
 
         public void DrawHelpEntry(ref Vector2 cur, int nestLevel, Rect view, HelpDef helpDef)
         {
-            bool selected = SelectedHelpDef == helpDef;
+            var selected = SelectedHelpDef == helpDef;
             if (selected && _jump)
             {
                 SelectionScrollPos.y = cur.y;
@@ -515,10 +531,10 @@ namespace HelpTab
             }
         }
 
-		public void JumpTo(Def def)
-		{
-			JumpTo(def.GetHelpDef());
-		}
+        public void JumpTo(Def def)
+        {
+            JumpTo(def.GetHelpDef());
+        }
 
         public void JumpTo(HelpDef helpDef)
         {

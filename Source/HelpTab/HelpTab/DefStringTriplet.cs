@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UnityEngine;
@@ -28,7 +27,7 @@ namespace HelpTab
 
         public override string ToString()
         {
-            StringBuilder s = new StringBuilder();
+            var s = new StringBuilder();
             if (Prefix != "")
             {
                 s.Append(Prefix + " ");
@@ -46,7 +45,7 @@ namespace HelpTab
             // calculate height of row, or fetch from cache
             if (!_heightSet)
             {
-                List<float> heights = new List<float>();
+                var heights = new List<float>();
                 if (!Prefix.NullOrEmpty())
                 {
                     heights.Add(Text.CalcHeight(Prefix, colWidths.x));
@@ -63,25 +62,25 @@ namespace HelpTab
             // draw text
             if (!Prefix.NullOrEmpty())
             {
-                Rect prefixRect = new Rect(cur.x, cur.y, colWidths.x, _height);
+                var prefixRect = new Rect(cur.x, cur.y, colWidths.x, _height);
                 Widgets.Label(prefixRect, Prefix);
             }
             if (!Suffix.NullOrEmpty())
             {
-                Rect suffixRect = new Rect(cur.x + colWidths.x + colWidths.y + 2 * HelpDetailSection._columnMargin, cur.y, colWidths.z, _height);
+                var suffixRect = new Rect(cur.x + colWidths.x + colWidths.y + (2 * HelpDetailSection._columnMargin), cur.y, colWidths.z, _height);
                 Widgets.Label(suffixRect, Suffix);
             }
 
             Rect labelRect;
             if (Def.IconTexture() != null)
             {
-                Rect iconRect =
-                new Rect(cur.x + colWidths.x + (Prefix.NullOrEmpty() ? 0 : 1) * HelpDetailSection._columnMargin,
+                var iconRect =
+                new Rect(cur.x + colWidths.x + ((Prefix.NullOrEmpty() ? 0 : 1) * HelpDetailSection._columnMargin),
                           cur.y + 2f,
                           16f,
                           16f);
                 labelRect =
-                new Rect(cur.x + colWidths.x + 20f + (Prefix.NullOrEmpty() ? 0 : 1) * HelpDetailSection._columnMargin,
+                new Rect(cur.x + colWidths.x + 20f + ((Prefix.NullOrEmpty() ? 0 : 1) * HelpDetailSection._columnMargin),
                           cur.y,
                           colWidths.y - 20f,
                           _height);
@@ -91,7 +90,7 @@ namespace HelpTab
             else
             {
                 labelRect =
-                new Rect(cur.x + colWidths.x + (Prefix.NullOrEmpty() ? 0 : 1) * HelpDetailSection._columnMargin,
+                new Rect(cur.x + colWidths.x + ((Prefix.NullOrEmpty() ? 0 : 1) * HelpDetailSection._columnMargin),
                           cur.y,
                           colWidths.y,
                           _height);
