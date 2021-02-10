@@ -1922,6 +1922,8 @@ namespace HelpTab
 
                 if (race.leatherDef != null)
                 {
+                    //defs.Add(race.leatherDef);
+                    //prefixes.Add("~" + (maxSize * raceDef.statBases.Find(sb => sb.stat == StatDefOf.LeatherAmount).value));
                     StatModifier statModifier = raceDef.statBases.Find(sb => sb.stat == StatDefOf.LeatherAmount);
                     if (statModifier != null)
                     {
