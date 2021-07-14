@@ -1,17 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Verse;
 using UnityEngine;
+using Verse;
 
 namespace HelpTab
 {
     public class HelpDetailSectionHelper
     {
-
-        #region DefStringTriplet list builder
-
-        public static List<DefStringTriplet> BuildDefStringTripletList(List<Def> defs, string[] prefixes = null, string[] suffixes = null)
+        public static List<DefStringTriplet> BuildDefStringTripletList(List<Def> defs, string[] prefixes = null,
+            string[] suffixes = null)
         {
             bool hasPrefix = false, hasSuffix = false;
             if (prefixes != null)
@@ -20,6 +18,7 @@ namespace HelpTab
                 {
                     throw new Exception("Prefix array length does not match Def list length.");
                 }
+
                 hasPrefix = true;
             }
 
@@ -29,6 +28,7 @@ namespace HelpTab
                 {
                     throw new Exception("Suffix array length does not match Def list length.");
                 }
+
                 hasSuffix = true;
             }
 
@@ -38,11 +38,13 @@ namespace HelpTab
 
             for (var i = 0; i < defs.Count; i++)
             {
-                if (seen.Count(def => def == defs[i]) == 0)
+                if (seen.Count(def => def == defs[i]) != 0)
                 {
-                    unique.Add(i);
-                    seen.Add(defs[i]);
+                    continue;
                 }
+
+                unique.Add(i);
+                seen.Add(defs[i]);
             }
 
             var ret = new List<DefStringTriplet>();
@@ -54,10 +56,6 @@ namespace HelpTab
             return ret;
         }
 
-        #endregion
-
-        #region GUI drawer functions
-
         public static void DrawText(ref Vector2 cur, float width, string text)
         {
             var height = Text.CalcHeight(text, width);
@@ -68,12 +66,10 @@ namespace HelpTab
 
         public static void DrawLink(ref Vector2 cur, Rect container, Def def)
         {
-
         }
 
-        #endregion
-
-        public static List<StringDescTriplet> BuildStringDescTripletList(string[] stringDescs, string[] prefixes, string[] suffixes)
+        public static List<StringDescTriplet> BuildStringDescTripletList(string[] stringDescs, string[] prefixes,
+            string[] suffixes)
         {
             bool hasPrefix = false, hasSuffix = false;
             if (prefixes != null)
@@ -82,6 +78,7 @@ namespace HelpTab
                 {
                     throw new Exception("Prefix array length does not match stringDescs length.");
                 }
+
                 hasPrefix = true;
             }
 
@@ -91,13 +88,15 @@ namespace HelpTab
                 {
                     throw new Exception("Suffix array length does not match stringDescs length.");
                 }
+
                 hasSuffix = true;
             }
 
             var ret = new List<StringDescTriplet>();
             for (var i = 0; i < stringDescs.Length; i++)
             {
-                ret.Add(new StringDescTriplet(stringDescs[i], hasPrefix ? prefixes[i] : null, hasSuffix ? suffixes[i] : null));
+                ret.Add(new StringDescTriplet(stringDescs[i], hasPrefix ? prefixes[i] : null,
+                    hasSuffix ? suffixes[i] : null));
             }
 
             return ret;

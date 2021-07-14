@@ -6,7 +6,6 @@ using Verse;
 
 namespace HelpTab
 {
-
     public struct DefStringTriplet
     {
         public Def Def;
@@ -32,11 +31,13 @@ namespace HelpTab
             {
                 s.Append(Prefix + " ");
             }
+
             s.Append(Def.LabelCap);
             if (Suffix != "")
             {
                 s.Append(" " + Suffix);
             }
+
             return s.ToString();
         }
 
@@ -50,11 +51,13 @@ namespace HelpTab
                 {
                     heights.Add(Text.CalcHeight(Prefix, colWidths.x));
                 }
+
                 heights.Add(Text.CalcHeight(Def.LabelStyled(), colWidths.y));
                 if (!Suffix.NullOrEmpty())
                 {
                     heights.Add(Text.CalcHeight(Suffix, colWidths.z));
                 }
+
                 _height = heights.Max();
                 _heightSet = true;
             }
@@ -65,9 +68,11 @@ namespace HelpTab
                 var prefixRect = new Rect(cur.x, cur.y, colWidths.x, _height);
                 Widgets.Label(prefixRect, Prefix);
             }
+
             if (!Suffix.NullOrEmpty())
             {
-                var suffixRect = new Rect(cur.x + colWidths.x + colWidths.y + (2 * HelpDetailSection._columnMargin), cur.y, colWidths.z, _height);
+                var suffixRect = new Rect(cur.x + colWidths.x + colWidths.y + (2 * HelpDetailSection._columnMargin),
+                    cur.y, colWidths.z, _height);
                 Widgets.Label(suffixRect, Suffix);
             }
 
@@ -75,38 +80,40 @@ namespace HelpTab
             if (Def.IconTexture() != null)
             {
                 var iconRect =
-                new Rect(cur.x + colWidths.x + ((Prefix.NullOrEmpty() ? 0 : 1) * HelpDetailSection._columnMargin),
-                          cur.y + 2f,
-                          16f,
-                          16f);
+                    new Rect(cur.x + colWidths.x + ((Prefix.NullOrEmpty() ? 0 : 1) * HelpDetailSection._columnMargin),
+                        cur.y + 2f,
+                        16f,
+                        16f);
                 labelRect =
-                new Rect(cur.x + colWidths.x + 20f + ((Prefix.NullOrEmpty() ? 0 : 1) * HelpDetailSection._columnMargin),
-                          cur.y,
-                          colWidths.y - 20f,
-                          _height);
+                    new Rect(
+                        cur.x + colWidths.x + 20f + ((Prefix.NullOrEmpty() ? 0 : 1) * HelpDetailSection._columnMargin),
+                        cur.y,
+                        colWidths.y - 20f,
+                        _height);
                 Def.DrawColouredIcon(iconRect);
                 Widgets.Label(labelRect, Def.LabelStyled());
             }
             else
             {
                 labelRect =
-                new Rect(cur.x + colWidths.x + ((Prefix.NullOrEmpty() ? 0 : 1) * HelpDetailSection._columnMargin),
-                          cur.y,
-                          colWidths.y,
-                          _height);
+                    new Rect(cur.x + colWidths.x + ((Prefix.NullOrEmpty() ? 0 : 1) * HelpDetailSection._columnMargin),
+                        cur.y,
+                        colWidths.y,
+                        _height);
                 Widgets.Label(labelRect, Def.LabelStyled());
             }
 
 
             // def interactions (if any)
             // if we have a window set up to catch jumps, and there is a helpdef available, draw a button on the def text.
-            HelpDef helpDef = Def.GetHelpDef();
+            var helpDef = Def.GetHelpDef();
             if (
-                (window != null) &&
-                (helpDef != null)
+                window != null &&
+                helpDef != null
             )
             {
-				TooltipHandler.TipRegion(labelRect, Def.description + (Def.description.NullOrEmpty() ? "" : "\n\n") + ResourceBank.String.JumpToTopic);
+                TooltipHandler.TipRegion(labelRect,
+                    Def.description + (Def.description.NullOrEmpty() ? "" : "\n\n") + ResourceBank.String.JumpToTopic);
                 if (Widgets.ButtonInvisible(labelRect))
                 {
                     if (window.Accept(helpDef))
@@ -119,13 +126,15 @@ namespace HelpTab
                     }
                 }
             }
+
             if (
-                (helpDef == null) &&
-                (!Def.description.NullOrEmpty())
+                helpDef == null &&
+                !Def.description.NullOrEmpty()
             )
             {
                 TooltipHandler.TipRegion(labelRect, Def.description);
             }
+
             cur.y += _height - MainTabWindow_ModHelp.LineHeigthOffset;
         }
     }

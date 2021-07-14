@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-
 using UnityEngine;
 using Verse;
 
@@ -9,27 +8,29 @@ namespace HelpTab
 {
     public class HelpDetailSection
     {
-        public string Label;
-        public string InsetString;
-        public float Inset;
         private const string DefaultInsetString = "\t";
         private const float DefaultInset = 30f;
-        public List<DefStringTriplet> KeyDefs;
-        public List<StringDescTriplet> StringDescs;
+        public static float _columnMargin = 8f;
         public bool Align;
         public Vector3 ColumnWidths = Vector3.zero;
-        public bool WidthsSet = false;
-        public static float _columnMargin = 8f;
+        public float Inset;
+        public string InsetString;
+        public List<DefStringTriplet> KeyDefs;
+        public string Label;
+        public List<StringDescTriplet> StringDescs;
+        public bool WidthsSet;
 
         public HelpDetailSection(string label,
-                                 string[] stringDescs,
-                                 string[] prefixes,
-                                 string[] suffixes,
-                                 bool align = true)
+            string[] stringDescs,
+            string[] prefixes,
+            string[] suffixes,
+            bool align = true)
         {
             Label = label;
             KeyDefs = null;
-            StringDescs = stringDescs != null ? HelpDetailSectionHelper.BuildStringDescTripletList(stringDescs, prefixes, suffixes) : null;
+            StringDescs = stringDescs != null
+                ? HelpDetailSectionHelper.BuildStringDescTripletList(stringDescs, prefixes, suffixes)
+                : null;
             Align = align;
             if (label != null)
             {
@@ -44,17 +45,21 @@ namespace HelpTab
         }
 
         public HelpDetailSection(string label,
-                                  List<Def> keyDefs,
-                                  string[] defPrefixes,
-                                  string[] defSuffixes,
-                                  string[] stringDescs,
-                                  string[] descPrefixes,
-                                  string[] descSuffixes,
-                                  bool align = true)
+            List<Def> keyDefs,
+            string[] defPrefixes,
+            string[] defSuffixes,
+            string[] stringDescs,
+            string[] descPrefixes,
+            string[] descSuffixes,
+            bool align = true)
         {
             Label = label;
-            KeyDefs = keyDefs != null ? HelpDetailSectionHelper.BuildDefStringTripletList(keyDefs, defPrefixes, defSuffixes) : null;
-            StringDescs = stringDescs != null ? HelpDetailSectionHelper.BuildStringDescTripletList(stringDescs, descPrefixes, descSuffixes) : null;
+            KeyDefs = keyDefs != null
+                ? HelpDetailSectionHelper.BuildDefStringTripletList(keyDefs, defPrefixes, defSuffixes)
+                : null;
+            StringDescs = stringDescs != null
+                ? HelpDetailSectionHelper.BuildStringDescTripletList(stringDescs, descPrefixes, descSuffixes)
+                : null;
             Align = align;
             if (label != null)
             {
@@ -68,7 +73,8 @@ namespace HelpTab
             }
         }
 
-        public HelpDetailSection(string label, List<DefStringTriplet> defStringTriplets, List<StringDescTriplet> stringDescTriplets, bool align = true)
+        public HelpDetailSection(string label, List<DefStringTriplet> defStringTriplets,
+            List<StringDescTriplet> stringDescTriplets, bool align = true)
         {
             Label = label;
             KeyDefs = defStringTriplets;
@@ -86,10 +92,13 @@ namespace HelpTab
             }
         }
 
-        public HelpDetailSection(string label, List<Def> keyDefs, string[] prefixes = null, string[] suffixes = null, bool align = true)
+        public HelpDetailSection(string label, List<Def> keyDefs, string[] prefixes = null, string[] suffixes = null,
+            bool align = true)
         {
             Label = label;
-            KeyDefs = keyDefs != null ? HelpDetailSectionHelper.BuildDefStringTripletList(keyDefs, prefixes, suffixes) : null;
+            KeyDefs = keyDefs != null
+                ? HelpDetailSectionHelper.BuildDefStringTripletList(keyDefs, prefixes, suffixes)
+                : null;
             StringDescs = null;
             Align = align;
             if (label != null)
@@ -126,14 +135,15 @@ namespace HelpTab
             // draw lines one by one
             if (!StringDescs.NullOrEmpty())
             {
-                foreach (StringDescTriplet triplet in StringDescs)
+                foreach (var triplet in StringDescs)
                 {
                     triplet.Draw(ref cur, ColumnWidths);
                 }
             }
+
             if (!KeyDefs.NullOrEmpty())
             {
-                foreach (DefStringTriplet triplet in KeyDefs)
+                foreach (var triplet in KeyDefs)
                 {
                     triplet.Draw(ref cur, ColumnWidths, window);
                 }
@@ -147,7 +157,7 @@ namespace HelpTab
         }
 
         /// <summary>
-        /// Take all defined help sections and calculate 'optimal' column widths.
+        ///     Take all defined help sections and calculate 'optimal' column widths.
         /// </summary>
         /// <param name="width">Total width</param>
         private void SetColumnWidths(float width)
@@ -176,7 +186,7 @@ namespace HelpTab
             }
 
             // fetch length of all strings, select largest for each column
-            Vector3 requestedWidths = Vector3.zero;
+            var requestedWidths = Vector3.zero;
 
             // make sure wrapping is off so we get a true idea of the length
             var WW = Text.WordWrap;
@@ -185,18 +195,22 @@ namespace HelpTab
             {
                 requestedWidths.x = prefixes.Select(s => Text.CalcSize(s).x).Max();
             }
+
             if (!descs.NullOrEmpty())
             {
                 requestedWidths.y = descs.Select(s => Text.CalcSize(s).x).Max();
             }
+
             if (!defs.NullOrEmpty())
             {
                 requestedWidths.y = Mathf.Max(requestedWidths.y, defs.Select(d => d.StyledLabelAndIconSize()).Max());
             }
+
             if (!suffixes.NullOrEmpty())
             {
                 requestedWidths.z = suffixes.Select(s => Text.CalcSize(s).x).Max();
             }
+
             Text.WordWrap = WW;
 
             if (requestedWidths.Sum() < width)
@@ -214,16 +228,18 @@ namespace HelpTab
                 {
                     for (var i = 0; i < 3; i++)
                     {
-                        if (requestedWidths[i] == requestedWidths.Max())
+                        if (requestedWidths[i] != requestedWidths.Max())
                         {
-                            requestedWidths[i] -= requestedWidths.Sum() - width;
-                            break;
+                            continue;
                         }
+
+                        requestedWidths[i] -= requestedWidths.Sum() - width;
+                        break;
                     }
                 }
                 else // scale everything down, with a minimum width of 15% per column
                 {
-                    Vector3 shrinkableWidth = requestedWidths.Subtract(width * .15f);
+                    var shrinkableWidth = requestedWidths.Subtract(width * .15f);
                     var scalingFactor = width / shrinkableWidth.Sum();
                     for (var i = 0; i < 3; i++)
                     {
@@ -239,31 +255,38 @@ namespace HelpTab
             WidthsSet = true;
         }
 
-		/// <summary>
-		/// Build the display string for a HelpDetailSection
-		/// </summary>
-		public string GetString ()
-		{
-			var s = new StringBuilder ();
-			if (this.Label != null) {
-				s.AppendLine (this.Label.CapitalizeFirst () + ":");
-			}
+        /// <summary>
+        ///     Build the display string for a HelpDetailSection
+        /// </summary>
+        public string GetString()
+        {
+            var s = new StringBuilder();
+            if (Label != null)
+            {
+                s.AppendLine(Label.CapitalizeFirst() + ":");
+            }
 
-			if (this.StringDescs != null) {
-				foreach (StringDescTriplet stringDesc in this.StringDescs) {
-					s.Append (this.InsetString);
-					s.AppendLine (stringDesc.ToString ());
-				}
-			}
+            if (StringDescs != null)
+            {
+                foreach (var stringDesc in StringDescs)
+                {
+                    s.Append(InsetString);
+                    s.AppendLine(stringDesc.ToString());
+                }
+            }
 
-			if (this.KeyDefs != null) {
-				foreach (DefStringTriplet def in this.KeyDefs) {
-					s.Append (this.InsetString);
-					s.AppendLine (def.ToString ());
-				}
-			}
+            if (KeyDefs == null)
+            {
+                return s.ToString();
+            }
 
-			return s.ToString ();
-		}
+            foreach (var def in KeyDefs)
+            {
+                s.Append(InsetString);
+                s.AppendLine(def.ToString());
+            }
+
+            return s.ToString();
+        }
     }
 }

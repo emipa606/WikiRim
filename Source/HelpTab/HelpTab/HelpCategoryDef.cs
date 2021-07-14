@@ -4,29 +4,12 @@ using Verse;
 
 namespace HelpTab
 {
-
     public class HelpCategoryDef : Def
     {
-
-        #region XML Data
-
+        public string keyDef;
         public string ModName;
 
-        #endregion
-
-        [Unsaved]
-
-        #region Instance Data
-
-        readonly List<HelpDef> _cachedHelpDefs = new List<HelpDef>();
-
-        public string keyDef;
-
-        #endregion
-
-        #region Query State
-
-        public List<HelpDef> HelpDefs => _cachedHelpDefs;
+        [field: Unsaved] public List<HelpDef> HelpDefs { get; } = new List<HelpDef>();
 
         public bool ShouldDraw { get; set; }
 
@@ -46,17 +29,12 @@ namespace HelpTab
         {
             ShouldDraw = force || ThisOrAnyChildMatchesFilter(filter);
             Expanded = filter != "" && (force || ThisOrAnyChildMatchesFilter(filter));
-            foreach (HelpDef hd in HelpDefs)
+            foreach (var hd in HelpDefs)
             {
                 hd.Filter(filter, force || MatchesFilter(filter));
             }
         }
 
-
-
-        #endregion
-
-        #region Process State
 
         public override void ResolveReferences()
         {
@@ -66,20 +44,16 @@ namespace HelpTab
 
         public void Recache()
         {
-            _cachedHelpDefs.Clear();
-            foreach (var def in 
+            HelpDefs.Clear();
+            foreach (var def in
                 from t in DefDatabase<HelpDef>.AllDefs
                 where t.category == this
                 select t)
             {
-                _cachedHelpDefs.Add(def);
+                HelpDefs.Add(def);
             }
-            _cachedHelpDefs.Sort();
 
+            HelpDefs.Sort();
         }
-
-        #endregion
-
     }
-
 }

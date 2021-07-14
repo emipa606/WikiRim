@@ -1,21 +1,17 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-
 using Verse;
 
 namespace HelpTab
 {
-
     [StaticConstructorOnStartup]
     public static class BuildableDef_Extensions
     {
-        #region Availability
-
         public static bool HasResearchRequirement(this BuildableDef buildableDef)
         {
             // Can't entirely rely on this one check as it's state may change mid-game
             if (
-                (buildableDef.researchPrerequisites != null) &&
+                buildableDef.researchPrerequisites != null &&
                 buildableDef.researchPrerequisites.Any(def => def != null)
             )
             {
@@ -23,13 +19,9 @@ namespace HelpTab
                 return true;
             }
 
-			// Check for an advanced research unlock
-			return false;
+            // Check for an advanced research unlock
+            return false;
         }
-
-        #endregion
-
-        #region Lists of affected data
 
         public static List<Def> GetResearchRequirements(this BuildableDef buildableDef)
         {
@@ -37,7 +29,7 @@ namespace HelpTab
 
             if (buildableDef.researchPrerequisites != null)
             {
-                researchDefs.AddRangeUnique (buildableDef.researchPrerequisites.ConvertAll<Def> (def => def));
+                researchDefs.AddRangeUnique(buildableDef.researchPrerequisites.ConvertAll<Def>(def => def));
             }
 
             // Return the list of research required
@@ -48,10 +40,8 @@ namespace HelpTab
         {
             return
                 DefDatabase<RecipeDef>.AllDefsListForReading.Where(
-                    r => r.products.Any(tc => tc.thingDef == (buildableDef as ThingDef))).ToList();
+                    r => r.products.Any(tc => tc.thingDef == buildableDef as ThingDef)).ToList();
         }
-
-        #endregion
 
         /*
         #region Comp Properties
@@ -75,7 +65,5 @@ namespace HelpTab
 
         #endregion
     */
-
     }
-
 }

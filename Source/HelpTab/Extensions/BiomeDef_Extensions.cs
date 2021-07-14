@@ -5,7 +5,6 @@ using Verse;
 
 namespace HelpTab
 {
-
     public static class BiomeDef_Extensions
     {
         // TODO: This is a nasty method, please get rid of it. Reason: Poor performance.
@@ -20,17 +19,17 @@ namespace HelpTab
             }
 
             // patch maker terrain
-            if (!biome.terrainPatchMakers.NullOrEmpty())
+            if (biome.terrainPatchMakers.NullOrEmpty())
             {
-                foreach (TerrainPatchMaker patchMaker in biome.terrainPatchMakers)
-                {
-                    ret.AddRangeUnique(patchMaker.thresholds.Select(t => t.terrain));
-                }
+                return ret;
+            }
+
+            foreach (var patchMaker in biome.terrainPatchMakers)
+            {
+                ret.AddRangeUnique(patchMaker.thresholds.Select(t => t.terrain));
             }
 
             return ret;
         }
-
     }
-
 }

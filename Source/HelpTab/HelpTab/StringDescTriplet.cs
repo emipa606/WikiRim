@@ -31,11 +31,13 @@ namespace HelpTab
             {
                 s.Append(Prefix + " ");
             }
+
             s.Append(StringDesc);
             if (Suffix != "")
             {
                 s.Append(" " + Suffix);
             }
+
             return s.ToString();
         }
 
@@ -48,11 +50,13 @@ namespace HelpTab
                 {
                     heights.Add(Text.CalcHeight(Prefix, colWidths.x));
                 }
+
                 heights.Add(Text.CalcHeight(StringDesc, colWidths.y));
                 if (!Suffix.NullOrEmpty())
                 {
                     heights.Add(Text.CalcHeight(Suffix, colWidths.z));
                 }
+
                 _height = heights.Max();
                 _heightSet = true;
             }
@@ -65,15 +69,16 @@ namespace HelpTab
 
             if (!Suffix.NullOrEmpty())
             {
-                var suffixRect = new Rect(cur.x + colWidths.x + colWidths.y + (2 * HelpDetailSection._columnMargin), cur.y, colWidths.z, _height);
+                var suffixRect = new Rect(cur.x + colWidths.x + colWidths.y + (2 * HelpDetailSection._columnMargin),
+                    cur.y, colWidths.z, _height);
                 Widgets.Label(suffixRect, Suffix);
             }
 
             var labelRect =
                 new Rect(cur.x + colWidths.x + (Prefix.NullOrEmpty() ? 0f : HelpDetailSection._columnMargin),
-                          cur.y,
-                          colWidths.y,
-                          _height);
+                    cur.y,
+                    colWidths.y,
+                    _height);
 
             Widgets.Label(labelRect, StringDesc);
             cur.y += _height - MainTabWindow_ModHelp.LineHeigthOffset;

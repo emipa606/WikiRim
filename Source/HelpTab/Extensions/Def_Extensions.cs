@@ -9,13 +9,20 @@ namespace HelpTab
     public static class Def_Extensions
     {
         /// <summary>
-        /// hold a cached list of icons per def
+        ///     hold a cached list of icons per def
         /// </summary>
         private static readonly Dictionary<Def, Texture2D> _cachedDefIcons = new Dictionary<Def, Texture2D>();
+
         private static readonly Dictionary<Def, Color> _cachedIconColors = new Dictionary<Def, Color>();
 
         /// <summary>
-        /// Get the label, capitalized and given appropriate styling ( bold if def has a helpdef, italic if def has no helpdef but does have description. )
+        ///     hold a cached list of def -> helpdef links
+        /// </summary>
+        private static readonly Dictionary<Def, HelpDef> _cachedDefHelpDefLinks = new Dictionary<Def, HelpDef>();
+
+        /// <summary>
+        ///     Get the label, capitalized and given appropriate styling ( bold if def has a helpdef, italic if def has no helpdef
+        ///     but does have description. )
         /// </summary>
         /// <param name="def"></param>
         /// <returns></returns>
@@ -25,10 +32,12 @@ namespace HelpTab
             {
                 return string.Empty;
             }
+
             if (!def.description.NullOrEmpty())
             {
                 return "<i>" + def.LabelCap + "</i>";
             }
+
             return def.LabelCap;
         }
 
@@ -40,8 +49,8 @@ namespace HelpTab
         }
 
         /// <summary>
-        /// Gets an appropriate drawColor for this def. 
-        /// Will use a default stuff or DrawColor, if defined.
+        ///     Gets an appropriate drawColor for this def.
+        ///     Will use a default stuff or DrawColor, if defined.
         /// </summary>
         /// <param name="def"></param>
         /// <returns></returns>
@@ -82,8 +91,7 @@ namespace HelpTab
 
             // built def != listed def
             if (
-                (tdef != null) &&
-                (tdef.entityDefToBuild != null)
+                tdef is {entityDefToBuild: { }}
             )
             {
                 _cachedIconColors.Add(def, tdef.entityDefToBuild.IconColor());
@@ -99,11 +107,10 @@ namespace HelpTab
 
             // stuff used?
             if (
-                (tdef != null) &&
-                tdef.MadeFromStuff
+                tdef is {MadeFromStuff: true}
             )
             {
-                ThingDef stuff = GenStuff.DefaultStuffFor(tdef);
+                var stuff = GenStuff.DefaultStuffFor(tdef);
                 _cachedIconColors.Add(def, stuff.stuffProps.color);
                 return _cachedIconColors[def];
             }
@@ -114,7 +121,7 @@ namespace HelpTab
         }
 
         /// <summary>
-        /// Get a texture for the def, where defined. 
+        ///     Get a texture for the def, where defined.
         /// </summary>
         /// <param name="def"></param>
         /// <returns></returns>
@@ -128,8 +135,8 @@ namespace HelpTab
 
             // recipes will be passed icon of first product, if defined.
             if (
-                (def is RecipeDef rdef) &&
-                (!rdef.products.NullOrEmpty())
+                def is RecipeDef rdef &&
+                !rdef.products.NullOrEmpty()
             )
             {
                 _cachedDefIcons.Add(def, rdef.products.First().thingDef.IconTexture());
@@ -141,11 +148,13 @@ namespace HelpTab
             {
                 try
                 {
-                    _cachedDefIcons.Add(def, (pdef.lifeStages.Last().bodyGraphicData.Graphic.MatSouth.mainTexture as Texture2D).Crop());
+                    _cachedDefIcons.Add(def,
+                        (pdef.lifeStages.Last().bodyGraphicData.Graphic.MatSouth.mainTexture as Texture2D).Crop());
                     return _cachedDefIcons[def];
                 }
                 catch
                 {
+                    // ignored
                 }
             }
 
@@ -161,48 +170,47 @@ namespace HelpTab
                 def is ThingDef tdef
             )
             {
-				if (tdef.entityDefToBuild != null) {
-					_cachedDefIcons.Add (def, tdef.entityDefToBuild.IconTexture ().Crop ());
-					return _cachedDefIcons [def];
-				}
-				// corpses don't have icon
-				if (tdef.IsCorpse) {
-					return null;
-				}
-                
+                if (tdef.entityDefToBuild != null)
+                {
+                    _cachedDefIcons.Add(def, tdef.entityDefToBuild.IconTexture().Crop());
+                    return _cachedDefIcons[def];
+                }
+
+                // corpses don't have icon
+                if (tdef.IsCorpse)
+                {
+                    return null;
+                }
             }
 
             _cachedDefIcons.Add(def, bdef.uiIcon.Crop());
             return bdef.uiIcon.Crop();
         }
 
-		public static float StyledLabelAndIconSize (this Def def)
-		{
-			var WW = Text.WordWrap;
-			Text.WordWrap = false;
-			var width = Text.CalcSize (def.LabelStyled ()).x + (def.IconTexture () == null ? 0 : 20);
-			Text.WordWrap = WW;
-			return width;
-		}
+        public static float StyledLabelAndIconSize(this Def def)
+        {
+            var WW = Text.WordWrap;
+            Text.WordWrap = false;
+            var width = Text.CalcSize(def.LabelStyled()).x + (def.IconTexture() == null ? 0 : 20);
+            Text.WordWrap = WW;
+            return width;
+        }
 
-		/// <summary>
-		/// hold a cached list of def -> helpdef links
-		/// </summary>
-		private static readonly Dictionary<Def, HelpDef> _cachedDefHelpDefLinks = new Dictionary<Def, HelpDef> ();
+        /// <summary>
+        ///     Get the helpdef associated with the current def, or null if none exists.
+        /// </summary>
+        /// <param name="def"></param>
+        /// <returns></returns>
+        public static HelpDef GetHelpDef(this Def def)
+        {
+            if (_cachedDefHelpDefLinks.ContainsKey(def))
+            {
+                return _cachedDefHelpDefLinks[def];
+            }
 
-		/// <summary>
-		/// Get the helpdef associated with the current def, or null if none exists.
-		/// </summary>
-		/// <param name="def"></param>
-		/// <returns></returns>
-		public static HelpDef GetHelpDef (this Def def)
-		{
-			if (_cachedDefHelpDefLinks.ContainsKey (def)) {
-				return _cachedDefHelpDefLinks [def];
-			}
-			_cachedDefHelpDefLinks.Add (def, DefDatabase<HelpDef>.AllDefsListForReading.FirstOrDefault (hd => hd.keyDef == def));
-			return _cachedDefHelpDefLinks [def];
-		}
-	}
-
+            _cachedDefHelpDefLinks.Add(def,
+                DefDatabase<HelpDef>.AllDefsListForReading.FirstOrDefault(hd => hd.keyDef == def));
+            return _cachedDefHelpDefLinks[def];
+        }
+    }
 }

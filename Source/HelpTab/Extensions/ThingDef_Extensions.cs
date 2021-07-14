@@ -6,28 +6,26 @@ using Verse;
 
 namespace HelpTab
 {
-
     public static class ThingDef_Extensions
     {
-
         internal static FieldInfo _allRecipesCached;
 
         // Dummy for functions needing a ref list
-        public static List<Def> nullDefs = null;
-
-        #region Recipe Cache
+        public static List<Def> nullDefs;
 
         public static void RecacheRecipes(this ThingDef thingDef, Map map, bool validateBills)
         {
             if (_allRecipesCached == null)
             {
-                _allRecipesCached = typeof(ThingDef).GetField("allRecipesCached", BindingFlags.Instance | BindingFlags.NonPublic);
+                _allRecipesCached =
+                    typeof(ThingDef).GetField("allRecipesCached", BindingFlags.Instance | BindingFlags.NonPublic);
             }
-            _allRecipesCached.SetValue(thingDef, null);
+
+            _allRecipesCached?.SetValue(thingDef, null);
 
             if (
-                (!validateBills) ||
-                (Current.ProgramState != ProgramState.MapInitializing)
+                !validateBills ||
+                Current.ProgramState != ProgramState.MapInitializing
             )
             {
                 return;
@@ -40,26 +38,24 @@ namespace HelpTab
             var buildings = map.listerBuildings.AllBuildingsColonistOfDef(thingDef);
             foreach (var building in buildings)
             {
-                if (building is IBillGiver iBillGiver)
+                if (building is not IBillGiver iBillGiver)
                 {
-                    for (var i = 0; i < iBillGiver.BillStack.Count; ++i)
+                    continue;
+                }
+
+                for (var i = 0; i < iBillGiver.BillStack.Count; ++i)
+                {
+                    var bill = iBillGiver.BillStack[i];
+                    if (recipes.Exists(r => bill.recipe == r))
                     {
-                        var bill = iBillGiver.BillStack[i];
-                        if (!recipes.Exists(r => bill.recipe == r))
-                        {
-                            Log.Message($"Removing {bill.recipe.defName} as it is invalid");
-                            iBillGiver.BillStack.Delete(bill);
-                            continue;
-                        }
+                        continue;
                     }
+
+                    Log.Message($"Removing {bill.recipe.defName} as it is invalid");
+                    iBillGiver.BillStack.Delete(bill);
                 }
             }
-
         }
-
-        #endregion
-
-        #region Availability
 
         public static bool IsFoodMachine(this ThingDef thingDef)
         {
@@ -67,6 +63,7 @@ namespace HelpTab
             {
                 return true;
             }
+
             return false;
         }
 
@@ -80,11 +77,12 @@ namespace HelpTab
             if (
                 thingDef.IsIngestible() &&
                 (thingDef.ingestible.drugCategory == DrugCategory.Hard ||
-                (thingDef.ingestible.drugCategory == DrugCategory.Social))
+                 thingDef.ingestible.drugCategory == DrugCategory.Social)
             )
             {
                 return true;
             }
+
             return false;
         }
 
@@ -92,20 +90,20 @@ namespace HelpTab
         {
             // Return true if a recipe exist implanting this thing def
             return
-                DefDatabase<RecipeDef>.AllDefsListForReading.Exists(r => 
-                 (r.addsHediff != null) &&
-                 r.IsIngredient(thingDef)
-             );
+                DefDatabase<RecipeDef>.AllDefsListForReading.Exists(r =>
+                    r.addsHediff != null &&
+                    r.IsIngredient(thingDef)
+                );
         }
 
         public static RecipeDef GetImplantRecipeDef(this ThingDef thingDef)
         {
             // Get recipe for implant
             return
-                DefDatabase<RecipeDef>.AllDefsListForReading.Find(r => 
-                 (r.addsHediff != null) &&
-                 r.IsIngredient(thingDef)
-             );
+                DefDatabase<RecipeDef>.AllDefsListForReading.Find(r =>
+                    r.addsHediff != null &&
+                    r.IsIngredient(thingDef)
+                );
         }
 
         public static HediffDef GetImplantHediffDef(this ThingDef thingDef)
@@ -117,34 +115,29 @@ namespace HelpTab
 
         public static bool EverHasRecipes(this ThingDef thingDef)
         {
-            return 
-                (!thingDef.GetRecipesCurrent().NullOrEmpty()) ||
-                (!thingDef.GetRecipesUnlocked(ref nullDefs).NullOrEmpty())
-            ;
+            return
+                !thingDef.GetRecipesCurrent().NullOrEmpty() ||
+                !thingDef.GetRecipesUnlocked(ref nullDefs).NullOrEmpty()
+                ;
         }
 
         public static bool EverHasRecipe(this ThingDef thingDef, RecipeDef recipeDef)
         {
-            return 
+            return
                 thingDef.GetRecipesCurrent().Contains(recipeDef) ||
                 thingDef.GetRecipesUnlocked(ref nullDefs).Contains(recipeDef)
-            ;
+                ;
         }
 
         public static List<JoyGiverDef> GetJoyGiverDefsUsing(this ThingDef thingDef)
         {
-            var joyGiverDefs = DefDatabase<JoyGiverDef>.AllDefsListForReading.Where(def => 
-               (!def.thingDefs.NullOrEmpty()) &&
-               def.thingDefs.Contains(thingDef)
-           ).ToList();
+            var joyGiverDefs = DefDatabase<JoyGiverDef>.AllDefsListForReading.Where(def =>
+                !def.thingDefs.NullOrEmpty() &&
+                def.thingDefs.Contains(thingDef)
+            ).ToList();
             return joyGiverDefs;
         }
 
-
-
-        #endregion
-
-        #region Lists of affected data
 
         public static List<RecipeDef> GetRecipesUnlocked(this ThingDef thingDef, ref List<Def> researchDefs)
         {
@@ -155,22 +148,18 @@ namespace HelpTab
                 researchDefs.Clear();
             }
 
-			// Look at recipes
-			var recipes = DefDatabase<RecipeDef>.AllDefsListForReading.Where (r => 
-			  (r.researchPrerequisite != null) &&
-			  (
-				  (
-					  (r.recipeUsers != null) &&
-					  r.recipeUsers.Contains (thingDef)
-				  ) ||
-				  (
-					  (thingDef.recipes != null) &&
-					  thingDef.recipes.Contains (r)
-				  )
-			  )
-		    );
+            // Look at recipes
+            var recipes = DefDatabase<RecipeDef>.AllDefsListForReading.Where(r =>
+                r.researchPrerequisite != null &&
+                (
+                    r.recipeUsers != null &&
+                    r.recipeUsers.Contains(thingDef) ||
+                    thingDef.recipes != null &&
+                    thingDef.recipes.Contains(r)
+                )
+            );
 
-			recipeDefs.AddRangeUnique (recipes);
+            recipeDefs.AddRangeUnique(recipes);
 
             return recipeDefs;
         }
@@ -190,14 +179,5 @@ namespace HelpTab
 
             return recipeDefs;
         }
-
-
-
-
-
-
-        #endregion
-
     }
-
 }
