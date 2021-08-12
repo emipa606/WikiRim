@@ -1,5 +1,8 @@
 # Changelog for WikiRim
 
+1.0.4.0 - Should no longer have issues with non reproducing animals, for example dryads
+
+
 1.0.3.0 - Mod updated for 1.3 and passed autotests
 
 

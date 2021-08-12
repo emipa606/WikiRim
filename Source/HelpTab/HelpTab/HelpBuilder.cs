@@ -1520,7 +1520,8 @@ namespace HelpTab
                     stringDescs.ToArray(), null, null));
                 stringDescs.Clear();
             }
-            else if (race.hasGenders && race.lifeStageAges.Any(lsa => lsa.def.reproductive))
+            else if (race.hasGenders && race.gestationPeriodDays > 0 &&
+                     race.lifeStageAges.Any(lsa => lsa.def.reproductive))
             {
                 // mammals
                 var SDT = new List<StringDescTriplet>
