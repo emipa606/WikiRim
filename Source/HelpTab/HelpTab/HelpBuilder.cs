@@ -476,6 +476,14 @@ namespace HelpTab
                 try
                 {
                     helpDef = HelpForDef(def, category);
+                    if (helpDef?.keyDef?.modContentPack?.Name != null)
+                    {
+                        var modName = helpDef.keyDef.modContentPack.Name;
+                        if (!helpDef.description.Contains(modName))
+                        {
+                            helpDef.description += $"\n({modName})";
+                        }
+                    }
                 }
                 catch (Exception e)
                 {
@@ -1259,7 +1267,7 @@ namespace HelpTab
                 keyDef = kindDef,
                 label = kindDef.label,
                 category = category,
-                description = kindDef.description
+                description = raceDef.description
             };
 
             var statParts = new List<HelpDetailSection>();
