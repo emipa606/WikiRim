@@ -479,9 +479,16 @@ namespace HelpTab
                     if (helpDef?.keyDef?.modContentPack?.Name != null)
                     {
                         var modName = helpDef.keyDef.modContentPack.Name;
-                        if (!helpDef.description.Contains(modName))
+                        if (helpDef.description == null)
                         {
-                            helpDef.description += $"\n({modName})";
+                            helpDef.description = $"({modName})";
+                        }
+                        else
+                        {
+                            if (!helpDef.description.Contains(modName))
+                            {
+                                helpDef.description += $"\n({modName})";
+                            }
                         }
                     }
                 }

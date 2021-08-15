@@ -1,5 +1,8 @@
 # Changelog for WikiRim
 
+1.0.6.0 - Fixed mod-info for items without description
+
+
 1.0.5.0 - Added info on what mod each item is from in description
 
 
