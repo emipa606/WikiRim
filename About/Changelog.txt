@@ -1,5 +1,8 @@
 # Changelog for WikiRim
 
+1.0.7.0 - Small multiplier values should now be visible by using the factor string-style
+
+
 1.0.6.0 - Fixed mod-info for items without description
 
 

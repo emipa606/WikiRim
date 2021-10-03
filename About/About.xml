@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <ModMetaData>
   <name>[O21] WikiRim (Continued)</name>
   <packageId>Mlie.WikiRim</packageId>
@@ -12,14 +12,14 @@
   </supportedVersions>
   <modDependencies />
   <loadAfter />
-  <description>[img]https://i.imgur.com/WAEzk68.png[/img]
+  <description>[img]https://i.imgur.com/buuPQel.png[/img]
 Update of Neronix17s mod
 https://steamcommunity.com/sharedfiles/filedetails/?id=1834856478
 
 - Added search-limit to 200 hits, thanks qwerty19106
 - Races with no leatheramount defined should now show properly, thanks Bbansjkl
 
-[img]https://i.imgur.com/7Gzt3Rg.png[/img]
+[img]https://i.imgur.com/pufA0kM.png[/img]
 
 [table]
 	[tr]
@@ -28,12 +28,12 @@ https://steamcommunity.com/sharedfiles/filedetails/?id=1834856478
 	[/tr]
 [/table]
 	
-[img]https://i.imgur.com/NOW7jU1.png[/img]
+[img]https://i.imgur.com/Z4GOv8H.png[/img]
 
 A comprehensive help database, this is a fork of the mod HelpTab, updated to 1.0 with added changes I personally wanted to see.
 
 Simple
-All the information about everything compiled in a neat catalog of things, explore what your world offers, with detail! Everything is connected, navigate at your heart&apos;s content.
+All the information about everything compiled in a neat catalog of things, explore what your world offers, with detail! Everything is connected, navigate at your heart's content.
 
 Resourceful
 Do you want to know how to build something? What you need to research to obtain it? No more digging inside xml to learn what needs to be done. Just search it and discover!
@@ -45,7 +45,7 @@ Flexible
 Supports every thing any mod adds. The perfect companion for navigating those complex mods.
 
 Conflicts/Bugs/Suggestions
-You lot never bothered following instructions for this before so might as well replace it with a statement pointing out AGAIN that this isn&apos;t supported anymore, no more updates, dead, finito, perished.
+You lot never bothered following instructions for this before so might as well replace it with a statement pointing out AGAIN that this isn't supported anymore, no more updates, dead, finito, perished.
 
 Credits:
 1.0/1.1 Update by Neronix17
@@ -56,7 +56,7 @@ Original mod by Fluffy
 (CC BY-NC-SA 4.0)
 
 
-[img]https://i.imgur.com/Rs6T6cr.png[/img]
+[img]https://i.imgur.com/PwoNOj4.png[/img]
 [list]
 [*] See if the the error persists if you just have this mod and its requirements active.
 [*] If not, try adding your other mods until it happens again.
@@ -65,6 +65,5 @@ Original mod by Fluffy
 [*] Do not report errors by making a discussion-thread, I get no notification of that.
 [*] If you have the solution for a problem, please post it to the GitHub repository.
 [/list]
-
 </description>
 </ModMetaData>

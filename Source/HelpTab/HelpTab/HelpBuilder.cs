@@ -270,7 +270,7 @@ namespace HelpTab
         {
             // Get list of terrainDefs without designation category that occurs as a byproduct of mining (rocky),
             // or is listed in biomes (natural terrain). This excludes terrains that are not normally visible (e.g. Underwall).
-            var rockySuffixes = new[] {"_Rough", "_Smooth", "_RoughHewn"};
+            var rockySuffixes = new[] { "_Rough", "_Smooth", "_RoughHewn" };
 
             var terrainDefs =
                 DefDatabase<TerrainDef>.AllDefsListForReading
@@ -588,9 +588,18 @@ namespace HelpTab
                 // Look at base stats
                 var baseStats = new HelpDetailSection(
                     null,
-                    buildableDef.statBases.Select(sb => sb.stat).ToList().ConvertAll(def => (Def) def),
+                    buildableDef.statBases.Select(sb => sb.stat).ToList().ConvertAll(def => (Def)def),
                     null,
-                    buildableDef.statBases.Select(sb => sb.stat.ValueToString(sb.value, sb.stat.toStringNumberSense))
+                    buildableDef.statBases.Select(sb =>
+                        {
+                            var numberSense = ToStringNumberSense.Absolute;
+                            if (sb.stat.defName.Contains("Multiplier"))
+                            {
+                                numberSense = ToStringNumberSense.Factor;
+                            }
+
+                            return sb.stat.ValueToString(sb.value, numberSense);
+                        })
                         .ToArray());
 
                 statParts.Add(baseStats);
@@ -611,7 +620,7 @@ namespace HelpTab
             {
                 var costs = new HelpDetailSection(
                     ResourceBank.String.AutoHelpCost,
-                    buildableDef.costList.Select(tc => tc.thingDef).ToList().ConvertAll(def => (Def) def),
+                    buildableDef.costList.Select(tc => tc.thingDef).ToList().ConvertAll(def => (Def)def),
                     buildableDef.costList.Select(tc => tc.count.ToString()).ToArray());
 
                 linkParts.Add(costs);
@@ -623,7 +632,7 @@ namespace HelpTab
                 {
                     var equippedOffsets = new HelpDetailSection(
                         ResourceBank.String.AutoHelpListStatOffsets,
-                        thingDef.equippedStatOffsets.Select(so => so.stat).ToList().ConvertAll(def => (Def) def),
+                        thingDef.equippedStatOffsets.Select(so => so.stat).ToList().ConvertAll(def => (Def)def),
                         null,
                         thingDef.equippedStatOffsets
                             .Select(so => so.stat.ValueToString(so.value, so.stat.toStringNumberSense))
@@ -640,7 +649,7 @@ namespace HelpTab
                 {
                     linkParts.Add(new HelpDetailSection(
                         "AutoHelpStuffCost".Translate(thingDef.costStuffCount.ToString()),
-                        thingDef.stuffCategories.ToList().ConvertAll(def => (Def) def)));
+                        thingDef.stuffCategories.ToList().ConvertAll(def => (Def)def)));
                 }
 
                 var recipeDefs = buildableDef.GetRecipeDefs();
@@ -648,7 +657,7 @@ namespace HelpTab
                 {
                     var recipes = new HelpDetailSection(
                         ResourceBank.String.AutoHelpListRecipes,
-                        recipeDefs.ConvertAll(def => (Def) def));
+                        recipeDefs.ConvertAll(def => (Def)def));
                     linkParts.Add(recipes);
 
                     // TODO: Figure out why this fails on a few select recipes (e.g. MVP's burger recipes and Apparello's Hive Armor), but works when called directly in these recipe's helpdefs.
@@ -706,7 +715,7 @@ namespace HelpTab
                     if (hediffDef.addedPartProps != null)
                     {
                         statParts.Add(new HelpDetailSection(ResourceBank.String.BodyPartEfficiency,
-                            new[] {hediffDef.addedPartProps.partEfficiency.ToString("P0")}, null, null));
+                            new[] { hediffDef.addedPartProps.partEfficiency.ToString("P0") }, null, null));
                     }
 
                     if (!hediffDef.stages.NullOrEmpty() &&
@@ -721,7 +730,7 @@ namespace HelpTab
                                 .SelectMany(s => s.capMods)
                                 .Select(cm => cm.capacity)
                                 .ToList()
-                                .ConvertAll(def => (Def) def),
+                                .ConvertAll(def => (Def)def),
                             null,
                             hediffDef.stages
                                 .Where(s => !s.capMods.NullOrEmpty())
@@ -780,7 +789,7 @@ namespace HelpTab
                     {
                         linkParts.Add(new HelpDetailSection(
                             ResourceBank.String.AutoHelpSurgeryFixOrReplace,
-                            recipeDef.appliedOnFixedBodyParts.ToList().ConvertAll(def => (Def) def)));
+                            recipeDef.appliedOnFixedBodyParts.ToList().ConvertAll(def => (Def)def)));
                     }
                 }
 
@@ -790,7 +799,7 @@ namespace HelpTab
                 {
                     var recipes = new HelpDetailSection(
                         ResourceBank.String.AutoHelpListRecipes,
-                        recipeDefs.ConvertAll(def => (Def) def));
+                        recipeDefs.ConvertAll(def => (Def)def));
                     linkParts.Add(recipes);
                 }
 
@@ -819,7 +828,7 @@ namespace HelpTab
                 {
                     if (compPowerTrader.basePowerConsumption > 0)
                     {
-                        var basePowerConsumption = (int) compPowerTrader.basePowerConsumption;
+                        var basePowerConsumption = (int)compPowerTrader.basePowerConsumption;
                         powerSectionList.Add(new StringDescTriplet(ResourceBank.String.AutoHelpRequired, null,
                             basePowerConsumption.ToString()));
 
@@ -850,7 +859,7 @@ namespace HelpTab
                         }
                         else
                         {
-                            var basePowerConsumption = (int) -compPowerTrader.basePowerConsumption;
+                            var basePowerConsumption = (int)-compPowerTrader.basePowerConsumption;
                             powerSectionList.Add(new StringDescTriplet(ResourceBank.String.AutoHelpGenerates, null,
                                 basePowerConsumption.ToString()));
                         }
@@ -860,8 +869,8 @@ namespace HelpTab
                 var compBattery = thingDef.GetCompProperties<CompProperties_Battery>();
                 if (compBattery != null)
                 {
-                    var stored = (int) compBattery.storedEnergyMax;
-                    var efficiency = (int) (compBattery.efficiency * 100f);
+                    var stored = (int)compBattery.storedEnergyMax;
+                    var efficiency = (int)(compBattery.efficiency * 100f);
                     powerSectionList.Add(new StringDescTriplet(ResourceBank.String.AutoHelpStores, null,
                         stored.ToString()));
                     powerSectionList.Add(new StringDescTriplet(ResourceBank.String.AutoHelpEfficiency, null,
@@ -885,7 +894,7 @@ namespace HelpTab
                         .Where(f =>
                         {
                             var compProps = f.GetCompProperties<CompProperties_AffectedByFacilities>();
-                            return compProps is {linkableFacilities: { }} && compProps.linkableFacilities.Contains(f);
+                            return compProps is { linkableFacilities: { } } && compProps.linkableFacilities.Contains(f);
                         }).ToList();
                     if (!effectsBuildings.NullOrEmpty())
                     {
@@ -955,7 +964,7 @@ namespace HelpTab
             }
 
             if (
-                thingDef is {plant: { }}
+                thingDef is { plant: { } }
             )
             {
                 HelpPartsForPlant(thingDef, ref statParts, ref linkParts);
@@ -985,15 +994,15 @@ namespace HelpTab
             helpDef.description = recipeDef.description;
 
             helpDef.HelpDetailSections.Add(new HelpDetailSection(null,
-                new[] {recipeDef.WorkAmountTotal(null).ToStringWorkAmount()},
-                new[] {ResourceBank.String.WorkAmount + " : "},
+                new[] { recipeDef.WorkAmountTotal(null).ToStringWorkAmount() },
+                new[] { ResourceBank.String.WorkAmount + " : " },
                 null));
 
             if (!recipeDef.skillRequirements.NullOrEmpty())
             {
                 helpDef.HelpDetailSections.Add(new HelpDetailSection(
                     ResourceBank.String.MinimumSkills,
-                    recipeDef.skillRequirements.Select(sr => sr.skill).ToList().ConvertAll(sd => (Def) sd),
+                    recipeDef.skillRequirements.Select(sr => sr.skill).ToList().ConvertAll(sd => (Def)sd),
                     null,
                     recipeDef.skillRequirements.Select(sr => sr.minLevel.ToString("####0")).ToArray()));
             }
@@ -1016,7 +1025,7 @@ namespace HelpTab
             {
                 var products = new HelpDetailSection(
                     ResourceBank.String.AutoHelpListRecipeProducts,
-                    recipeDef.products.Select(tc => tc.thingDef).ToList().ConvertAll(def => (Def) def),
+                    recipeDef.products.Select(tc => tc.thingDef).ToList().ConvertAll(def => (Def)def),
                     recipeDef.products.Select(tc => tc.count.ToString()).ToArray());
 
                 helpDef.HelpDetailSections.Add(products);
@@ -1083,8 +1092,8 @@ namespace HelpTab
             };
 
             var totalCost = new HelpDetailSection(null,
-                new[] {researchProjectDef.baseCost.ToString()},
-                new[] {ResourceBank.String.AutoHelpTotalCost},
+                new[] { researchProjectDef.baseCost.ToString() },
+                new[] { ResourceBank.String.AutoHelpTotalCost },
                 null);
             helpDef.HelpDetailSections.Add(totalCost);
 
@@ -1134,7 +1143,7 @@ namespace HelpTab
             var thingDefs =
                 buildableDefs.Where(def => def is ThingDef)
                     .ToList()
-                    .ConvertAll(def => (ThingDef) def);
+                    .ConvertAll(def => (ThingDef)def);
 
             // Add recipes it unlocks
             var recipeDefs = researchProjectDef.GetRecipesUnlocked(ref thingDefs);
@@ -1220,7 +1229,7 @@ namespace HelpTab
                     defs, null, chances.ToArray()));
             }
 
-            var terrains = biomeDef.AllTerrainDefs().ConvertAll(def => (Def) def);
+            var terrains = biomeDef.AllTerrainDefs().ConvertAll(def => (Def)def);
             // commonalities unknown
             if (!terrains.NullOrEmpty())
             {
@@ -1231,7 +1240,7 @@ namespace HelpTab
 
             var plants = (
                 from thing in DefDatabase<ThingDef>.AllDefsListForReading
-                where thing.plant is {wildBiomes: { }}
+                where thing.plant is { wildBiomes: { } }
                 from record in thing.plant.wildBiomes
                 where record.biome == biomeDef && record.commonality > 0
                 select thing as Def
@@ -1246,7 +1255,7 @@ namespace HelpTab
 
             var animals = (
                 from pawnKind in DefDatabase<PawnKindDef>.AllDefs
-                where pawnKind.RaceProps is {wildBiomes: { }}
+                where pawnKind.RaceProps is { wildBiomes: { } }
                 from record in pawnKind.RaceProps.wildBiomes
                 where record.biome == biomeDef && record.commonality > 0
                 select pawnKind as Def
@@ -1285,7 +1294,7 @@ namespace HelpTab
                 // Look at base stats
                 var baseStats = new HelpDetailSection(
                     null,
-                    raceDef.statBases.Select(sb => sb.stat).ToList().ConvertAll(def => (Def) def),
+                    raceDef.statBases.Select(sb => sb.stat).ToList().ConvertAll(def => (Def)def),
                     null,
                     raceDef.statBases.Select(sb => sb.stat.ValueToString(sb.value, sb.stat.toStringNumberSense))
                         .ToArray());
@@ -1321,7 +1330,7 @@ namespace HelpTab
                 // Look at base stats
                 var baseStats = new HelpDetailSection(
                     null,
-                    def.statBases.Select(sb => sb.stat).ToList().ConvertAll(thing => (Def) thing),
+                    def.statBases.Select(sb => sb.stat).ToList().ConvertAll(thing => (Def)thing),
                     null,
                     def.statBases.Select(sb => sb.stat.ValueToString(sb.value, sb.stat.toStringNumberSense))
                         .ToArray());
@@ -1390,8 +1399,8 @@ namespace HelpTab
                 // yield
                 linkParts.Add(new HelpDetailSection(
                     ResourceBank.String.AutoHelpListPlantYield,
-                    new List<Def>(new[] {plant.harvestedThingDef}),
-                    new[] {plant.harvestYield.ToString()}
+                    new List<Def>(new[] { plant.harvestedThingDef }),
+                    new[] { plant.harvestYield.ToString() }
                 ));
             }
 
@@ -1546,7 +1555,7 @@ namespace HelpTab
                         ResourceBank.String.AutoHelpGestationPeriod)
                 };
 
-                if (race.litterSizeCurve is {PointsCount: >= 3})
+                if (race.litterSizeCurve is { PointsCount: >= 3 })
                 {
                     // if size is three, there is actually only one option (weird boundary restrictions by Tynan require a +/- .5 min/max)
                     if (race.litterSizeCurve.PointsCount == 3)
@@ -1627,7 +1636,7 @@ namespace HelpTab
                 // metallic pawns ( mechanoids )
                 linkParts.Add(new HelpDetailSection(
                     ResourceBank.String.AutoHelpListDisassemble,
-                    kindDef.race.butcherProducts.Select(tc => tc.thingDef).ToList().ConvertAll(def => (Def) def),
+                    kindDef.race.butcherProducts.Select(tc => tc.thingDef).ToList().ConvertAll(def => (Def)def),
                     kindDef.race.butcherProducts.Select(tc => tc.count.ToString()).ToArray()));
             }
 
@@ -1644,7 +1653,7 @@ namespace HelpTab
                     defs.Add(milkComp.milkDef);
                     prefixes.Add(milkComp.milkAmount.ToString());
                     suffixes.Add("AutoHelpEveryX".Translate(
-                        ((float) milkComp.milkIntervalDays * GenDate.TicksPerDay / GenDate.TicksPerYear)
+                        ((float)milkComp.milkIntervalDays * GenDate.TicksPerDay / GenDate.TicksPerYear)
                         .ToStringApproxAge()));
 
                     linkParts.Add(new HelpDetailSection(
@@ -1672,7 +1681,7 @@ namespace HelpTab
                 defs.Add(shearComp.woolDef);
                 prefixes.Add(shearComp.woolAmount.ToString());
                 suffixes.Add("AutoHelpEveryX".Translate(
-                    ((float) shearComp.shearIntervalDays * GenDate.TicksPerDay / GenDate.TicksPerYear)
+                    ((float)shearComp.shearIntervalDays * GenDate.TicksPerDay / GenDate.TicksPerYear)
                     .ToStringApproxAge()));
 
                 linkParts.Add(new HelpDetailSection(
@@ -1775,7 +1784,7 @@ namespace HelpTab
                         ResourceBank.String.AutoHelpGestationPeriod)
                 };
 
-                if (race.litterSizeCurve is {PointsCount: >= 3})
+                if (race.litterSizeCurve is { PointsCount: >= 3 })
                 {
                     // if size is three, there is actually only one option (weird boundary restrictions by Tynan require a +/- .5 min/max)
                     if (race.litterSizeCurve.PointsCount == 3)
@@ -1808,7 +1817,7 @@ namespace HelpTab
             {
                 // metallic pawns ( mechanoids )
                 linkParts.Add(new HelpDetailSection(ResourceBank.String.AutoHelpListDisassemble,
-                    raceDef.butcherProducts.Select(tc => tc.thingDef).ToList().ConvertAll(def => (Def) def),
+                    raceDef.butcherProducts.Select(tc => tc.thingDef).ToList().ConvertAll(def => (Def)def),
                     raceDef.butcherProducts.Select(tc => tc.count.ToString()).ToArray()));
             }
             else

@@ -1,6 +1,6 @@
 # WikiRim
 
-![Image](https://i.imgur.com/WAEzk68.png)
+![Image](https://i.imgur.com/buuPQel.png)
 
 Update of Neronix17s mod
 https://steamcommunity.com/sharedfiles/filedetails/?id=1834856478
@@ -8,25 +8,16 @@ https://steamcommunity.com/sharedfiles/filedetails/?id=1834856478
 - Added search-limit to 200 hits, thanks qwerty19106
 - Races with no leatheramount defined should now show properly, thanks Bbansjkl
 
-![Image](https://i.imgur.com/7Gzt3Rg.png)
+![Image](https://i.imgur.com/pufA0kM.png)
 
-
-[table]
-	[tr]
-		[td]https://invite.gg/Mlie]![Image](https://i.imgur.com/zdzzBrc.png)
-[/td]
-		[td]https://github.com/emipa606/WikiRim]![Image](https://i.imgur.com/kTkpTOE.png)
-[/td]
-	[/tr]
-[/table]
 	
-![Image](https://i.imgur.com/NOW7jU1.png)
+![Image](https://i.imgur.com/Z4GOv8H.png)
 
 
 A comprehensive help database, this is a fork of the mod HelpTab, updated to 1.0 with added changes I personally wanted to see.
 
 Simple
-All the information about everything compiled in a neat catalog of things, explore what your world offers, with detail! Everything is connected, navigate at your heart&apos;s content.
+All the information about everything compiled in a neat catalog of things, explore what your world offers, with detail! Everything is connected, navigate at your heart's content.
 
 Resourceful
 Do you want to know how to build something? What you need to research to obtain it? No more digging inside xml to learn what needs to be done. Just search it and discover!
@@ -38,7 +29,7 @@ Flexible
 Supports every thing any mod adds. The perfect companion for navigating those complex mods.
 
 Conflicts/Bugs/Suggestions
-You lot never bothered following instructions for this before so might as well replace it with a statement pointing out AGAIN that this isn&apos;t supported anymore, no more updates, dead, finito, perished.
+You lot never bothered following instructions for this before so might as well replace it with a statement pointing out AGAIN that this isn't supported anymore, no more updates, dead, finito, perished.
 
 Credits:
 1.0/1.1 Update by Neronix17
@@ -49,7 +40,7 @@ Original mod by Fluffy
 (CC BY-NC-SA 4.0)
 
 
-![Image](https://i.imgur.com/Rs6T6cr.png)
+![Image](https://i.imgur.com/PwoNOj4.png)
 
 
 
@@ -59,7 +50,6 @@ Original mod by Fluffy
 -  For best support, please use the Discord-channel for error-reporting.
 -  Do not report errors by making a discussion-thread, I get no notification of that.
 -  If you have the solution for a problem, please post it to the GitHub repository.
-
 
 
 

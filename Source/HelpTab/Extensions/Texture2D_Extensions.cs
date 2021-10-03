@@ -17,7 +17,7 @@ namespace HelpTab
         public static void DrawFittedIn(this Texture2D tex, Rect rect)
         {
             var rectProportion = rect.width / rect.height;
-            var texProportion = tex.width / (float) tex.height;
+            var texProportion = tex.width / (float)tex.height;
 
             if (texProportion > rectProportion)
             {

@@ -91,7 +91,7 @@ namespace HelpTab
 
             // built def != listed def
             if (
-                tdef is {entityDefToBuild: { }}
+                tdef is { entityDefToBuild: { } }
             )
             {
                 _cachedIconColors.Add(def, tdef.entityDefToBuild.IconColor());
@@ -107,7 +107,7 @@ namespace HelpTab
 
             // stuff used?
             if (
-                tdef is {MadeFromStuff: true}
+                tdef is { MadeFromStuff: true }
             )
             {
                 var stuff = GenStuff.DefaultStuffFor(tdef);

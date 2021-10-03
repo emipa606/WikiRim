@@ -144,8 +144,8 @@ namespace HelpTab
                 for (var countsIndex = 0; countsIndex < availableCounts.Count; ++countsIndex)
                 {
                     var countRequiredFor =
-                        (float) ingredientCount.CountRequiredOfFor(availableCounts.GetDef(countsIndex), recipeDef);
-                    if (!(countRequiredFor <= (double) availableCounts.GetCount(countsIndex)) ||
+                        (float)ingredientCount.CountRequiredOfFor(availableCounts.GetDef(countsIndex), recipeDef);
+                    if (!(countRequiredFor <= (double)availableCounts.GetCount(countsIndex)) ||
                         !ingredientCount.filter.Allows(availableCounts.GetDef(countsIndex)))
                     {
                         continue;
