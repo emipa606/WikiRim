@@ -1,5 +1,8 @@
 # Changelog for WikiRim
 
+1.0.8.0 - Fixed help generation for animals with defined leather-def but that for some reason have no defined leather amount. (A RimWorld of Magic)
+
+
 1.0.7.0 - Small multiplier values should now be visible by using the factor string-style
 
 

@@ -1430,6 +1430,7 @@ namespace HelpTab
             ref List<HelpDetailSection> linkParts)
         {
             var race = kindDef.race.race;
+
             var maxSize = race.lifeStageAges.Select(lsa => lsa.def.bodySizeFactor * race.baseBodySize).Max();
 
             // set up vars
@@ -1458,7 +1459,6 @@ namespace HelpTab
             if (race.Animal)
             {
                 var DST = new List<DefStringTriplet>();
-
                 foreach (var def in DefDatabase<TrainableDef>.AllDefsListForReading)
                 {
                     // skip if explicitly disallowed
@@ -1613,14 +1613,16 @@ namespace HelpTab
             {
                 // fleshy pawns ( meat + leather )
                 defs.Add(race.meatDef);
+
                 prefixes.Add("~" + (maxSize * StatDefOf.MeatAmount.defaultBaseValue));
 
                 if (race.leatherDef != null)
                 {
                     defs.Add(race.leatherDef);
+
                     prefixes.Add("~" +
                                  (maxSize * kindDef.race.statBases.Find(sb => sb.stat == StatDefOf.LeatherAmount)
-                                     .value));
+                                     ?.value));
                 }
 
                 statParts.Add(new HelpDetailSection(
