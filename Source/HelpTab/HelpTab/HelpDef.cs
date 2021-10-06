@@ -46,7 +46,8 @@ namespace HelpTab
 
         public bool MatchesFilter(string filter)
         {
-            return filter == "" || LabelCap.ToString().IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0;
+            return string.IsNullOrEmpty(filter) || !string.IsNullOrEmpty(LabelCap) &&
+                LabelCap.RawText?.IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0;
         }
     }
 }

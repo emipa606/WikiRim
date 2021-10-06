@@ -1,5 +1,8 @@
 # Changelog for WikiRim
 
+1.0.9.0 - Added another nullcheck regarding searches, hopefully this will stop some unknown errors
+
+
 1.0.8.0 - Fixed help generation for animals with defined leather-def but that for some reason have no defined leather amount. (A RimWorld of Magic)
 
 
