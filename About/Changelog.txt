@@ -1,5 +1,10 @@
 # Changelog for WikiRim
 
+1.0.10.0 - Added more detailed information about weapons.
+Ranged weapons should also have info about the default projectile.
+Any other item that have a registered Verb or Tool should have this visible in the wiki as well (the melee attack of the beer bottle for example)
+
+
 1.0.9.0 - Added another nullcheck regarding searches, hopefully this will stop some unknown errors
 
 

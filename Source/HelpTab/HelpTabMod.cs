@@ -1,12 +1,11 @@
 ﻿using Verse;
 
-namespace HelpTab
+namespace HelpTab;
+
+public class HelpTabMod : Mod
 {
-    public class HelpTabMod : Mod
+    public HelpTabMod(ModContentPack mcp) : base(mcp)
     {
-        public HelpTabMod(ModContentPack mcp) : base(mcp)
-        {
-            LongEventHandler.QueueLongEvent(HelpBuilder.ResolveImpliedDefs, "BuildingHelpDatabase", false, null);
-        }
+        LongEventHandler.QueueLongEvent(HelpBuilder.ResolveImpliedDefs, "BuildingHelpDatabase", false, null);
     }
 }

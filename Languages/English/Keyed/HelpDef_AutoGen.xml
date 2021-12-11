@@ -46,6 +46,8 @@
   <AutoHelpListThingsUnlocked>Enables construction</AutoHelpListThingsUnlocked>
   <AutoHelpListCapacityModifiers>Capacity modifiers</AutoHelpListCapacityModifiers>
   <AutoHelpListStatOffsets>Stat bonus</AutoHelpListStatOffsets>
+  <AutoHelpListVerbs>Verbs</AutoHelpListVerbs>
+  <AutoHelpListTools>Tools</AutoHelpListTools>
   <AutoHelpListNutrition>Nutritional value</AutoHelpListNutrition>
   <AutoHelpListNutritionPlant>Nutritional value (plant)</AutoHelpListNutritionPlant>
   <AutoHelpFacilityStats>Facility bonus</AutoHelpFacilityStats>
