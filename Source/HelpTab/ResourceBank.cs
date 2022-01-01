@@ -48,6 +48,7 @@ public static class ResourceBank
         public static readonly string AutoHelpSubCategoryDrugs = "AutoHelpSubCategoryDrugs".Translate();
         public static readonly string AutoHelpSubCategoryMeals = "AutoHelpSubCategoryMeals".Translate();
         public static readonly string AutoHelpSubCategoryWeapons = "AutoHelpSubCategoryWeapons".Translate();
+        public static readonly string AutoHelpSubCategoryStuff = "AutoHelpSubCategoryStuff".Translate();
 
         public static readonly string AutoHelpCategoryBuildings = "AutoHelpCategoryBuildings".Translate();
         public static readonly string AutoHelpSubCategorySpecial = "AutoHelpSubCategorySpecial".Translate();

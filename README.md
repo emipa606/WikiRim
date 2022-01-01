@@ -7,6 +7,7 @@ https://steamcommunity.com/sharedfiles/filedetails/?id=1834856478
 
 - Added search-limit to 200 hits, thanks qwerty19106
 - Races with no leatheramount defined should now show properly, thanks Bbansjkl
+- Added more detailed info about weapons
 
 ![Image](https://i.imgur.com/pufA0kM.png)
 

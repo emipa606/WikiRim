@@ -18,6 +18,7 @@ public static class HelpBuilder
         DrugHelp = "Drug" + HelpPostFix,
         MealHelp = "Meal" + HelpPostFix,
         WeaponHelp = "Weapon" + HelpPostFix,
+        StuffHelp = "Stuff" + HelpPostFix,
 
         // flora and fauna
         TerrainHelp = "Terrain" + HelpPostFix,
@@ -40,7 +41,7 @@ public static class HelpBuilder
         ResolveMeals();
         ResolveWeapons();
 
-        // TODO: Add stuff categories
+        ResolveStuff();
         // TODO: Add workTypes
         // TODO: Add capacities
         // TODO: Add skills
@@ -203,6 +204,31 @@ public static class HelpBuilder
 
         // Get help category
         var helpCategoryDef = HelpCategoryForKey(WeaponHelp, ResourceBank.String.AutoHelpSubCategoryWeapons,
+            ResourceBank.String.AutoHelpCategoryItems);
+
+        // Scan through all possible buildable defs and auto-generate help
+        ResolveDefList(
+            thingDefs,
+            helpCategoryDef
+        );
+    }
+
+    private static void ResolveStuff()
+    {
+        // Get list of things
+        var thingDefs = (
+            from thing in DefDatabase<ThingDef>.AllDefsListForReading
+            where thing.IsStuff
+            select thing
+        ).ToList();
+
+        if (thingDefs.NullOrEmpty())
+        {
+            return;
+        }
+
+        // Get help category
+        var helpCategoryDef = HelpCategoryForKey(StuffHelp, ResourceBank.String.AutoHelpSubCategoryStuff,
             ResourceBank.String.AutoHelpCategoryItems);
 
         // Scan through all possible buildable defs and auto-generate help
@@ -605,6 +631,19 @@ public static class HelpBuilder
             statParts.Add(baseStats);
         }
 
+        // Stuff stats
+        if (thingDef?.IsStuff == true && thingDef.stuffProps.statFactors != null)
+        {
+            var statFactors = new HelpDetailSection(
+                null,
+                thingDef.stuffProps.statFactors.Select(sb => sb.stat).ToList().ConvertAll(def => (Def)def),
+                null,
+                thingDef.stuffProps.statFactors
+                    .Select(sb => sb.stat.ValueToString(sb.value, ToStringNumberSense.Factor)).ToArray());
+
+            statParts.Add(statFactors);
+        }
+
         // Add list of required research
         var researchDefs = buildableDef.GetResearchRequirements();
         if (!researchDefs.NullOrEmpty())
@@ -628,14 +667,14 @@ public static class HelpBuilder
 
         if (thingDef != null)
         {
-            if (!thingDef.equippedStatOffsets.NullOrEmpty())
+            if (thingDef.equippedStatOffsets?.Any() == true)
             {
                 var equippedOffsets = new HelpDetailSection(
                     ResourceBank.String.AutoHelpListStatOffsets,
                     thingDef.equippedStatOffsets.Select(so => so.stat).ToList().ConvertAll(def => (Def)def),
                     null,
                     thingDef.equippedStatOffsets
-                        .Select(so => so.stat.ValueToString(so.value, so.stat.toStringNumberSense))
+                        .Select(so => so.stat?.ValueToString(so.value, so.stat.toStringNumberSense))
                         .ToArray());
 
                 statParts.Add(equippedOffsets);
