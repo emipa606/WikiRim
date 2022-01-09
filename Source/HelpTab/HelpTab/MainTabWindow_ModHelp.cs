@@ -259,6 +259,15 @@ public class MainTabWindow_ModHelp : MainTabWindow, IHelpDefView
             SelectedHelpDef.keyDef.DrawColouredIcon(iconRect);
         }
 
+        if (SelectedHelpDef.keyDef is PawnKindDef kindDef)
+        {
+            Widgets.InfoCardButton(rect.xMax - WindowMargin - 30f, rect.yMin + WindowMargin, kindDef.race);
+        }
+        else if (SelectedHelpDef.keyDef is not ResearchProjectDef _ && SelectedHelpDef.keyDef is not BiomeDef _)
+        {
+            Widgets.InfoCardButton(rect.xMax - WindowMargin - 30f, rect.yMin + WindowMargin, SelectedHelpDef.keyDef);
+        }
+
         Text.Font = GameFont.Medium;
         Text.Anchor = TextAnchor.MiddleCenter;
         Widgets.Label(titleRect, SelectedHelpDef.LabelCap);

@@ -1,5 +1,8 @@
 # Changelog for WikiRim
 
+1.3.2 - Added in-game info-icon to all relevant wiki-pages
+
+
 1.3.1 - Added Stuffs to the wiki
 
 
