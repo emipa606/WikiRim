@@ -1155,11 +1155,19 @@ public static class HelpBuilder
 
         if (!recipeDef.skillRequirements.NullOrEmpty())
         {
-            helpDef.HelpDetailSections.Add(new HelpDetailSection(
-                ResourceBank.String.MinimumSkills,
-                recipeDef.skillRequirements.Select(sr => sr.skill).ToList().ConvertAll(sd => (Def)sd),
-                null,
-                recipeDef.skillRequirements.Select(sr => sr.minLevel.ToString("####0")).ToArray()));
+            try
+            {
+                helpDef.HelpDetailSections.Add(new HelpDetailSection(
+                    ResourceBank.String.MinimumSkills,
+                    recipeDef.skillRequirements.Select(sr => sr.skill).ToList().ConvertAll(sd => (Def)sd),
+                    null,
+                    recipeDef.skillRequirements.Select(sr => sr.minLevel.ToString("####0")).ToArray()));
+            }
+            catch
+            {
+                Log.Warning(
+                    $"[WikiRim]: Failed to read the skillRequirements when creating the help definition for recipe {recipeDef.defName}");
+            }
         }
 
         // List of ingredients

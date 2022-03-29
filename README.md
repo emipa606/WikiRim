@@ -9,6 +9,7 @@ https://steamcommunity.com/sharedfiles/filedetails/?id=1834856478
 - Races with no leatheramount defined should now show properly, thanks Bbansjkl
 - Added more detailed info about weapons
 - Added all Stuff-types
+- Added info-i icon to the in-game information on all relevant wiki-pages
 
 ![Image](https://i.imgur.com/pufA0kM.png)
 
