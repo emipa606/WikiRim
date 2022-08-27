@@ -2,6 +2,7 @@
 <LanguageData>
   <BuildingHelpDatabase>Building Help Database</BuildingHelpDatabase>
   <NoHelpDefs>No help found</NoHelpDefs>
+  <SearchModsAsWell>Match mod-names</SearchModsAsWell>
   <JumpToTopic>Click to jump to topic</JumpToTopic>
   <MaxAmountOfHits>Limit reached (200)</MaxAmountOfHits>
   <type>Type</type>

@@ -1,5 +1,9 @@
 # Changelog for WikiRim
 
+1.3.4 - Added option to match on mod-names.
+Used DeepL to update translations for Russian, Spanish
+
+
 1.3.3 - Added error handling to find an issue with the recipe help-generation
 
 

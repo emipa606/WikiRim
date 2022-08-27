@@ -46,7 +46,17 @@ public class HelpDef : Def, IComparable
 
     public bool MatchesFilter(string filter)
     {
-        return string.IsNullOrEmpty(filter) || !string.IsNullOrEmpty(LabelCap) &&
-            LabelCap.RawText?.IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0;
+        if (string.IsNullOrEmpty(filter))
+        {
+            return true;
+        }
+
+        if (string.IsNullOrEmpty(label))
+        {
+            return false;
+        }
+
+        return label.ToLower().Contains(filter.ToLower()) || HelpTabMod.SearchMods &&
+            keyDef.modContentPack?.Name?.ToLower().Contains(filter.ToLower()) == true;
     }
 }

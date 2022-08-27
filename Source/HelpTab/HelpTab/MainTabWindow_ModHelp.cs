@@ -320,8 +320,17 @@ public class MainTabWindow_ModHelp : MainTabWindow, IHelpDefView
             }
         }
 
+        var modCheckRect = new Rect(rect.xMin + WindowMargin, rect.yMin + WindowMargin + 30f,
+            rect.width - (3 * WindowMargin) - 30f, 30f);
+        var startValue = HelpTabMod.SearchMods;
+        Widgets.CheckboxLabeled(modCheckRect, "SearchModsAsWell".Translate(), ref HelpTabMod.SearchMods);
+        if (HelpTabMod.SearchMods != startValue)
+        {
+            Filter();
+        }
+
         var outRect = rect;
-        outRect.yMin += 40f;
+        outRect.yMin += 70f;
         outRect.xMax -= 2f; // some spacing around the scrollbar
 
         var viewWidth = SelectionHeight > outRect.height ? outRect.width - 16f : outRect.width;
@@ -513,27 +522,18 @@ public class MainTabWindow_ModHelp : MainTabWindow, IHelpDefView
 
         public bool MatchesFilter(string filter)
         {
-            return
-                filter == "" ||
-                ModName.ToUpper().Contains(filter.ToUpper())
-                ;
+            return filter == "" || ModName.ToUpper().Contains(filter.ToUpper());
         }
 
         public bool ThisOrAnyChildMatchesFilter(string filter)
         {
-            return
-                MatchesFilter(filter) ||
-                HelpCategories.Any(hc => hc.ThisOrAnyChildMatchesFilter(filter))
-                ;
+            return MatchesFilter(filter) || HelpCategories.Any(hc => hc.ThisOrAnyChildMatchesFilter(filter));
         }
 
         public void Filter(string filter)
         {
             ShouldDraw = ThisOrAnyChildMatchesFilter(filter);
-            Expanded =
-                filter != "" &&
-                ThisOrAnyChildMatchesFilter(filter)
-                ;
+            Expanded = filter != "" && ThisOrAnyChildMatchesFilter(filter);
 
             foreach (var hc in HelpCategories)
             {
