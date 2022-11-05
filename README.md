@@ -10,6 +10,7 @@ https://steamcommunity.com/sharedfiles/filedetails/?id=1834856478
 - Added more detailed info about weapons
 - Added all Stuff-types
 - Added info-i icon to the in-game information on all relevant wiki-pages
+- Added option to match on mod-names
 
 ![Image](https://i.imgur.com/pufA0kM.png)
 

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using Verse;
 
@@ -38,7 +37,8 @@ public class HelpDetailSectionHelper
 
         for (var i = 0; i < defs.Count; i++)
         {
-            if (seen.Count(def => def == defs[i]) != 0)
+            var i1 = i;
+            if (seen.Count(def => def == defs[i1]) != 0)
             {
                 continue;
             }

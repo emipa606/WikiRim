@@ -148,10 +148,7 @@ public static class ResearchProjectDef_Extensions
     {
         // Recipes on buildings it unlocks
         var recipes = new List<RecipeDef>();
-        if (thingDefs != null)
-        {
-            thingDefs.Clear();
-        }
+        thingDefs?.Clear();
 
         // Add all recipes using this research projects
         var researchRecipes = DefDatabase<RecipeDef>.AllDefsListForReading.Where(d =>
@@ -193,10 +190,7 @@ public static class ResearchProjectDef_Extensions
         ref List<ThingDef> thingDefs)
     {
         var sowTags = new List<string>();
-        if (thingDefs != null)
-        {
-            thingDefs.Clear();
-        }
+        thingDefs?.Clear();
 
         // Add all plants using this research project
         var researchPlants = DefDatabase<ThingDef>.AllDefsListForReading.Where(d =>
@@ -215,10 +209,7 @@ public static class ResearchProjectDef_Extensions
             sowTags.AddRangeUnique(plant.plant.sowTags);
         }
 
-        if (thingDefs != null)
-        {
-            thingDefs.AddRangeUnique(researchPlants);
-        }
+        thingDefs?.AddRangeUnique(researchPlants);
 
         return sowTags;
     }

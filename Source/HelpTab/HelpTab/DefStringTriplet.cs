@@ -29,13 +29,13 @@ public struct DefStringTriplet
         var s = new StringBuilder();
         if (Prefix != "")
         {
-            s.Append(Prefix + " ");
+            s.Append($"{Prefix} ");
         }
 
         s.Append(Def.LabelCap);
         if (Suffix != "")
         {
-            s.Append(" " + Suffix);
+            s.Append($" {Suffix}");
         }
 
         return s.ToString();

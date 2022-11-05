@@ -13,24 +13,24 @@ public static class HelpBuilder
     private static readonly string HelpPostFix = "_HelpCategoryDef",
 
         // items
-        ApparelHelp = "Apparel" + HelpPostFix,
-        BodyPartHelp = "BodyPart" + HelpPostFix,
-        DrugHelp = "Drug" + HelpPostFix,
-        MealHelp = "Meal" + HelpPostFix,
-        WeaponHelp = "Weapon" + HelpPostFix,
-        StuffHelp = "Stuff" + HelpPostFix,
+        ApparelHelp = $"Apparel{HelpPostFix}",
+        BodyPartHelp = $"BodyPart{HelpPostFix}",
+        DrugHelp = $"Drug{HelpPostFix}",
+        MealHelp = $"Meal{HelpPostFix}",
+        WeaponHelp = $"Weapon{HelpPostFix}",
+        StuffHelp = $"Stuff{HelpPostFix}",
 
         // flora and fauna
-        TerrainHelp = "Terrain" + HelpPostFix,
-        Plants = "Plants" + HelpPostFix,
-        Animals = "Animals" + HelpPostFix,
-        Humanoids = "Humanoids" + HelpPostFix,
-        Mechanoids = "Mechanoids" + HelpPostFix,
-        Biomes = "Biomes" + HelpPostFix,
+        TerrainHelp = $"Terrain{HelpPostFix}",
+        Plants = $"Plants{HelpPostFix}",
+        Animals = $"Animals{HelpPostFix}",
+        Humanoids = $"Humanoids{HelpPostFix}",
+        Mechanoids = $"Mechanoids{HelpPostFix}",
+        Biomes = $"Biomes{HelpPostFix}",
 
         // recipes and research
-        RecipeHelp = "Recipe" + HelpPostFix,
-        ResearchHelp = "Research" + HelpPostFix;
+        RecipeHelp = $"Recipe{HelpPostFix}",
+        ResearchHelp = $"Research{HelpPostFix}";
 
     public static void ResolveImpliedDefs()
     {
@@ -256,7 +256,7 @@ public static class HelpBuilder
             }
 
             // Get help category
-            var helpCategoryDef = HelpCategoryForKey(designationCategoryDef.defName + "_Building" + HelpPostFix,
+            var helpCategoryDef = HelpCategoryForKey($"{designationCategoryDef.defName}_Building{HelpPostFix}",
                 designationCategoryDef.label, ResourceBank.String.AutoHelpCategoryBuildings);
 
             // Scan through all possible buildable defs and auto-generate help
@@ -282,7 +282,7 @@ public static class HelpBuilder
         }
 
         // Get help category
-        var helpCategoryDef = HelpCategoryForKey("Special_Building" + HelpPostFix,
+        var helpCategoryDef = HelpCategoryForKey($"Special_Building{HelpPostFix}",
             ResourceBank.String.AutoHelpSubCategorySpecial, ResourceBank.String.AutoHelpCategoryBuildings);
 
         // Scan through all possible buildable defs and auto-generate help
@@ -434,7 +434,7 @@ public static class HelpBuilder
             }
 
             // Get help category
-            var helpCategoryDef = HelpCategoryForKey(thingDef.defName + "_" + RecipeHelp, thingDef.label,
+            var helpCategoryDef = HelpCategoryForKey($"{thingDef.defName}_{RecipeHelp}", thingDef.label,
                 ResourceBank.String.AutoHelpCategoryRecipes);
 
             foreach (var recipeDef in recipeDefs)
@@ -520,7 +520,7 @@ public static class HelpBuilder
             }
             catch (Exception e)
             {
-                Log.Warning("HelpTab :: Failed to build help for: " + def + "\n\t" + e);
+                Log.Warning($"HelpTab :: Failed to build help for: {def}\n\t{e}");
             }
 
             // Inject the def
@@ -599,7 +599,7 @@ public static class HelpBuilder
         // set up empty helpdef
         var helpDef = new HelpDef
         {
-            defName = buildableDef.defName + "_BuildableDef_Help",
+            defName = $"{buildableDef.defName}_BuildableDef_Help",
             keyDef = buildableDef,
             label = buildableDef.label,
             category = category,
@@ -983,9 +983,8 @@ public static class HelpBuilder
             {
                 if (compPowerTrader.basePowerConsumption > 0)
                 {
-                    var basePowerConsumption = (int)compPowerTrader.basePowerConsumption;
                     powerSectionList.Add(new StringDescTriplet(ResourceBank.String.AutoHelpRequired, null,
-                        basePowerConsumption.ToString()));
+                        compPowerTrader.basePowerConsumption.ToString()));
 
                     /*
                     var compPowerIdle = thingDef.GetCompProperties<CompProperties_LowIdleDraw>();
@@ -1029,7 +1028,7 @@ public static class HelpBuilder
                 powerSectionList.Add(new StringDescTriplet(ResourceBank.String.AutoHelpStores, null,
                     stored.ToString()));
                 powerSectionList.Add(new StringDescTriplet(ResourceBank.String.AutoHelpEfficiency, null,
-                    efficiency + "%"));
+                    $"{efficiency}%"));
             }
 
             if (!powerSectionList.NullOrEmpty())
@@ -1066,7 +1065,7 @@ public static class HelpBuilder
                         foreach (var stat in facilityProperties.statOffsets)
                         {
                             facilityDefs.Add(new DefStringTriplet(stat.stat, null,
-                                ": " + stat.stat.ValueToString(stat.value, stat.stat.toStringNumberSense)));
+                                $": {stat.stat.ValueToString(stat.value, stat.stat.toStringNumberSense)}"));
                         }
                     }
 
@@ -1143,14 +1142,14 @@ public static class HelpBuilder
             keyDef = recipeDef,
             secondaryKeyDef = thingDef
         };
-        helpDef.defName = helpDef.keyDef + "_RecipeDef_Help";
+        helpDef.defName = $"{helpDef.keyDef}_RecipeDef_Help";
         helpDef.label = recipeDef.label;
         helpDef.category = category;
         helpDef.description = recipeDef.description;
 
         helpDef.HelpDetailSections.Add(new HelpDetailSection(null,
             new[] { recipeDef.WorkAmountTotal(null).ToStringWorkAmount() },
-            new[] { ResourceBank.String.WorkAmount + " : " },
+            new[] { $"{ResourceBank.String.WorkAmount} : " },
             null));
 
         if (!recipeDef.skillRequirements.NullOrEmpty())
@@ -1247,7 +1246,7 @@ public static class HelpBuilder
     {
         var helpDef = new HelpDef
         {
-            defName = researchProjectDef.defName + "_ResearchProjectDef_Help",
+            defName = $"{researchProjectDef.defName}_ResearchProjectDef_Help",
             keyDef = researchProjectDef,
             label = researchProjectDef.label,
             category = category,
@@ -1356,7 +1355,7 @@ public static class HelpBuilder
         {
             keyDef = biomeDef
         };
-        helpDef.defName = helpDef.keyDef + "_RecipeDef_Help";
+        helpDef.defName = $"{helpDef.keyDef}_RecipeDef_Help";
         helpDef.label = biomeDef.label;
         helpDef.category = category;
         helpDef.description = biomeDef.description;
@@ -1442,7 +1441,7 @@ public static class HelpBuilder
         // set up empty helpdef
         var helpDef = new HelpDef
         {
-            defName = kindDef.defName + "_PawnKindDef_Help",
+            defName = $"{kindDef.defName}_PawnKindDef_Help",
             keyDef = kindDef,
             label = kindDef.label,
             category = category,
@@ -1478,7 +1477,7 @@ public static class HelpBuilder
         // set up empty helpdef
         var helpDef = new HelpDef
         {
-            defName = def.defName + "_PawnKindDef_Help",
+            defName = $"{def.defName}_PawnKindDef_Help",
             keyDef = def,
             label = def.label,
             category = category,
@@ -1520,8 +1519,8 @@ public static class HelpBuilder
             },
             new[]
             {
-                ResourceBank.String.AutoHelpListFertility + ":",
-                ResourceBank.String.AutoHelpListPathCost + ":"
+                $"{ResourceBank.String.AutoHelpListFertility}:",
+                $"{ResourceBank.String.AutoHelpListPathCost}:"
             },
             null));
 
@@ -1547,7 +1546,7 @@ public static class HelpBuilder
             {
                 plant.growDays.ToString(),
                 plant.fertilityMin.ToStringPercent(),
-                plant.growMinGlow.ToStringPercent() + " - " + plant.growOptimalGlow.ToStringPercent()
+                $"{plant.growMinGlow.ToStringPercent()} - {plant.growOptimalGlow.ToStringPercent()}"
             },
             new[]
             {
@@ -1667,14 +1666,12 @@ public static class HelpBuilder
             // final lifestage
             if (i == race.lifeStageAges.Count - 1)
             {
-                suffixes.Add(ages[i].ToStringApproxAge() + " - ~" +
-                             race.lifeExpectancy.ToStringApproxAge());
+                suffixes.Add($"{ages[i].ToStringApproxAge()} - ~{race.lifeExpectancy.ToStringApproxAge()}");
             }
             else
                 // other lifestages
             {
-                suffixes.Add(ages[i].ToStringApproxAge() + " - " +
-                             ages[i + 1].ToStringApproxAge());
+                suffixes.Add($"{ages[i].ToStringApproxAge()} - {ages[i + 1].ToStringApproxAge()}");
             }
         }
 
@@ -1731,8 +1728,7 @@ public static class HelpBuilder
                 else
                 {
                     SDT.Add(new StringDescTriplet(
-                        race.litterSizeCurve[1].x + " - " +
-                        race.litterSizeCurve[race.litterSizeCurve.PointsCount - 2].x,
+                        $"{race.litterSizeCurve[1].x} - {race.litterSizeCurve[race.litterSizeCurve.PointsCount - 2].x}",
                         ResourceBank.String.AutoHelpLitterSize));
                     stringDescs.Add(ResourceBank.String.AutoHelpLitterSize);
                 }
@@ -1777,15 +1773,14 @@ public static class HelpBuilder
             // fleshy pawns ( meat + leather )
             defs.Add(race.meatDef);
 
-            prefixes.Add("~" + (maxSize * StatDefOf.MeatAmount.defaultBaseValue));
+            prefixes.Add($"~{maxSize * StatDefOf.MeatAmount.defaultBaseValue}");
 
             if (race.leatherDef != null)
             {
                 defs.Add(race.leatherDef);
 
-                prefixes.Add("~" +
-                             (maxSize * kindDef.race.statBases.Find(sb => sb.stat == StatDefOf.LeatherAmount)
-                                 ?.value));
+                prefixes.Add(
+                    $"~{maxSize * kindDef.race.statBases.Find(sb => sb.stat == StatDefOf.LeatherAmount)?.value}");
             }
 
             statParts.Add(new HelpDetailSection(
@@ -1898,14 +1893,12 @@ public static class HelpBuilder
             // final lifestage
             if (i == race.lifeStageAges.Count - 1)
             {
-                suffixes.Add(ages[i].ToStringApproxAge() + " - ~" +
-                             race.lifeExpectancy.ToStringApproxAge());
+                suffixes.Add($"{ages[i].ToStringApproxAge()} - ~{race.lifeExpectancy.ToStringApproxAge()}");
             }
             else
                 // other lifestages
             {
-                suffixes.Add(ages[i].ToStringApproxAge() + " - " +
-                             ages[i + 1].ToStringApproxAge());
+                suffixes.Add($"{ages[i].ToStringApproxAge()} - {ages[i + 1].ToStringApproxAge()}");
             }
         }
 
@@ -1962,8 +1955,7 @@ public static class HelpBuilder
                 else
                 {
                     SDT.Add(new StringDescTriplet(
-                        race.litterSizeCurve[1].x + " - " +
-                        race.litterSizeCurve[race.litterSizeCurve.PointsCount - 2].x,
+                        $"{race.litterSizeCurve[1].x} - {race.litterSizeCurve[race.litterSizeCurve.PointsCount - 2].x}",
                         ResourceBank.String.AutoHelpLitterSize));
                     stringDescs.Add(ResourceBank.String.AutoHelpLitterSize);
                 }
@@ -1989,7 +1981,7 @@ public static class HelpBuilder
         {
             // fleshy pawns ( meat + leather )
             defs.Add(race.meatDef);
-            prefixes.Add("~" + (maxSize * StatDefOf.MeatAmount.defaultBaseValue));
+            prefixes.Add($"~{maxSize * StatDefOf.MeatAmount.defaultBaseValue}");
 
             if (race.leatherDef != null)
             {
@@ -1999,7 +1991,7 @@ public static class HelpBuilder
                 if (statModifier != null)
                 {
                     defs.Add(race.leatherDef);
-                    prefixes.Add("~" + (maxSize * statModifier.value));
+                    prefixes.Add($"~{maxSize * statModifier.value}");
                 }
             }
 

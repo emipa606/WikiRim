@@ -81,22 +81,14 @@ public static class RecipeDef_Extensions
             t.AllRecipes.Contains(recipeDef)
         ).ToList();
 
-        if (!thingDefs.NullOrEmpty())
-        {
-            return thingDefs;
-        }
-
-        return new List<ThingDef>();
+        return !thingDefs.NullOrEmpty() ? thingDefs : new List<ThingDef>();
     }
 
     public static List<ThingDef> GetThingsUnlocked(this RecipeDef recipeDef, ref List<Def> researchDefs)
     {
         // Things it is unlocked on with research
         var thingDefs = new List<ThingDef>();
-        if (researchDefs != null)
-        {
-            researchDefs.Clear();
-        }
+        researchDefs?.Clear();
 
         if (recipeDef.researchPrerequisite == null)
         {
@@ -104,10 +96,7 @@ public static class RecipeDef_Extensions
         }
 
         thingDefs.AddRangeUnique(recipeDef.recipeUsers);
-        if (researchDefs != null)
-        {
-            researchDefs.AddUnique(recipeDef.researchPrerequisite);
-        }
+        researchDefs?.AddUnique(recipeDef.researchPrerequisite);
 
         return thingDefs;
     }
@@ -240,12 +229,7 @@ public static class RecipeDef_Extensions
             get
             {
                 var index = defs.IndexOf(def);
-                if (index < 0)
-                {
-                    return 0.0f;
-                }
-
-                return counts[index];
+                return index < 0 ? 0.0f : counts[index];
             }
             set
             {

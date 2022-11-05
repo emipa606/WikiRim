@@ -263,7 +263,7 @@ public class HelpDetailSection
         var s = new StringBuilder();
         if (Label != null)
         {
-            s.AppendLine(Label.CapitalizeFirst() + ":");
+            s.AppendLine($"{Label.CapitalizeFirst()}:");
         }
 
         if (StringDescs != null)

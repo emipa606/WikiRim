@@ -1,5 +1,8 @@
 # Changelog for WikiRim
 
+1.4.1 - Mod updated for 1.4 and passed autotests
+
+
 1.3.4 - Added option to match on mod-names.
 Used DeepL to update translations for Russian, Spanish
 

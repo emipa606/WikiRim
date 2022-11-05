@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using RimWorld;
 using Verse;
 
@@ -8,20 +7,12 @@ namespace HelpTab;
 
 public static class ThingDef_Extensions
 {
-    internal static FieldInfo _allRecipesCached;
-
     // Dummy for functions needing a ref list
     public static List<Def> nullDefs;
 
     public static void RecacheRecipes(this ThingDef thingDef, Map map, bool validateBills)
     {
-        if (_allRecipesCached == null)
-        {
-            _allRecipesCached =
-                typeof(ThingDef).GetField("allRecipesCached", BindingFlags.Instance | BindingFlags.NonPublic);
-        }
-
-        _allRecipesCached?.SetValue(thingDef, null);
+        thingDef.allRecipesCached = null;
 
         if (
             !validateBills ||
@@ -59,12 +50,7 @@ public static class ThingDef_Extensions
 
     public static bool IsFoodMachine(this ThingDef thingDef)
     {
-        if (typeof(Building_NutrientPasteDispenser).IsAssignableFrom(thingDef.thingClass))
-        {
-            return true;
-        }
-
-        return false;
+        return typeof(Building_NutrientPasteDispenser).IsAssignableFrom(thingDef.thingClass);
     }
 
     public static bool IsIngestible(this ThingDef thingDef)
@@ -74,16 +60,9 @@ public static class ThingDef_Extensions
 
     public static bool IsDrug(this ThingDef thingDef)
     {
-        if (
-            thingDef.IsIngestible() &&
-            (thingDef.ingestible.drugCategory == DrugCategory.Hard ||
-             thingDef.ingestible.drugCategory == DrugCategory.Social)
-        )
-        {
-            return true;
-        }
-
-        return false;
+        return thingDef.IsIngestible() &&
+               (thingDef.ingestible.drugCategory == DrugCategory.Hard ||
+                thingDef.ingestible.drugCategory == DrugCategory.Social);
     }
 
     public static bool IsImplant(this ThingDef thingDef)
@@ -143,10 +122,7 @@ public static class ThingDef_Extensions
     {
         // Recipes that are unlocked on thing with research
         var recipeDefs = new List<RecipeDef>();
-        if (researchDefs != null)
-        {
-            researchDefs.Clear();
-        }
+        researchDefs?.Clear();
 
         // Look at recipes
         var recipes = DefDatabase<RecipeDef>.AllDefsListForReading.Where(r =>

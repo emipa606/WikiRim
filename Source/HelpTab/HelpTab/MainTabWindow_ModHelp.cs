@@ -263,7 +263,7 @@ public class MainTabWindow_ModHelp : MainTabWindow, IHelpDefView
         {
             Widgets.InfoCardButton(rect.xMax - WindowMargin - 30f, rect.yMin + WindowMargin, kindDef.race);
         }
-        else if (SelectedHelpDef.keyDef is not ResearchProjectDef _ && SelectedHelpDef.keyDef is not BiomeDef _)
+        else if (SelectedHelpDef.keyDef is not ResearchProjectDef && SelectedHelpDef.keyDef is not BiomeDef)
         {
             Widgets.InfoCardButton(rect.xMax - WindowMargin - 30f, rect.yMin + WindowMargin, SelectedHelpDef.keyDef);
         }
