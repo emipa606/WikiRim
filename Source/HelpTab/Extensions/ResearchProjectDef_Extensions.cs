@@ -80,9 +80,9 @@ public static class ResearchProjectDef_Extensions
 
     public static List<Pair<Def, string>> GetUnlockDefsAndDescs(this ResearchProjectDef research)
     {
-        if (_unlocksCache.ContainsKey(research.shortHash))
+        if (_unlocksCache.TryGetValue(research.shortHash, out var descs))
         {
-            return _unlocksCache[research.shortHash];
+            return descs;
         }
 
         var unlocks = new List<Pair<Def, string>>();

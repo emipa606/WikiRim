@@ -1048,7 +1048,8 @@ public static class HelpBuilder
                     .Where(f =>
                     {
                         var compProps = f.GetCompProperties<CompProperties_AffectedByFacilities>();
-                        return compProps is { linkableFacilities: { } } && compProps.linkableFacilities.Contains(f);
+                        return compProps is { linkableFacilities: not null } &&
+                               compProps.linkableFacilities.Contains(f);
                     }).ToList();
                 if (!effectsBuildings.NullOrEmpty())
                 {
@@ -1118,7 +1119,7 @@ public static class HelpBuilder
         }
 
         if (
-            thingDef is { plant: { } }
+            thingDef is { plant: not null }
         )
         {
             HelpPartsForPlant(thingDef, ref statParts, ref linkParts);
@@ -1402,7 +1403,7 @@ public static class HelpBuilder
 
         var plants = (
             from thing in DefDatabase<ThingDef>.AllDefsListForReading
-            where thing.plant is { wildBiomes: { } }
+            where thing.plant is { wildBiomes: not null }
             from record in thing.plant.wildBiomes
             where record.biome == biomeDef && record.commonality > 0
             select thing as Def
@@ -1417,7 +1418,7 @@ public static class HelpBuilder
 
         var animals = (
             from pawnKind in DefDatabase<PawnKindDef>.AllDefs
-            where pawnKind.RaceProps is { wildBiomes: { } }
+            where pawnKind.RaceProps is { wildBiomes: not null }
             from record in pawnKind.RaceProps.wildBiomes
             where record.biome == biomeDef && record.commonality > 0
             select pawnKind as Def

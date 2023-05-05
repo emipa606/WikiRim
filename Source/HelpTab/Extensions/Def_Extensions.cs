@@ -57,9 +57,9 @@ public static class Def_Extensions
     public static Color IconColor(this Def def)
     {
         // check cache
-        if (_cachedIconColors.ContainsKey(def))
+        if (_cachedIconColors.TryGetValue(def, out var color))
         {
-            return _cachedIconColors[def];
+            return color;
         }
 
         // otherwise try to determine icon
@@ -82,7 +82,7 @@ public static class Def_Extensions
             return _cachedIconColors[def];
         }
 
-        if (!(def is BuildableDef bdef))
+        if (def is not BuildableDef bdef)
         {
             // if we reach this point, def.IconTexture() would return null. Just store and return white to make sure we don't get weird errors down the line.
             _cachedIconColors.Add(def, Color.white);
@@ -91,7 +91,7 @@ public static class Def_Extensions
 
         // built def != listed def
         if (
-            tdef is { entityDefToBuild: { } }
+            tdef is { entityDefToBuild: not null }
         )
         {
             _cachedIconColors.Add(def, tdef.entityDefToBuild.IconColor());
@@ -128,9 +128,9 @@ public static class Def_Extensions
     public static Texture2D IconTexture(this Def def)
     {
         // check cache
-        if (_cachedDefIcons.ContainsKey(def))
+        if (_cachedDefIcons.TryGetValue(def, out var texture))
         {
-            return _cachedDefIcons[def];
+            return texture;
         }
 
         // recipes will be passed icon of first product, if defined.
@@ -159,7 +159,7 @@ public static class Def_Extensions
         }
 
         // if not buildable it probably doesn't have an icon.
-        if (!(def is BuildableDef bdef))
+        if (def is not BuildableDef bdef)
         {
             _cachedDefIcons.Add(def, null);
             return null;
@@ -203,9 +203,9 @@ public static class Def_Extensions
     /// <returns></returns>
     public static HelpDef GetHelpDef(this Def def)
     {
-        if (_cachedDefHelpDefLinks.ContainsKey(def))
+        if (_cachedDefHelpDefLinks.TryGetValue(def, out var helpDef))
         {
-            return _cachedDefHelpDefLinks[def];
+            return helpDef;
         }
 
         _cachedDefHelpDefLinks.Add(def,
