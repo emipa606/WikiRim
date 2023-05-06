@@ -1,5 +1,8 @@
 # Changelog for WikiRim
 
+1.4.3 - Updated chinese translation, thanks Lu-233
+
+
 1.4.2 - Recompile, seems to fix some issues.
 Used DeepL to update translations for ChineseSimplified, French, German
 

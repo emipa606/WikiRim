@@ -56,6 +56,4 @@ Original mod by Fluffy
 -  If you have the solution for a problem, please post it to the GitHub repository.
 
 
-
-
-https://steamcommunity.com/sharedfiles/filedetails/changelog/2198532017]Last updated 2023-05-05
+https://steamcommunity.com/sharedfiles/filedetails/changelog/2198532017]Last updated 2023-05-06
