@@ -110,7 +110,7 @@ public class MainTabWindow_ModHelp : MainTabWindow, IHelpDefView
         base.PreOpen();
 
         // Set whether the window forces a pause
-        // Not entirely sure why force pause warrants an xml setting? - Fluffy.
+        // Not entirely sure why force pause warrants a xml setting? - Fluffy.
         if (TabDef != null)
         {
             forcePause = TabDef.pauseGame;
@@ -125,7 +125,7 @@ public class MainTabWindow_ModHelp : MainTabWindow, IHelpDefView
 
     public static void Recache()
     {
-        CachedHelpCategories = new List<ModCategory>();
+        CachedHelpCategories = [];
         foreach (var helpCategory in DefDatabase<HelpCategoryDef>.AllDefs)
         {
             // parent modcategory does not exist, create it.
@@ -503,18 +503,13 @@ public class MainTabWindow_ModHelp : MainTabWindow, IHelpDefView
         }
     }
 
-    public class ModCategory
+    public class ModCategory(string modName)
     {
-        private readonly List<HelpCategoryDef> _helpCategories = new List<HelpCategoryDef>();
+        private readonly List<HelpCategoryDef> _helpCategories = [];
 
-        public readonly string ModName;
+        public readonly string ModName = modName;
 
         public bool Expanded;
-
-        public ModCategory(string modName)
-        {
-            ModName = modName;
-        }
 
         public List<HelpCategoryDef> HelpCategories => _helpCategories.OrderBy(a => a.label).ToList();
 

@@ -6,10 +6,7 @@ public static class List_Extensions
 {
     public static void AddUnique<T>(this List<T> list, T item)
     {
-        if (
-            list == null ||
-            list.Contains(item)
-        )
+        if (list == null || list.Contains(item))
         {
             return;
         }
@@ -19,10 +16,7 @@ public static class List_Extensions
 
     public static void AddRangeUnique<T>(this List<T> list, IEnumerable<T> items)
     {
-        if (
-            list == null ||
-            items == null
-        )
+        if (list == null || items == null)
         {
             return;
         }

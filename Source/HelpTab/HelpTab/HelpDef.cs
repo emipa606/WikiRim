@@ -7,9 +7,8 @@ namespace HelpTab;
 
 public class HelpDef : Def, IComparable
 {
+    public readonly List<HelpDetailSection> HelpDetailSections = [];
     public HelpCategoryDef category;
-
-    public List<HelpDetailSection> HelpDetailSections = new List<HelpDetailSection>();
 
     [Unsaved] public Def keyDef;
     public Def secondaryKeyDef;

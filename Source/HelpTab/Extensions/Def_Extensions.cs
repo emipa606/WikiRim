@@ -21,8 +21,8 @@ public static class Def_Extensions
     private static readonly Dictionary<Def, HelpDef> _cachedDefHelpDefLinks = new Dictionary<Def, HelpDef>();
 
     /// <summary>
-    ///     Get the label, capitalized and given appropriate styling ( bold if def has a helpdef, italic if def has no helpdef
-    ///     but does have description. )
+    ///     Get the label, capitalized and given appropriate styling  bold if def has a helpdef, italic if def has no helpdef
+    ///     but does have description.
     /// </summary>
     /// <param name="def"></param>
     /// <returns></returns>

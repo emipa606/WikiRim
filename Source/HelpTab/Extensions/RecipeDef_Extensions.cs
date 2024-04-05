@@ -81,7 +81,7 @@ public static class RecipeDef_Extensions
             t.AllRecipes.Contains(recipeDef)
         ).ToList();
 
-        return !thingDefs.NullOrEmpty() ? thingDefs : new List<ThingDef>();
+        return !thingDefs.NullOrEmpty() ? thingDefs : [];
     }
 
     public static List<ThingDef> GetThingsUnlocked(this RecipeDef recipeDef, ref List<Def> researchDefs)
@@ -218,8 +218,8 @@ public static class RecipeDef_Extensions
 
         public DefCountList()
         {
-            defs = new List<ThingDef>();
-            counts = new List<float>();
+            defs = [];
+            counts = [];
         }
 
         public int Count => defs.Count;

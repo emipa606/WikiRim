@@ -731,7 +731,8 @@ public static class HelpBuilder
                     {
                         listOfPropertyNames.Add("defaultProjectile".Translate());
                         listOfPropertyValues.Add(thingDefVerb.defaultProjectile.LabelCap);
-                        if (thingDefVerb.defaultProjectile.projectile?.GetDamageAmount(1f) > 0)
+                        if (thingDefVerb.defaultProjectile.projectile is { damageDef: not null } &&
+                            thingDefVerb.defaultProjectile.projectile.GetDamageAmount(1f) > 0)
                         {
                             listOfPropertyNames.Add("projectileDamage".Translate());
                             listOfPropertyValues.Add(thingDefVerb.defaultProjectile.projectile?.GetDamageAmount(1f)
@@ -837,7 +838,7 @@ public static class HelpBuilder
                 };
                 if (Math.Abs(thingDef.ingestible.joy) > 1e-3)
                 {
-                    needDefs.Add(NeedDefOf.Joy);
+                    needDefs.Add(DefDatabase<NeedDef>.GetNamedSilentFail("Joy"));
                 }
 
                 var suffixes = new List<string>
@@ -869,7 +870,7 @@ public static class HelpBuilder
                 if (hediffDef.addedPartProps != null)
                 {
                     statParts.Add(new HelpDetailSection(ResourceBank.String.BodyPartEfficiency,
-                        new[] { hediffDef.addedPartProps.partEfficiency.ToString("P0") }, null, null));
+                        [hediffDef.addedPartProps.partEfficiency.ToString("P0")], null, null));
                 }
 
                 if (!hediffDef.stages.NullOrEmpty() &&
@@ -1149,8 +1150,8 @@ public static class HelpBuilder
         helpDef.description = recipeDef.description;
 
         helpDef.HelpDetailSections.Add(new HelpDetailSection(null,
-            new[] { recipeDef.WorkAmountTotal(null).ToStringWorkAmount() },
-            new[] { $"{ResourceBank.String.WorkAmount} : " },
+            [recipeDef.WorkAmountTotal(null).ToStringWorkAmount()],
+            [$"{ResourceBank.String.WorkAmount} : "],
             null));
 
         if (!recipeDef.skillRequirements.NullOrEmpty())
@@ -1173,7 +1174,7 @@ public static class HelpBuilder
         // List of ingredients
         if (!recipeDef.ingredients.NullOrEmpty())
         {
-            // TODO: find the actual thingDefs of ingredients so we can use defs instead of strings.
+            // TODO: find the actual thingDefs of ingredients, so we can use defs instead of strings.
             var ingredients = new HelpDetailSection(
                 ResourceBank.String.Ingredients,
                 recipeDef.ingredients
@@ -1255,8 +1256,8 @@ public static class HelpBuilder
         };
 
         var totalCost = new HelpDetailSection(null,
-            new[] { researchProjectDef.baseCost.ToString() },
-            new[] { ResourceBank.String.AutoHelpTotalCost },
+            [researchProjectDef.baseCost.ToString()],
+            [ResourceBank.String.AutoHelpTotalCost],
             null);
         helpDef.HelpDetailSections.Add(totalCost);
 
@@ -1513,16 +1514,14 @@ public static class HelpBuilder
         ref List<HelpDetailSection> linkParts)
     {
         statParts.Add(new HelpDetailSection(null,
-            new[]
-            {
+            [
                 terrainDef.fertility.ToStringPercent(),
                 terrainDef.pathCost.ToString()
-            },
-            new[]
-            {
+            ],
+            [
                 $"{ResourceBank.String.AutoHelpListFertility}:",
                 $"{ResourceBank.String.AutoHelpListPathCost}:"
-            },
+            ],
             null));
 
         // wild biome tags
@@ -1543,18 +1542,16 @@ public static class HelpBuilder
 
         // non-def stat part
         statParts.Add(new HelpDetailSection(null,
-            new[]
-            {
+            [
                 plant.growDays.ToString(),
                 plant.fertilityMin.ToStringPercent(),
                 $"{plant.growMinGlow.ToStringPercent()} - {plant.growOptimalGlow.ToStringPercent()}"
-            },
-            new[]
-            {
+            ],
+            [
                 ResourceBank.String.AutoHelpGrowDays,
                 ResourceBank.String.AutoHelpMinFertility,
                 ResourceBank.String.AutoHelpLightRange
-            },
+            ],
             null));
 
         if (plant.Harvestable)
@@ -1562,8 +1559,8 @@ public static class HelpBuilder
             // yield
             linkParts.Add(new HelpDetailSection(
                 ResourceBank.String.AutoHelpListPlantYield,
-                new List<Def>(new[] { plant.harvestedThingDef }),
-                new[] { plant.harvestYield.ToString() }
+                [..new[] { plant.harvestedThingDef }],
+                [plant.harvestYield.ToString()]
             ));
         }
 
@@ -1603,20 +1600,18 @@ public static class HelpBuilder
         var suffixes = new List<string>();
 
         statParts.Add(new HelpDetailSection(null,
-            new[]
-            {
+            [
                 (race.baseHealthScale * race.lifeStageAges.Last().def.healthScaleFactor).ToStringPercent(),
                 race.lifeExpectancy.ToStringApproxAge(),
                 race.ResolvedDietCategory.ToStringHuman(),
                 race.trainability?.ToString() ?? "Sentient"
-            },
-            new[]
-            {
+            ],
+            [
                 ResourceBank.String.AutoHelpHealthScale,
                 ResourceBank.String.AutoHelpLifeExpectancy,
                 ResourceBank.String.AutoHelpDiet,
                 ResourceBank.String.AutoHelpIntelligence
-            },
+            ],
             null));
 
         if (race.Animal)
@@ -1665,15 +1660,10 @@ public static class HelpBuilder
         {
             defs.Add(race.lifeStageAges[i].def);
             // final lifestage
-            if (i == race.lifeStageAges.Count - 1)
-            {
-                suffixes.Add($"{ages[i].ToStringApproxAge()} - ~{race.lifeExpectancy.ToStringApproxAge()}");
-            }
-            else
+            suffixes.Add(i == race.lifeStageAges.Count - 1
+                ? $"{ages[i].ToStringApproxAge()} - ~{race.lifeExpectancy.ToStringApproxAge()}"
                 // other lifestages
-            {
-                suffixes.Add($"{ages[i].ToStringApproxAge()} - {ages[i + 1].ToStringApproxAge()}");
-            }
+                : $"{ages[i].ToStringApproxAge()} - {ages[i + 1].ToStringApproxAge()}");
         }
 
         // only print if interesting (i.e. more than one lifestage).
@@ -1871,20 +1861,18 @@ public static class HelpBuilder
 
 
         statParts.Add(new HelpDetailSection(null,
-            new[]
-            {
+            [
                 (race.baseHealthScale * race.lifeStageAges.Last().def.healthScaleFactor).ToStringPercent(),
                 race.lifeExpectancy.ToStringApproxAge(),
                 race.ResolvedDietCategory.ToStringHuman(),
                 "Sentient"
-            },
-            new[]
-            {
+            ],
+            [
                 ResourceBank.String.AutoHelpHealthScale,
                 ResourceBank.String.AutoHelpLifeExpectancy,
                 ResourceBank.String.AutoHelpDiet,
                 ResourceBank.String.AutoHelpIntelligence
-            },
+            ],
             null));
 
         var ages = race.lifeStageAges.Select(age => age.minAge).ToList();
@@ -1892,15 +1880,10 @@ public static class HelpBuilder
         {
             defs.Add(race.lifeStageAges[i].def);
             // final lifestage
-            if (i == race.lifeStageAges.Count - 1)
-            {
-                suffixes.Add($"{ages[i].ToStringApproxAge()} - ~{race.lifeExpectancy.ToStringApproxAge()}");
-            }
-            else
+            suffixes.Add(i == race.lifeStageAges.Count - 1
+                ? $"{ages[i].ToStringApproxAge()} - ~{race.lifeExpectancy.ToStringApproxAge()}"
                 // other lifestages
-            {
-                suffixes.Add($"{ages[i].ToStringApproxAge()} - {ages[i + 1].ToStringApproxAge()}");
-            }
+                : $"{ages[i].ToStringApproxAge()} - {ages[i + 1].ToStringApproxAge()}");
         }
 
         // only print if interesting (i.e. more than one lifestage).

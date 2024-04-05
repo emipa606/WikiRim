@@ -14,10 +14,7 @@ public static class ThingDef_Extensions
     {
         thingDef.allRecipesCached = null;
 
-        if (
-            !validateBills ||
-            Current.ProgramState != ProgramState.MapInitializing
-        )
+        if (!validateBills || Current.ProgramState != ProgramState.MapInitializing)
         {
             return;
         }

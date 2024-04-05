@@ -6,23 +6,14 @@ using Verse;
 
 namespace HelpTab;
 
-public struct DefStringTriplet
+public struct DefStringTriplet(Def def, string prefix = null, string suffix = null)
 {
-    public Def Def;
-    public string Prefix;
-    public string Suffix;
+    public readonly Def Def = def;
+    public readonly string Prefix = prefix;
+    public readonly string Suffix = suffix;
 
-    private float _height;
-    private bool _heightSet;
-
-    public DefStringTriplet(Def def, string prefix = null, string suffix = null)
-    {
-        Def = def;
-        Prefix = prefix;
-        Suffix = suffix;
-        _height = 0;
-        _heightSet = false;
-    }
+    private float _height = 0;
+    private bool _heightSet = false;
 
     public override string ToString()
     {
@@ -105,7 +96,7 @@ public struct DefStringTriplet
 
 
         // def interactions (if any)
-        // if we have a window set up to catch jumps, and there is a helpdef available, draw a button on the def text.
+        // is we have a window set up to catch jumps, and there is a helpdef available, draw a button on the def text.
         var helpDef = Def.GetHelpDef();
         if (
             window != null &&

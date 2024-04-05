@@ -6,23 +6,14 @@ using Verse;
 
 namespace HelpTab;
 
-public struct StringDescTriplet
+public struct StringDescTriplet(string stringDesc, string prefix = null, string suffix = null)
 {
-    public string StringDesc;
-    public string Prefix;
-    public string Suffix;
+    public readonly string StringDesc = stringDesc;
+    public readonly string Prefix = prefix;
+    public readonly string Suffix = suffix;
 
-    private float _height;
-    private bool _heightSet;
-
-    public StringDescTriplet(string stringDesc, string prefix = null, string suffix = null)
-    {
-        StringDesc = stringDesc;
-        Prefix = prefix;
-        Suffix = suffix;
-        _height = 0f;
-        _heightSet = false;
-    }
+    private float _height = 0f;
+    private bool _heightSet = false;
 
     public override string ToString()
     {

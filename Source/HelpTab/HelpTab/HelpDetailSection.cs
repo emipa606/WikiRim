@@ -10,14 +10,14 @@ public class HelpDetailSection
 {
     private const string DefaultInsetString = "\t";
     private const float DefaultInset = 30f;
-    public static float _columnMargin = 8f;
+    public static readonly float _columnMargin = 8f;
+    public readonly float Inset;
+    public readonly string InsetString;
+    public readonly List<DefStringTriplet> KeyDefs;
+    public readonly string Label;
+    public readonly List<StringDescTriplet> StringDescs;
     public bool Align;
     public Vector3 ColumnWidths = Vector3.zero;
-    public float Inset;
-    public string InsetString;
-    public List<DefStringTriplet> KeyDefs;
-    public string Label;
-    public List<StringDescTriplet> StringDescs;
     public bool WidthsSet;
 
     public HelpDetailSection(string label,
@@ -188,7 +188,7 @@ public class HelpDetailSection
         // fetch length of all strings, select largest for each column
         var requestedWidths = Vector3.zero;
 
-        // make sure wrapping is off so we get a true idea of the length
+        // make sure wrapping is off, so we get a true idea of the length
         var WW = Text.WordWrap;
         Text.WordWrap = false;
         if (!prefixes.NullOrEmpty())

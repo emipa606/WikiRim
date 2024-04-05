@@ -1,5 +1,8 @@
 # Changelog for WikiRim
 
+1.5.0 - Updated for 1.5
+
+
 1.4.3 - Updated chinese translation, thanks Lu-233
 
 

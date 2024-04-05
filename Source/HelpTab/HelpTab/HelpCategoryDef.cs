@@ -9,7 +9,7 @@ public class HelpCategoryDef : Def
     public string keyDef;
     public string ModName;
 
-    [field: Unsaved] public List<HelpDef> HelpDefs { get; } = new List<HelpDef>();
+    [field: Unsaved] public List<HelpDef> HelpDefs { get; } = [];
 
     public bool ShouldDraw { get; set; }
 
