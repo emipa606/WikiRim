@@ -11,11 +11,11 @@ public class HelpCategoryDef : Def
 
     [field: Unsaved] public List<HelpDef> HelpDefs { get; } = [];
 
-    public bool ShouldDraw { get; set; }
+    public bool ShouldDraw { get; private set; }
 
     public bool Expanded { get; set; }
 
-    public bool MatchesFilter(string filter)
+    private bool MatchesFilter(string filter)
     {
         return filter == "" || LabelCap.ToString().ToUpper().Contains(filter.ToUpper());
     }

@@ -28,7 +28,7 @@ public class HelpDef : Def, IComparable
         }
     }
 
-    public bool ShouldDraw { get; set; }
+    public bool ShouldDraw { get; private set; }
 
     public int CompareTo(object obj)
     {

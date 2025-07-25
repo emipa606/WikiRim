@@ -11,14 +11,14 @@ public static class Def_Extensions
     /// <summary>
     ///     hold a cached list of icons per def
     /// </summary>
-    private static readonly Dictionary<Def, Texture2D> _cachedDefIcons = new Dictionary<Def, Texture2D>();
+    private static readonly Dictionary<Def, Texture2D> _cachedDefIcons = new();
 
-    private static readonly Dictionary<Def, Color> _cachedIconColors = new Dictionary<Def, Color>();
+    private static readonly Dictionary<Def, Color> _cachedIconColors = new();
 
     /// <summary>
     ///     hold a cached list of def -> helpdef links
     /// </summary>
-    private static readonly Dictionary<Def, HelpDef> _cachedDefHelpDefLinks = new Dictionary<Def, HelpDef>();
+    private static readonly Dictionary<Def, HelpDef> _cachedDefHelpDefLinks = new();
 
     /// <summary>
     ///     Get the label, capitalized and given appropriate styling  bold if def has a helpdef, italic if def has no helpdef
@@ -54,7 +54,7 @@ public static class Def_Extensions
     /// </summary>
     /// <param name="def"></param>
     /// <returns></returns>
-    public static Color IconColor(this Def def)
+    private static Color IconColor(this Def def)
     {
         // check cache
         if (_cachedIconColors.TryGetValue(def, out var color))

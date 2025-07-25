@@ -32,7 +32,7 @@ public static class BuildableDef_Extensions
     public static List<RecipeDef> GetRecipeDefs(this BuildableDef buildableDef)
     {
         return
-            DefDatabase<RecipeDef>.AllDefsListForReading.Where(
-                r => r.products.Any(tc => tc.thingDef == buildableDef as ThingDef)).ToList();
+            DefDatabase<RecipeDef>.AllDefsListForReading
+                .Where(r => r.products.Any(tc => tc.thingDef == buildableDef as ThingDef)).ToList();
     }
 }

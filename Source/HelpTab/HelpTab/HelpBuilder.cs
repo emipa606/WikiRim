@@ -308,8 +308,7 @@ public static class HelpBuilder
                              rockySuffixes.Any(s => t.defName.EndsWith(s))
 
                              // or is listed in any biome
-                             || DefDatabase<BiomeDef>.AllDefsListForReading.Any(
-                                 b => b.AllTerrainDefs().Contains(t))
+                             || DefDatabase<BiomeDef>.AllDefsListForReading.Any(b => b.AllTerrainDefs().Contains(t))
                          ))
                 .ToList();
 
@@ -732,18 +731,19 @@ public static class HelpBuilder
                         listOfPropertyNames.Add("defaultProjectile".Translate());
                         listOfPropertyValues.Add(thingDefVerb.defaultProjectile.LabelCap);
                         if (thingDefVerb.defaultProjectile.projectile is { damageDef: not null } &&
-                            thingDefVerb.defaultProjectile.projectile.GetDamageAmount(1f) > 0)
+                            thingDefVerb.defaultProjectile.projectile.GetDamageAmount(1f, null) > 0)
                         {
                             listOfPropertyNames.Add("projectileDamage".Translate());
-                            listOfPropertyValues.Add(thingDefVerb.defaultProjectile.projectile?.GetDamageAmount(1f)
+                            listOfPropertyValues.Add(thingDefVerb.defaultProjectile.projectile
+                                ?.GetDamageAmount(1f, null)
                                 .ToString("F1"));
                         }
 
-                        if (thingDefVerb.defaultProjectile.projectile?.StoppingPower > 0)
+                        if (thingDefVerb.defaultProjectile.projectile?.stoppingPower > 0)
                         {
                             listOfPropertyNames.Add("projectileStoppingPower".Translate());
                             listOfPropertyValues.Add(
-                                thingDefVerb.defaultProjectile.projectile?.StoppingPower.ToString("F1"));
+                                thingDefVerb.defaultProjectile.projectile?.stoppingPower.ToString("F1"));
                         }
 
                         if (thingDefVerb.defaultProjectile.projectile?.explosionRadius > 0)
@@ -890,8 +890,7 @@ public static class HelpBuilder
                         hediffDef.stages
                             .Where(s => !s.capMods.NullOrEmpty())
                             .SelectMany(s => s.capMods)
-                            .Select(
-                                cm => (cm.offset > 0 ? "+" : "") + cm.offset.ToString("P0"))
+                            .Select(cm => (cm.offset > 0 ? "+" : "") + cm.offset.ToString("P0"))
                             .ToArray());
 
                     statParts.Add(capacityMods);
@@ -1057,7 +1056,7 @@ public static class HelpBuilder
                     var facilityDefs = new List<DefStringTriplet>();
                     var facilityStrings = new List<StringDescTriplet>
                     {
-                        new StringDescTriplet(ResourceBank.String.AutoHelpMaximumAffected, null,
+                        new(ResourceBank.String.AutoHelpMaximumAffected, null,
                             facilityProperties.maxSimultaneous.ToString())
                     };
 
@@ -1100,8 +1099,8 @@ public static class HelpBuilder
                     var defs = new List<DefStringTriplet>();
                     var strings = new List<StringDescTriplet>
                     {
-                        new StringDescTriplet(joyGiverDef.jobDef.reportString),
-                        new StringDescTriplet(joyGiverDef.jobDef.joyMaxParticipants.ToString(),
+                        new(joyGiverDef.jobDef.reportString),
+                        new(joyGiverDef.jobDef.joyMaxParticipants.ToString(),
                             ResourceBank.String.AutoHelpMaximumParticipants)
                     };
                     defs.Add(new DefStringTriplet(joyGiverDef.jobDef.joyKind,
@@ -1559,7 +1558,7 @@ public static class HelpBuilder
             // yield
             linkParts.Add(new HelpDetailSection(
                 ResourceBank.String.AutoHelpListPlantYield,
-                [..new[] { plant.harvestedThingDef }],
+                [plant.harvestedThingDef],
                 [plant.harvestYield.ToString()]
             ));
         }
@@ -1701,7 +1700,7 @@ public static class HelpBuilder
             // mammals
             var SDT = new List<StringDescTriplet>
             {
-                new StringDescTriplet(
+                new(
                     (race.gestationPeriodDays * GenDate.TicksPerDay / GenDate.TicksPerYear).ToStringApproxAge(),
                     ResourceBank.String.AutoHelpGestationPeriod)
             };
@@ -1921,7 +1920,7 @@ public static class HelpBuilder
             // mammals
             var SDT = new List<StringDescTriplet>
             {
-                new StringDescTriplet(
+                new(
                     (race.gestationPeriodDays * GenDate.TicksPerDay / GenDate.TicksPerYear).ToStringApproxAge(),
                     ResourceBank.String.AutoHelpGestationPeriod)
             };

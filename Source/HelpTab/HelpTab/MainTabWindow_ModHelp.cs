@@ -9,16 +9,9 @@ namespace HelpTab;
 
 public class MainTabWindow_ModHelp : MainTabWindow, IHelpDefView
 {
-    public enum State
-    {
-        Expanded,
-        Closed,
-        Leaf
-    }
-
-    public const float WindowMargin = 6f; // 15 is way too much.
-    public const float EntryHeight = 30f;
-    public const float EntryIndent = 15f;
+    private const float WindowMargin = 6f; // 15 is way too much.
+    private const float EntryHeight = 30f;
+    private const float EntryIndent = 15f;
     public const float ParagraphMargin = 8f;
     public const float LineHeigthOffset = 6f; // CalcSize overestimates required height by roughly this much.
 
@@ -29,25 +22,25 @@ public class MainTabWindow_ModHelp : MainTabWindow, IHelpDefView
     // Maximum count of displayed entries.
     // It added to improve perfomance at large search result.
     private const int MaxEntryCount = 200;
-    protected static List<ModCategory> CachedHelpCategories;
-    protected static Vector2 ArrowImageSize = new Vector2(10f, 10f);
+    private static List<ModCategory> CachedHelpCategories;
+    private static readonly Vector2 ArrowImageSize = new(10f, 10f);
 
     private static string _filterString = "";
     private bool _filtered;
     private bool _jump;
     private string _lastFilterString = "";
     private int _lastFilterTick;
-    public float ContentHeight = 9999f;
-    protected Rect DisplayRect;
-    protected Vector2 DisplayScrollPos;
+    private float ContentHeight = 9999f;
+    private Rect DisplayRect;
+    private Vector2 DisplayScrollPos;
 
     private int entryCounter;
-    public HelpDef SelectedHelpDef;
-    public float SelectionHeight = 9999f;
+    private HelpDef SelectedHelpDef;
+    private float SelectionHeight = 9999f;
 
-    protected Rect SelectionRect;
+    private Rect SelectionRect;
 
-    protected Vector2 SelectionScrollPos;
+    private Vector2 SelectionScrollPos;
 
     public MainTabWindow_ModHelp()
     {
@@ -165,7 +158,7 @@ public class MainTabWindow_ModHelp : MainTabWindow, IHelpDefView
         }
     }
 
-    public void Filter()
+    private void Filter()
     {
         foreach (var mc in CachedHelpCategories)
         {
@@ -175,7 +168,7 @@ public class MainTabWindow_ModHelp : MainTabWindow, IHelpDefView
         _filtered = true;
     }
 
-    public void ResetFilter()
+    private void ResetFilter()
     {
         _filterString = "";
         _lastFilterString = "";
@@ -418,7 +411,7 @@ public class MainTabWindow_ModHelp : MainTabWindow, IHelpDefView
     /// <param name="state">State of collapsing icon to show</param>
     /// <param name="selected">For leaf entries, is this entry selected?</param>
     /// <returns></returns>
-    public bool DrawEntry(ref Vector2 cur, int nestLevel, Rect view, string label, State state,
+    private bool DrawEntry(ref Vector2 cur, int nestLevel, Rect view, string label, State state,
         bool selected = false)
     {
         entryCounter++;
@@ -470,7 +463,7 @@ public class MainTabWindow_ModHelp : MainTabWindow, IHelpDefView
         return Widgets.ButtonInvisible(buttonRect);
     }
 
-    public void DrawModEntry(ref Vector2 cur, int nestLevel, Rect view, ModCategory mc)
+    private void DrawModEntry(ref Vector2 cur, int nestLevel, Rect view, ModCategory mc)
     {
         var curState = mc.Expanded ? State.Expanded : State.Closed;
         if (DrawEntry(ref cur, nestLevel, view, mc.ModName, curState))
@@ -479,7 +472,7 @@ public class MainTabWindow_ModHelp : MainTabWindow, IHelpDefView
         }
     }
 
-    public void DrawCatEntry(ref Vector2 cur, int nestLevel, Rect view, HelpCategoryDef catDef)
+    private void DrawCatEntry(ref Vector2 cur, int nestLevel, Rect view, HelpCategoryDef catDef)
     {
         var curState = catDef.Expanded ? State.Expanded : State.Closed;
         if (DrawEntry(ref cur, nestLevel, view, catDef.LabelCap, curState))
@@ -488,7 +481,7 @@ public class MainTabWindow_ModHelp : MainTabWindow, IHelpDefView
         }
     }
 
-    public void DrawHelpEntry(ref Vector2 cur, int nestLevel, Rect view, HelpDef helpDef)
+    private void DrawHelpEntry(ref Vector2 cur, int nestLevel, Rect view, HelpDef helpDef)
     {
         var selected = SelectedHelpDef == helpDef;
         if (selected && _jump)
@@ -503,7 +496,14 @@ public class MainTabWindow_ModHelp : MainTabWindow, IHelpDefView
         }
     }
 
-    public class ModCategory(string modName)
+    private enum State
+    {
+        Expanded,
+        Closed,
+        Leaf
+    }
+
+    private class ModCategory(string modName)
     {
         private readonly List<HelpCategoryDef> _helpCategories = [];
 
@@ -513,14 +513,14 @@ public class MainTabWindow_ModHelp : MainTabWindow, IHelpDefView
 
         public List<HelpCategoryDef> HelpCategories => _helpCategories.OrderBy(a => a.label).ToList();
 
-        public bool ShouldDraw { get; set; }
+        public bool ShouldDraw { get; private set; }
 
-        public bool MatchesFilter(string filter)
+        private bool MatchesFilter(string filter)
         {
             return filter == "" || ModName.ToUpper().Contains(filter.ToUpper());
         }
 
-        public bool ThisOrAnyChildMatchesFilter(string filter)
+        private bool ThisOrAnyChildMatchesFilter(string filter)
         {
             return MatchesFilter(filter) || HelpCategories.Any(hc => hc.ThisOrAnyChildMatchesFilter(filter));
         }

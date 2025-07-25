@@ -8,7 +8,7 @@ namespace HelpTab;
 public static class ThingDef_Extensions
 {
     // Dummy for functions needing a ref list
-    public static List<Def> nullDefs;
+    private static List<Def> nullDefs;
 
     public static void RecacheRecipes(this ThingDef thingDef, Map map, bool validateBills)
     {
@@ -50,7 +50,7 @@ public static class ThingDef_Extensions
         return typeof(Building_NutrientPasteDispenser).IsAssignableFrom(thingDef.thingClass);
     }
 
-    public static bool IsIngestible(this ThingDef thingDef)
+    private static bool IsIngestible(this ThingDef thingDef)
     {
         return thingDef.ingestible != null;
     }
@@ -137,7 +137,7 @@ public static class ThingDef_Extensions
         return recipeDefs;
     }
 
-    public static List<RecipeDef> GetRecipesCurrent(this ThingDef thingDef)
+    private static List<RecipeDef> GetRecipesCurrent(this ThingDef thingDef)
     {
         return thingDef.AllRecipes;
     }

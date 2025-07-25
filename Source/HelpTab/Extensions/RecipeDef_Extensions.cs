@@ -213,18 +213,12 @@ public static class RecipeDef_Extensions
 
     private class DefCountList
     {
-        private readonly List<float> counts;
-        private readonly List<ThingDef> defs;
-
-        public DefCountList()
-        {
-            defs = [];
-            counts = [];
-        }
+        private readonly List<float> counts = [];
+        private readonly List<ThingDef> defs = [];
 
         public int Count => defs.Count;
 
-        public float this[ThingDef def]
+        private float this[ThingDef def]
         {
             get
             {
@@ -277,7 +271,7 @@ public static class RecipeDef_Extensions
             defs.RemoveAt(index);
         }
 
-        public void Clear()
+        private void Clear()
         {
             defs.Clear();
             counts.Clear();

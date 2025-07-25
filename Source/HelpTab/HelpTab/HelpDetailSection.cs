@@ -11,14 +11,14 @@ public class HelpDetailSection
     private const string DefaultInsetString = "\t";
     private const float DefaultInset = 30f;
     public static readonly float _columnMargin = 8f;
-    public readonly float Inset;
-    public readonly string InsetString;
-    public readonly List<DefStringTriplet> KeyDefs;
-    public readonly string Label;
-    public readonly List<StringDescTriplet> StringDescs;
+    private readonly float Inset;
+    private readonly string InsetString;
+    private readonly List<DefStringTriplet> KeyDefs;
+    private readonly string Label;
+    private readonly List<StringDescTriplet> StringDescs;
     public bool Align;
-    public Vector3 ColumnWidths = Vector3.zero;
-    public bool WidthsSet;
+    private Vector3 ColumnWidths = Vector3.zero;
+    private bool WidthsSet;
 
     public HelpDetailSection(string label,
         string[] stringDescs,

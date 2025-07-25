@@ -2,5 +2,17 @@
   "Continued": true,
   "CanAdd": "0",
   "CanRemove": "0",
-  "PreviewVersion": "1.5"
+  "PreviewVersion": "1.6",
+  "Patches": false,
+  "Defs": true,
+  "Assemblies": true,
+  "LinesOfCode": 159383,
+  "LinesOfXML": 546,
+  "CodeBaseSize": 82,
+  "LastXmlCleaning": "2025-07-25T16:42:29.9912131+02:00",
+  "SocialImageSet": true,
+  "SearchTags": [
+    " help",
+    " database"
+  ]
 }
