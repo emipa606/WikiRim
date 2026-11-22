@@ -82,7 +82,6 @@ public struct DefStringTriplet(Def def, string prefix = null, string suffix = nu
                     colWidths.y - 20f,
                     _height);
             Def.DrawColouredIcon(iconRect);
-            Widgets.Label(labelRect, Def.LabelStyled());
         }
         else
         {
@@ -91,8 +90,9 @@ public struct DefStringTriplet(Def def, string prefix = null, string suffix = nu
                     cur.y,
                     colWidths.y,
                     _height);
-            Widgets.Label(labelRect, Def.LabelStyled());
         }
+
+        Widgets.Label(labelRect, Def.LabelStyled());
 
 
         // def interactions (if any)

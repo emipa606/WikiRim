@@ -7,7 +7,6 @@ namespace HelpTab;
 
 public static class BiomeDef_Extensions
 {
-    // TODO: This is a nasty method, please get rid of it. Reason: Poor performance.
     public static List<TerrainDef> AllTerrainDefs(this BiomeDef biome)
     {
         var ret = new List<TerrainDef>();

@@ -42,19 +42,6 @@ public static class HelpBuilder
         ResolveWeapons();
 
         ResolveStuff();
-        // TODO: Add workTypes
-        // TODO: Add capacities
-        // TODO: Add skills
-
-        // The below are low priority  (as considered by Fluffy)
-        // TODO: Add needs
-        // TODO: Add building resources
-        // TODO: Add factions
-        // TODO: Add hediffs
-
-        // The below are really low priority (as considered by Fluffy)
-        // TODO: Add traders
-        // TODO: Add tradertags
 
         // Buildings
         ResolveBuildings();
@@ -368,12 +355,6 @@ public static class HelpBuilder
             ResourceBank.String.AutoHelpCategoryFloraAndFauna);
         ResolveDefList(pawnkinds, category);
 
-        // humanoids - old version based on pawnkind, can get real messy with faction mods.
-        //pawnkinds = DefDatabase<PawnKindDef>.AllDefsListForReading.Where(t => !t.race.race.Animal && !t.race.race.IsMechanoid).ToList();
-        //category = HelpCategoryForKey(Humanoids, ResourceBank.String.AutoHelpSubCategoryHumanoids,
-        //                               ResourceBank.String.AutoHelpCategoryFloraAndFauna);
-        //ResolveDefList(pawnkinds, category);
-
         // humanoids - new version based on race.
         var races = new List<ThingDef>();
         foreach (var def in DefDatabase<ThingDef>.AllDefs)
@@ -450,7 +431,6 @@ public static class HelpBuilder
                 }
 
                 // Make a new one
-                //Log.Message( "Help System :: " + recipeDef.defName );
                 helpDef = HelpForRecipe(thingDef, recipeDef, helpCategoryDef);
 
                 // Inject the def
@@ -815,7 +795,6 @@ public static class HelpBuilder
                     recipeDefs.ConvertAll(def => (Def)def));
                 linkParts.Add(recipes);
 
-                // TODO: Figure out why this fails on a few select recipes (e.g. MVP's burger recipes and Apparello's Hive Armor), but works when called directly in these recipe's helpdefs.
                 var tableDefs = recipeDefs.SelectMany(r => r.GetRecipeUsers())
                     .ToList()
                     .ConvertAll(def => def as Def);
@@ -896,49 +875,6 @@ public static class HelpBuilder
                     statParts.Add(capacityMods);
                 }
 
-
-                /*
-                #region Components (Melee attack)
-
-                if ((!hediffDef.comps.NullOrEmpty()) &&
-                    (hediffDef.comps.Exists(p => (
-                      (p.compClass == typeof(HediffComp_VerbGiver))
-                  )))
-                )
-                {
-                    foreach (var comp in hediffDef.comps)
-                    {
-                        if (comp.compClass == typeof(HediffComp_VerbGiver))
-                        {
-                            if (!comp.verbs.NullOrEmpty())
-                            {
-                                foreach (var verb in comp.verbs)
-                                {
-                                    if (verb.verbClass == typeof(Verb_MeleeAttack))
-                                    {
-                                        statParts.Add(new HelpDetailSection(
-                                                "MeleeAttack".Translate(verb.meleeDamageDef.label),
-                                                new[]
-                                                {
-                                                    ResourceBank.String.MeleeWarmupTime,
-                                                    ResourceBank.String.StatsReport_MeleeDamage
-                                                },
-                                                null,
-                                                new[]
-                                                {
-                                                    verb.defaultCooldownTicks.ToString(),
-                                                    verb.meleeDamageBaseAmount.ToString()
-                                                }
-                                            ));
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-
-                #endregion
-                */
                 var recipeDef = thingDef.GetImplantRecipeDef();
                 if (!recipeDef.appliedOnFixedBodyParts.NullOrEmpty())
                 {
@@ -985,23 +921,6 @@ public static class HelpBuilder
                 {
                     powerSectionList.Add(new StringDescTriplet(ResourceBank.String.AutoHelpRequired, null,
                         compPowerTrader.basePowerConsumption.ToString()));
-
-                    /*
-                    var compPowerIdle = thingDef.GetCompProperties<CompProperties_LowIdleDraw>();
-                    if (compPowerIdle != null)
-                    {
-                        int idlePower;
-                        if (compPowerIdle.idlePowerFactor < 1.0f)
-                        {
-                            idlePower = (int)(compPowerTrader.basePowerConsumption * compPowerIdle.idlePowerFactor);
-                        }
-                        else
-                        {
-                            idlePower = (int)compPowerIdle.idlePowerFactor;
-                        }
-                        powerSectionList.Add(new StringDescTriplet(ResourceBank.String.AutoHelpIdlePower, null, idlePower.ToString()));
-                    }
-                    */
                 }
                 else if (compPowerTrader.basePowerConsumption < 0)
                 {
@@ -1088,10 +1007,10 @@ public static class HelpBuilder
 
             if (!joyGiverDefs.NullOrEmpty())
             {
-                foreach (var joyGiverDef in joyGiverDefs)
+                foreach (var jobDef in joyGiverDefs.Select(j => j.jobDef))
                 {
                     // Get job driver stats
-                    if (joyGiverDef.jobDef == null)
+                    if (jobDef == null)
                     {
                         continue;
                     }
@@ -1099,15 +1018,15 @@ public static class HelpBuilder
                     var defs = new List<DefStringTriplet>();
                     var strings = new List<StringDescTriplet>
                     {
-                        new(joyGiverDef.jobDef.reportString),
-                        new(joyGiverDef.jobDef.joyMaxParticipants.ToString(),
+                        new(jobDef.reportString),
+                        new(jobDef.joyMaxParticipants.ToString(),
                             ResourceBank.String.AutoHelpMaximumParticipants)
                     };
-                    defs.Add(new DefStringTriplet(joyGiverDef.jobDef.joyKind,
+                    defs.Add(new DefStringTriplet(jobDef.joyKind,
                         ResourceBank.String.AutoHelpJoyKind));
-                    if (joyGiverDef.jobDef.joySkill != null)
+                    if (jobDef.joySkill != null)
                     {
-                        defs.Add(new DefStringTriplet(joyGiverDef.jobDef.joySkill,
+                        defs.Add(new DefStringTriplet(jobDef.joySkill,
                             ResourceBank.String.AutoHelpJoySkill));
                     }
 
@@ -1173,7 +1092,6 @@ public static class HelpBuilder
         // List of ingredients
         if (!recipeDef.ingredients.NullOrEmpty())
         {
-            // TODO: find the actual thingDefs of ingredients, so we can use defs instead of strings.
             var ingredients = new HelpDetailSection(
                 ResourceBank.String.Ingredients,
                 recipeDef.ingredients
@@ -1272,7 +1190,6 @@ public static class HelpBuilder
         }
 
         // Add research unlocked
-        //CCL_Log.Message(researchProjectDef.label, "getting unlocked research");
         researchDefs = researchProjectDef.GetResearchUnlocked();
         if (!researchDefs.NullOrEmpty())
         {
@@ -1600,7 +1517,7 @@ public static class HelpBuilder
 
         statParts.Add(new HelpDetailSection(null,
             [
-                (race.baseHealthScale * race.lifeStageAges.Last().def.healthScaleFactor).ToStringPercent(),
+                (race.baseHealthScale * race.lifeStageAges[^1].def.healthScaleFactor).ToStringPercent(),
                 race.lifeExpectancy.ToStringApproxAge(),
                 race.ResolvedDietCategory.ToStringHuman(),
                 race.trainability?.ToString() ?? "Sentient"
@@ -1634,7 +1551,6 @@ public static class HelpBuilder
                     continue;
                 }
 
-                // A17 TODO: Check TrainableIntelligance
                 // normal proceedings
                 if (maxSize >= def.minBodySize
                     //   && race.TrainableIntelligence >= def.requiredTrainableIntelligence
@@ -1737,12 +1653,10 @@ public static class HelpBuilder
             var kinds = DefDatabase<PawnKindDef>.AllDefsListForReading.Where(t => t.race == kindDef.race);
             foreach (var kind in kinds)
             {
-                foreach (var biome in DefDatabase<BiomeDef>.AllDefsListForReading)
+                foreach (var biome in DefDatabase<BiomeDef>.AllDefsListForReading.Where(b =>
+                             b.AllWildAnimals.Contains(kind)))
                 {
-                    if (biome.AllWildAnimals.Contains(kind))
-                    {
-                        defs.Add(biome);
-                    }
+                    defs.Add(biome);
                 }
             }
 
@@ -1861,7 +1775,7 @@ public static class HelpBuilder
 
         statParts.Add(new HelpDetailSection(null,
             [
-                (race.baseHealthScale * race.lifeStageAges.Last().def.healthScaleFactor).ToStringPercent(),
+                (race.baseHealthScale * race.lifeStageAges[^1].def.healthScaleFactor).ToStringPercent(),
                 race.lifeExpectancy.ToStringApproxAge(),
                 race.ResolvedDietCategory.ToStringHuman(),
                 "Sentient"
@@ -1968,8 +1882,6 @@ public static class HelpBuilder
 
             if (race.leatherDef != null)
             {
-                //defs.Add(race.leatherDef);
-                //prefixes.Add("~" + (maxSize * raceDef.statBases.Find(sb => sb.stat == StatDefOf.LeatherAmount).value));
                 var statModifier = raceDef.statBases.Find(sb => sb.stat == StatDefOf.LeatherAmount);
                 if (statModifier != null)
                 {

@@ -37,4 +37,14 @@
     <Property Name="outputpath" Value="../Assemblies" />
     <Property Name="Policies" Value="$0" />
   </Properties>
+  <Folder Name="/XML/Defs/">
+    <File Path="../Defs/MainButtonWindow.xml" />
+  </Folder>
+  <Folder Name="/XML/About/">
+    <File Path="../About/about.xml" />
+  </Folder>
+  <Folder Name="/XML/Languages/English/Keyed/">
+    <File Path="../Languages/English/Keyed/HelpDef_AutoGen.xml" />
+    <File Path="../Languages/English/Keyed/KeyedTranslations.xml" />
+  </Folder>
 </Solution>

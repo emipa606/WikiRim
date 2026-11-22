@@ -26,21 +26,21 @@ public class MainTabWindow_ModHelp : MainTabWindow, IHelpDefView
     private static readonly Vector2 ArrowImageSize = new(10f, 10f);
 
     private static string _filterString = "";
-    private bool _filtered;
-    private bool _jump;
-    private string _lastFilterString = "";
-    private int _lastFilterTick;
     private float ContentHeight = 9999f;
     private Rect DisplayRect;
     private Vector2 DisplayScrollPos;
-
-    private int entryCounter;
     private HelpDef SelectedHelpDef;
     private float SelectionHeight = 9999f;
 
     private Rect SelectionRect;
 
     private Vector2 SelectionScrollPos;
+    private bool _filtered;
+    private bool _jump;
+    private string _lastFilterString = "";
+    private int _lastFilterTick;
+
+    private int entryCounter;
 
     public MainTabWindow_ModHelp()
     {
@@ -71,29 +71,29 @@ public class MainTabWindow_ModHelp : MainTabWindow, IHelpDefView
         }
     }
 
-    public void JumpTo(Def helpDef)
+    public void JumpTo(Def def)
     {
-        JumpTo(helpDef.GetHelpDef());
+        JumpTo(def.GetHelpDef());
     }
 
-    public void JumpTo(HelpDef helpDef)
+    public void JumpTo(HelpDef def)
     {
-        Find.MainTabsRoot.SetCurrentTab(def);
+        Find.MainTabsRoot.SetCurrentTab(this.def);
         ResetFilter();
         _jump = true;
-        SelectedHelpDef = helpDef;
-        var cat = DefDatabase<HelpCategoryDef>.AllDefsListForReading.First(hc => hc.HelpDefs.Contains(helpDef));
+        SelectedHelpDef = def;
+        var cat = DefDatabase<HelpCategoryDef>.AllDefsListForReading.First(hc => hc.HelpDefs.Contains(def));
         cat.Expanded = true;
         var mod = CachedHelpCategories.First(mc => mc.HelpCategories.Contains(cat));
         mod.Expanded = true;
     }
 
-    public bool Accept(HelpDef helpDef)
+    public bool Accept(HelpDef def)
     {
         return true;
     }
 
-    public IHelpDefView SecondaryView(HelpDef helpDef)
+    public IHelpDefView SecondaryView(HelpDef def)
     {
         return null;
     }
@@ -103,7 +103,7 @@ public class MainTabWindow_ModHelp : MainTabWindow, IHelpDefView
         base.PreOpen();
 
         // Set whether the window forces a pause
-        // Not entirely sure why force pause warrants a xml setting? - Fluffy.
+        // Not entirely sure why force pause warrants an xml setting? - Fluffy.
         if (TabDef != null)
         {
             forcePause = TabDef.pauseGame;
@@ -132,7 +132,7 @@ public class MainTabWindow_ModHelp : MainTabWindow, IHelpDefView
             else
             {
                 var mCat = CachedHelpCategories.Find(t => t.ModName == helpCategory.ModName);
-                mCat.AddCategory(helpCategory);
+                mCat?.AddCategory(helpCategory);
             }
         }
     }
@@ -140,7 +140,6 @@ public class MainTabWindow_ModHelp : MainTabWindow, IHelpDefView
     private void FilterUpdate()
     {
         // filter after a short delay.
-        // Log.Message(_filterString + " | " + _lastFilterTick + " | " + _filtered);
         if (_filterString != _lastFilterString)
         {
             _lastFilterString = _filterString;
@@ -175,19 +174,26 @@ public class MainTabWindow_ModHelp : MainTabWindow, IHelpDefView
         Filter();
     }
 
-    public override void DoWindowContents(Rect rect)
+    public override void DoWindowContents(Rect inRect)
     {
         Text.Font = GameFont.Small;
 
-        GUI.BeginGroup(rect);
+        GUI.BeginGroup(inRect);
 
-        var selectionWidth = TabDef != null
-            ? TabDef.listWidth >= MinListWidth ? TabDef.listWidth : MinListWidth
-            : MinListWidth;
-        SelectionRect = new Rect(0f, 0f, selectionWidth, rect.height);
+        float selectionWidth;
+        if (TabDef != null)
+        {
+            selectionWidth = TabDef.listWidth >= MinListWidth ? TabDef.listWidth : MinListWidth;
+        }
+        else
+        {
+            selectionWidth = MinListWidth;
+        }
+
+        SelectionRect = new Rect(0f, 0f, selectionWidth, inRect.height);
         DisplayRect = new Rect(
             SelectionRect.width + WindowMargin, 0f,
-            rect.width - SelectionRect.width - WindowMargin, rect.height
+            inRect.width - SelectionRect.width - WindowMargin, inRect.height
         );
 
         DrawSelectionArea(SelectionRect);
@@ -304,13 +310,10 @@ public class MainTabWindow_ModHelp : MainTabWindow, IHelpDefView
             rect.width - (3 * WindowMargin) - 30f, 30f);
         var clearRect = new Rect(filterRect.xMax + WindowMargin + 3f, rect.yMin + WindowMargin + 3f, 24f, 24f);
         _filterString = Widgets.TextField(filterRect, _filterString);
-        if (_filterString != "")
+        if (_filterString != "" && Widgets.ButtonImage(clearRect, Widgets.CheckboxOffTex))
         {
-            if (Widgets.ButtonImage(clearRect, Widgets.CheckboxOffTex))
-            {
-                _filterString = "";
-                Filter();
-            }
+            _filterString = "";
+            Filter();
         }
 
         var modCheckRect = new Rect(rect.xMin + WindowMargin, rect.yMin + WindowMargin + 30f,
@@ -503,11 +506,10 @@ public class MainTabWindow_ModHelp : MainTabWindow, IHelpDefView
         Leaf
     }
 
-    private class ModCategory(string modName)
+    private sealed class ModCategory(string modName)
     {
-        private readonly List<HelpCategoryDef> _helpCategories = [];
-
         public readonly string ModName = modName;
+        private readonly List<HelpCategoryDef> _helpCategories = [];
 
         public bool Expanded;
 

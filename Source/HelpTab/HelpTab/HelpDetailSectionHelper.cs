@@ -5,7 +5,7 @@ using Verse;
 
 namespace HelpTab;
 
-public class HelpDetailSectionHelper
+public static class HelpDetailSectionHelper
 {
     public static List<DefStringTriplet> BuildDefStringTripletList(List<Def> defs, string[] prefixes = null,
         string[] suffixes = null)
@@ -50,7 +50,7 @@ public class HelpDetailSectionHelper
         var ret = new List<DefStringTriplet>();
         foreach (var i in unique)
         {
-            ret.Add(new DefStringTriplet(defs[i], hasPrefix ? prefixes[i] : null, hasSuffix ? suffixes[i] : null));
+            ret.Add(new DefStringTriplet(defs[i], hasPrefix ? prefixes?[i] : null, hasSuffix ? suffixes?[i] : null));
         }
 
         return ret;
@@ -95,8 +95,8 @@ public class HelpDetailSectionHelper
         var ret = new List<StringDescTriplet>();
         for (var i = 0; i < stringDescs.Length; i++)
         {
-            ret.Add(new StringDescTriplet(stringDescs[i], hasPrefix ? prefixes[i] : null,
-                hasSuffix ? suffixes[i] : null));
+            ret.Add(new StringDescTriplet(stringDescs[i], hasPrefix ? prefixes?[i] : null,
+                hasSuffix ? suffixes?[i] : null));
         }
 
         return ret;

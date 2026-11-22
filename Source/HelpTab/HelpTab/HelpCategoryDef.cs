@@ -6,8 +6,8 @@ namespace HelpTab;
 
 public class HelpCategoryDef : Def
 {
-    public string keyDef;
     public string ModName;
+    public string keyDef;
 
     [field: Unsaved] public List<HelpDef> HelpDefs { get; } = [];
 

@@ -219,7 +219,6 @@ public class HelpDetailSection
             requestedWidths.z += width - requestedWidths.Sum();
 
             // done
-            ColumnWidths = requestedWidths;
         }
         else
         {
@@ -248,8 +247,9 @@ public class HelpDetailSection
             }
 
             // done
-            ColumnWidths = requestedWidths;
         }
+
+        ColumnWidths = requestedWidths;
 
         // set done flag.
         WidthsSet = true;

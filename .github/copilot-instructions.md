@@ -41,3 +41,27 @@ When working with this project, Copilot can assist by:
 - **UI Generation**: Assisting in the creation of UI elements by suggesting common RimWorld UI patterns and layouts.
 
 By following these instructions, developers can work efficiently within the HelpTab mod’s architecture, making contributions that align with its design goals and maintain its extensible and user-friendly nature.
+
+## Project Solution Guidelines
+- Relevant mod XML files are included as Solution Items under the solution folder named XML, these can be read and modified from within the solution.
+- Use these in-solution XML files as the primary files for reference and modification.
+- The `.github/copilot-instructions.md` file is included in the solution under the `.github` solution folder, so it should be read/modified from within the solution instead of using paths outside the solution. Update this file once only, as it and the parent-path solution reference point to the same file in this workspace.
+- When making functional changes in this mod, ensure the documented features stay in sync with implementation; use the in-solution `.github` copy as the primary file.
+- In the solution is also a project called Assembly-CSharp, containing a read-only version of the decompiled game source, for reference and debugging purposes.
+- For any new documentation, update this copilot-instructions.md file rather than creating separate documentation files.
+
+
+## Temporary files
+
+- Do not create temporary files, build output, test artifacts, or Copilot session
+  folders inside the mod root.
+- Store temporary artifacts under `%USERPROFILE%\CopilotTemp\[modname]`.
+- Direct build and test output there as well, without changing project settings.
+- Clean up task-specific temporary artifacts when finished.
+
+## Hard rules (must follow)
+- Do NOT run commands that modify the repo (no git commit, git apply, dotnet format) unless explicitly asked.
+- Prefer minimal reads: read only the smallest code region needed (around the suspicious lines).
+- When mentioning SonarQube issues, automatically use the SonarQube MCP service to fetch and address issues instead of making inferred fixes without querying SonarQube first.
+- When mentioning the rimworld log, automatically use the Rimworld MCP service to fetch the log.
+

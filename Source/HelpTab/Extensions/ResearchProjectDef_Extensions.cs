@@ -14,228 +14,224 @@ public static class ResearchProjectDef_Extensions
         _unlocksCache = new Dictionary<ushort, List<Pair<Def, string>>>();
     }
 
-    public static List<ResearchProjectDef> ExclusiveDescendants(this ResearchProjectDef research)
+    extension(ResearchProjectDef research)
     {
-        var descendants = new List<ResearchProjectDef>();
-
-        // recursively go through all children
-        // populate initial queue
-        var queue = new Queue<ResearchProjectDef>(
-            DefDatabase<ResearchProjectDef>.AllDefsListForReading.Where(res =>
-                res.prerequisites.Contains(research)));
-
-        // for each item in queue, determine if there's something unlocking it
-        // if not, add to the list, and queue up children.
-        while (queue.Count > 0)
+        public List<ResearchProjectDef> ExclusiveDescendants()
         {
-            var current = queue.Dequeue();
+            var descendants = new List<ResearchProjectDef>();
 
-            if (descendants.Contains(current))
+            // recursively go through all children
+            // populate initial queue
+            var queue = new Queue<ResearchProjectDef>(
+                DefDatabase<ResearchProjectDef>.AllDefsListForReading.Where(res =>
+                    res.prerequisites.Contains(research)));
+
+            // for each item in queue, determine if there's something unlocking it
+            // if not, add to the list, and queue up children.
+            while (queue.Count > 0)
             {
-                continue;
+                var current = queue.Dequeue();
+
+                if (descendants.Contains(current))
+                {
+                    continue;
+                }
+
+                descendants.Add(current);
+                foreach (var descendant in DefDatabase<ResearchProjectDef>.AllDefsListForReading.Where(res =>
+                             res.prerequisites.Contains(current)))
+                {
+                    queue.Enqueue(descendant);
+                }
             }
 
-            descendants.Add(current);
-            foreach (var descendant in DefDatabase<ResearchProjectDef>.AllDefsListForReading.Where(res =>
-                         res.prerequisites.Contains(current)))
-            {
-                queue.Enqueue(descendant);
-            }
+            return descendants;
         }
 
-        return descendants;
-    }
-
-    public static List<ResearchProjectDef> GetPrerequisitesRecursive(this ResearchProjectDef research)
-    {
-        var result = new List<ResearchProjectDef>();
-        if (research.prerequisites.NullOrEmpty())
+        public List<ResearchProjectDef> GetPrerequisitesRecursive()
         {
-            return result;
-        }
-
-        var stack = new Stack<ResearchProjectDef>(research.prerequisites.Where(parent => parent != research));
-
-        while (stack.Count > 0)
-        {
-            var parent = stack.Pop();
-            result.Add(parent);
-
-            if (parent.prerequisites.NullOrEmpty())
+            var result = new List<ResearchProjectDef>();
+            if (research.prerequisites.NullOrEmpty())
             {
-                continue;
+                return result;
             }
 
-            foreach (var grandparent in parent.prerequisites)
+            var stack = new Stack<ResearchProjectDef>(research.prerequisites.Where(parent => parent != research));
+
+            while (stack.Count > 0)
             {
-                if (grandparent != parent)
+                var parent = stack.Pop();
+                result.Add(parent);
+
+                if (parent.prerequisites.NullOrEmpty())
+                {
+                    continue;
+                }
+
+                foreach (var grandparent in parent.prerequisites.Where(grandparent => grandparent != parent))
                 {
                     stack.Push(grandparent);
                 }
             }
+
+            return result.Distinct().ToList();
         }
 
-        return result.Distinct().ToList();
-    }
-
-    public static List<Pair<Def, string>> GetUnlockDefsAndDescs(this ResearchProjectDef research)
-    {
-        if (_unlocksCache.TryGetValue(research.shortHash, out var descs))
+        public List<Pair<Def, string>> GetUnlockDefsAndDescs()
         {
-            return descs;
+            if (_unlocksCache.TryGetValue(research.shortHash, out var descs))
+            {
+                return descs;
+            }
+
+            var unlocks = new List<Pair<Def, string>>();
+
+            // dumps recipes/plants unlocked, because of the peculiar way CCL helpdefs are done.
+            var dump = new List<ThingDef>();
+
+            unlocks.AddRange(research.GetThingsUnlocked()
+                .Where(d => d.IconTexture() != null)
+                .Select(d => new Pair<Def, string>(d, "AllowsBuildingX".Translate(d.LabelCap))));
+            unlocks.AddRange(research.GetTerrainUnlocked()
+                .Where(d => d.IconTexture() != null)
+                .Select(d => new Pair<Def, string>(d, "AllowsBuildingX".Translate(d.LabelCap))));
+            unlocks.AddRange(research.GetRecipesUnlocked(ref dump)
+                .Where(d => d.IconTexture() != null)
+                .Select(d => new Pair<Def, string>(d, "AllowsCraftingX".Translate(d.LabelCap))));
+            var sowTags = string.Join(" and ", research.GetSowTagsUnlocked(ref dump).ToArray());
+            unlocks.AddRange(dump.Where(d => d.IconTexture() != null)
+                .Select(d => new Pair<Def, string>(d, "AllowsSowingXinY".Translate(d.LabelCap, sowTags))));
+
+            _unlocksCache.Add(research.shortHash, unlocks);
+            return unlocks;
         }
 
-        var unlocks = new List<Pair<Def, string>>();
-
-        // dumps recipes/plants unlocked, because of the peculiar way CCL helpdefs are done.
-        var dump = new List<ThingDef>();
-
-        unlocks.AddRange(research.GetThingsUnlocked()
-            .Where(d => d.IconTexture() != null)
-            .Select(d => new Pair<Def, string>(d, "AllowsBuildingX".Translate(d.LabelCap))));
-        unlocks.AddRange(research.GetTerrainUnlocked()
-            .Where(d => d.IconTexture() != null)
-            .Select(d => new Pair<Def, string>(d, "AllowsBuildingX".Translate(d.LabelCap))));
-        unlocks.AddRange(research.GetRecipesUnlocked(ref dump)
-            .Where(d => d.IconTexture() != null)
-            .Select(d => new Pair<Def, string>(d, "AllowsCraftingX".Translate(d.LabelCap))));
-        var sowTags = string.Join(" and ", research.GetSowTagsUnlocked(ref dump).ToArray());
-        unlocks.AddRange(dump.Where(d => d.IconTexture() != null)
-            .Select(d => new Pair<Def, string>(d, "AllowsSowingXinY".Translate(d.LabelCap, sowTags))));
-
-        _unlocksCache.Add(research.shortHash, unlocks);
-        return unlocks;
-    }
-
-    public static List<ThingDef> GetThingsUnlocked(this ResearchProjectDef researchProjectDef)
-    {
-        // Buildings it unlocks
-        var thingsOn = new List<ThingDef>();
-        var researchThings = DefDatabase<ThingDef>.AllDefsListForReading.Where(t =>
+        public List<ThingDef> GetThingsUnlocked()
         {
-            var r = t.GetResearchRequirements();
-            return r != null && r.Contains(researchProjectDef);
-        }).ToList();
+            // Buildings it unlocks
+            var thingsOn = new List<ThingDef>();
+            var researchThings = DefDatabase<ThingDef>.AllDefsListForReading.Where(t =>
+            {
+                var r = t.GetResearchRequirements();
+                return r != null && r.Contains(research);
+            }).ToList();
 
-        if (!researchThings.NullOrEmpty())
-        {
-            thingsOn.AddRangeUnique(researchThings);
+            if (!researchThings.NullOrEmpty())
+            {
+                thingsOn.AddRangeUnique(researchThings);
+            }
+
+            return thingsOn;
         }
 
-        return thingsOn;
-    }
-
-    public static List<TerrainDef> GetTerrainUnlocked(this ResearchProjectDef researchProjectDef)
-    {
-        // Buildings it unlocks
-        var thingsOn = new List<TerrainDef>();
-        var researchThings = DefDatabase<TerrainDef>.AllDefsListForReading.Where(t =>
+        public List<TerrainDef> GetTerrainUnlocked()
         {
-            var r = t.GetResearchRequirements();
-            return r != null && r.Contains(researchProjectDef);
-        }).ToList();
+            // Buildings it unlocks
+            var thingsOn = new List<TerrainDef>();
+            var researchThings = DefDatabase<TerrainDef>.AllDefsListForReading.Where(t =>
+            {
+                var r = t.GetResearchRequirements();
+                return r != null && r.Contains(research);
+            }).ToList();
 
-        if (!researchThings.NullOrEmpty())
-        {
-            thingsOn.AddRangeUnique(researchThings);
+            if (!researchThings.NullOrEmpty())
+            {
+                thingsOn.AddRangeUnique(researchThings);
+            }
+
+            return thingsOn;
         }
 
-        return thingsOn;
-    }
-
-    public static List<RecipeDef> GetRecipesUnlocked(this ResearchProjectDef researchProjectDef,
-        ref List<ThingDef> thingDefs)
-    {
-        // Recipes on buildings it unlocks
-        var recipes = new List<RecipeDef>();
-        thingDefs?.Clear();
-
-        // Add all recipes using this research projects
-        var researchRecipes = DefDatabase<RecipeDef>.AllDefsListForReading.Where(d =>
-            d.researchPrerequisite == researchProjectDef
-        ).ToList();
-
-        if (!researchRecipes.NullOrEmpty())
+        public List<RecipeDef> GetRecipesUnlocked(ref List<ThingDef> thingDefs)
         {
-            recipes.AddRangeUnique(researchRecipes);
-        }
+            // Recipes on buildings it unlocks
+            var recipes = new List<RecipeDef>();
+            thingDefs?.Clear();
 
-        if (thingDefs == null)
-        {
+            // Add all recipes using this research projects
+            var researchRecipes = DefDatabase<RecipeDef>.AllDefsListForReading.Where(d =>
+                d.researchPrerequisite == research
+            ).ToList();
+
+            if (!researchRecipes.NullOrEmpty())
+            {
+                recipes.AddRangeUnique(researchRecipes);
+            }
+
+            if (thingDefs == null)
+            {
+                return recipes;
+            }
+
+            // Add buildings for those recipes
+            foreach (var r in recipes)
+            {
+                if (!r.recipeUsers.NullOrEmpty())
+                {
+                    thingDefs.AddRangeUnique(r.recipeUsers);
+                }
+
+                var recipeThings = DefDatabase<ThingDef>.AllDefsListForReading.Where(d =>
+                    !d.recipes.NullOrEmpty() &&
+                    d.recipes.Contains(r)
+                ).ToList();
+                if (!recipeThings.NullOrEmpty())
+                {
+                    thingDefs.AddRangeUnique(recipeThings);
+                }
+            }
+
             return recipes;
         }
 
-        // Add buildings for those recipes
-        foreach (var r in recipes)
+        public List<string> GetSowTagsUnlocked(ref List<ThingDef> thingDefs)
         {
-            if (!r.recipeUsers.NullOrEmpty())
-            {
-                thingDefs.AddRangeUnique(r.recipeUsers);
-            }
+            var sowTags = new List<string>();
+            thingDefs?.Clear();
 
-            var recipeThings = DefDatabase<ThingDef>.AllDefsListForReading.Where(d =>
-                !d.recipes.NullOrEmpty() &&
-                d.recipes.Contains(r)
+            // Add all plants using this research project
+            var researchPlants = DefDatabase<ThingDef>.AllDefsListForReading.Where(d =>
+                d.plant != null &&
+                !d.plant.sowResearchPrerequisites.NullOrEmpty() &&
+                d.plant.sowResearchPrerequisites.Contains(research)
             ).ToList();
-            if (!recipeThings.NullOrEmpty())
+
+            if (researchPlants.NullOrEmpty())
             {
-                thingDefs.AddRangeUnique(recipeThings);
+                return sowTags;
             }
-        }
 
-        return recipes;
-    }
+            foreach (var plant in researchPlants)
+            {
+                sowTags.AddRangeUnique(plant.plant.sowTags);
+            }
 
-    public static List<string> GetSowTagsUnlocked(this ResearchProjectDef researchProjectDef,
-        ref List<ThingDef> thingDefs)
-    {
-        var sowTags = new List<string>();
-        thingDefs?.Clear();
+            thingDefs?.AddRangeUnique(researchPlants);
 
-        // Add all plants using this research project
-        var researchPlants = DefDatabase<ThingDef>.AllDefsListForReading.Where(d =>
-            d.plant != null &&
-            !d.plant.sowResearchPrerequisites.NullOrEmpty() &&
-            d.plant.sowResearchPrerequisites.Contains(researchProjectDef)
-        ).ToList();
-
-        if (researchPlants.NullOrEmpty())
-        {
             return sowTags;
         }
 
-        foreach (var plant in researchPlants)
+        public List<Def> GetResearchRequirements()
         {
-            sowTags.AddRangeUnique(plant.plant.sowTags);
+            var researchDefs = new List<Def>();
+
+            if (research.prerequisites != null)
+            {
+                researchDefs.AddRangeUnique(research.prerequisites.ConvertAll<Def>(def => def));
+            }
+
+            // Return the list of research required
+            return researchDefs;
         }
 
-        thingDefs?.AddRangeUnique(researchPlants);
-
-        return sowTags;
-    }
-
-    public static List<Def> GetResearchRequirements(this ResearchProjectDef researchProjectDef)
-    {
-        var researchDefs = new List<Def>();
-
-        if (researchProjectDef.prerequisites != null)
+        public List<Def> GetResearchUnlocked()
         {
-            researchDefs.AddRangeUnique(researchProjectDef.prerequisites.ConvertAll<Def>(def => def));
+            var researchDefs = new List<Def>();
+            researchDefs.AddRangeUnique(DefDatabase<ResearchProjectDef>.AllDefsListForReading.Where(rd =>
+                !rd.prerequisites.NullOrEmpty() &&
+                rd.prerequisites.Contains(research)
+            ).ToList().ConvertAll<Def>(def => def));
+            return researchDefs;
         }
-
-        // Return the list of research required
-        return researchDefs;
-    }
-
-    public static List<Def> GetResearchUnlocked(this ResearchProjectDef researchProjectDef)
-    {
-        var researchDefs = new List<Def>();
-
-        //Log.Message( "Normal" );
-        researchDefs.AddRangeUnique(DefDatabase<ResearchProjectDef>.AllDefsListForReading.Where(rd =>
-            !rd.prerequisites.NullOrEmpty() &&
-            rd.prerequisites.Contains(researchProjectDef)
-        ).ToList().ConvertAll<Def>(def => def));
-        return researchDefs;
     }
 }

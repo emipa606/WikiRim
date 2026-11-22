@@ -1,6 +1,6 @@
 # [[O21] WikiRim (Continued)](https://steamcommunity.com/sharedfiles/filedetails/?id=2198532017)
 
-![Image](https://i.imgur.com/buuPQel.png)
+![Image](https://img.litet.net/logos/Info.png)
 
 Update of Neronix17s mod
 https://steamcommunity.com/sharedfiles/filedetails/?id=1834856478
@@ -12,9 +12,9 @@ https://steamcommunity.com/sharedfiles/filedetails/?id=1834856478
 - Added info-i icon to the in-game information on all relevant wiki-pages
 - Added option to match on mod-names
 
-![Image](https://i.imgur.com/pufA0kM.png)
+![Image](https://img.litet.net/logos/Notice.png)
 	
-![Image](https://i.imgur.com/Z4GOv8H.png)
+![Image](https://img.litet.net/logos/OriginalDescription.png)
 
 A comprehensive help database, this is a fork of the mod HelpTab, updated to 1.0 with added changes I personally wanted to see.
 
@@ -42,13 +42,13 @@ Original mod by Fluffy
 (CC BY-NC-SA 4.0)
 
 
-![Image](https://i.imgur.com/PwoNOj4.png)
+![Image](https://img.litet.net/logos/ReportingIssues.png)
 
 
 
 -  See if the the error persists if you just have this mod and its requirements active.
 -  If not, try adding your other mods until it happens again.
--  Post your error-log using the [Log Uploader](https://steamcommunity.com/sharedfiles/filedetails/?id=2873415404) or the standalone [Uploader](https://steamcommunity.com/sharedfiles/filedetails/?id=2873415404) and command Ctrl+F12
+-  Always post your log using the [Log Uploader](https://steamcommunity.com/sharedfiles/filedetails/?id=2873415404)
 -  For best support, please use the Discord-channel for error-reporting.
 -  Do not report errors by making a discussion-thread, I get no notification of that.
 -  If you have the solution for a problem, please post it to the GitHub repository.
@@ -56,4 +56,4 @@ Original mod by Fluffy
 
  
 
-[![Image](https://img.shields.io/github/v/release/emipa606/WikiRim?label=latest%20version&style=plastic&color=9f1111&labelColor=black)](https://steamcommunity.com/sharedfiles/filedetails/changelog/2198532017) | tags:  help,  database
+[![Image](https://img.shields.io/github/v/release/emipa606/WikiRim?label=latest%20version&style=plastic&color=9f1111&labelColor=black)](https://steamcommunity.com/sharedfiles/filedetails/changelog/2198532017) | database, help
